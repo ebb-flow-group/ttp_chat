@@ -75,7 +75,7 @@ class _AllChatScreenState extends State<AllChatScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => UserAccounts(
-                        chatProvider.chatSignInModel!.brandCustomFirebaseTokens)));
+                        chatProvider.chatSignInModel!.brandFirebaseTokenList!)));
           },
           child: Text(
             'Brand managing >',
@@ -95,7 +95,7 @@ class _AllChatScreenState extends State<AllChatScreen> {
                 endIndent: 10,
               ),
             ),
-            Text(
+            const Text(
               'Start a chat with your friends',
               style: TextStyle(
                 color: Colors.grey,
@@ -146,7 +146,7 @@ class _AllChatScreenState extends State<AllChatScreen> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  UserAccounts(response.data!.brandCustomFirebaseTokens)));
+                  UserAccounts(response.data!.brandFirebaseTokenList!)));
     } else {
       showMessage(
         context,

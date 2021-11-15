@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:ttp_chat/core/screens/chat/all_chat_screen.dart';
 import 'package:ttp_chat/core/screens/chat/chats_screen.dart';
 import 'package:ttp_chat/core/screens/chat/friends_chat_screen.dart';
+import 'package:ttp_chat/features/chat/domain/chat_sign_in_model.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/theme/style.dart';
 
@@ -14,19 +15,19 @@ import 'merchants_chat_screen.dart';
 
 class ChatDesigns extends StatelessWidget {
 
-  final String? customFirebaseToken;
-  final String? brandName;
   final bool? isSwitchedAccount;
+  final Map<String, dynamic>? authData;
+  final BrandChatFirebaseTokenResponse? brandFirebaseTokenResponse;
 
-  ChatDesigns(this.isSwitchedAccount, {this.customFirebaseToken, this.brandName});
+  ChatDesigns({this.isSwitchedAccount = false, this.authData, this.brandFirebaseTokenResponse});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ChatProvider>(
       create: (context) => isSwitchedAccount!
-        ? ChatProvider.customSignIn(customFirebaseToken!, isSwitchedAccount!)
-        : ChatProvider.signInAndInit(isSwitchedAccount!),
-      child: _ChatDesigns(isSwitchedAccount!, brandName),
+          ? ChatProvider.brandSignIn(isSwitchedAccount!, brandFirebaseTokenResponse!)
+          : ChatProvider.userSignIn(isSwitchedAccount!, authData!),
+      child: _ChatDesigns(isSwitchedAccount!, brandFirebaseTokenResponse!.brandName),
     );
   }
 }

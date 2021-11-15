@@ -185,6 +185,7 @@ class ChatProvider extends ChangeNotifier {
 
   ChatProvider();
 
+  /// Not Needed Now
   ChatProvider.initialiseUserAndLoadMessages(ChatUsersModel usersModel) {
     usersModel = usersModel;
     initializeUser();
@@ -192,18 +193,21 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Not Needed Now
   ChatProvider.initialiseChats(String customFirebaseToken, [ChatSignInModel? chatSignInModel]) {
     selectedTab = tabs[0];
     signInUserWithCustomFBTokenAndRegister(false, customFirebaseToken, chatSignInModel!);
     notifyListeners();
   }
 
+  /// Not Needed Now
   ChatProvider.signInAndInit(bool isSwitchedAccount){
     selectedTab = tabs[0];
     isSwitchedAccount = isSwitchedAccount;
     signInMVP();
   }
 
+  /// Not Needed Now
   ChatProvider.customSignIn(String customFirebaseToken, bool isSwitchedAccount){
     selectedTab = tabs[0];
     isSwitchedAccount = isSwitchedAccount;
@@ -211,6 +215,44 @@ class ChatProvider extends ChangeNotifier {
 
   }
 
+  ChatProvider.userSignIn(bool isSwitchedAccount, Map<String, dynamic> authData) {
+    ChatSignInModel chatSignInModel = ChatSignInModel.fromJson(authData);
+    this.chatSignInModel = chatSignInModel;
+    customTokenFirebaseAuthSignIn(isSwitchedAccount, chatSignInModel.firebaseToken!);
+  }
+
+  ChatProvider.brandSignIn(bool isSwitchedAccount, BrandChatFirebaseTokenResponse brandFirebaseTokenResponse){
+    customTokenFirebaseAuthSignIn(isSwitchedAccount, brandFirebaseTokenResponse.firebaseToken!);
+  }
+
+  customTokenFirebaseAuthSignIn(bool isSwitchedAccount, String firebaseToken) async {
+    try{
+      if (isSwitchedAccount) {
+        print('SECONDARY FB APP');
+
+        FirebaseApp secondaryApp = Firebase.app('secondary');
+
+        UserCredential userCredential =
+        await FirebaseAuth.instanceFor(app: secondaryApp)
+            .signInWithCustomToken(firebaseToken);
+        print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
+        print('USER CREDENTIAL: $firebaseToken');
+        registerUserOnFirestore(userCredential.user!.uid, isSwitchedAccount);
+      } else {
+        print('PRIMARY FB APP');
+        if (chatSignInModel != null) {
+          UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
+          print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
+          print('USER CREDENTIAL: $firebaseToken');
+        }
+      }
+    }catch (e, s){
+      print('CUSTOM SIGN IN ERROR: $e\n$s');
+    }
+  }
+
+  /// Not Needed Now
   void signInMVP() async {
     BaseModel<ChatSignInModel> response =
     await GetIt.I<ApiService>().signInMVP('shubham_8607', '8668292003');
@@ -222,7 +264,7 @@ class ChatProvider extends ChangeNotifier {
 
       chatSignInModel = response.data;
       notifyListeners();
-      signInUserWithCustomFBTokenAndRegister(false, response.data!.customFirebaseToken!, response.data!);
+      signInUserWithCustomFBTokenAndRegister(false, response.data!.firebaseToken!, response.data!);
 
       /*Navigator.push(
           context,
@@ -240,11 +282,13 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
+  /// Not Needed Now
   void initializeUser() {
     user = const types.User(id: '06c33e8b-e835-4736-80f4-63f44b66666c');
     notifyListeners();
   }
 
+  /// Not Needed Now
   void loadMessages() async {
     final response = await rootBundle.loadString('assets/messages.json');
     final messages = (jsonDecode(response) as List)

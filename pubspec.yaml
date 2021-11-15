@@ -37,6 +37,7 @@ dependencies:
   permission_handler: ^8.2.5
   flutter_sound: ^8.4.1+1
   file_picker: ^4.1.6
+  flutter_svg: ^0.23.0+1
   flutter_firebase_chat_core: #^0.0.6
     git:
       url: https://github.com/ebb-flow-group/flutter_firebase_chat_core
@@ -68,6 +69,7 @@ flutter:
   # To add assets to your package, add an assets section, like this:
   assets:
     - assets/icons/
+    - assets/icons/search.svg
     - assets/images/
     - assets/welcome/
   #

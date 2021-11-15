@@ -5,7 +5,7 @@ import 'package:ttp_chat/features/chat/domain/chat_sign_in_model.dart';
 import 'package:ttp_chat/theme/style.dart';
 
 class UserAccounts extends StatefulWidget {
-  final List<BrandCustomTokens> brandCustomTokensList;
+  final List<BrandChatFirebaseTokenResponse> brandCustomTokensList;
 
   UserAccounts(this.brandCustomTokensList);
 
@@ -59,8 +59,10 @@ class _UserAccountsState extends State<UserAccounts> {
               onTap: (){
 
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ChatDesigns(true, customFirebaseToken: widget.brandCustomTokensList[index].firebaseToken, brandName: widget.brandCustomTokensList[index].brandName)));
+                    context,
+                    MaterialPageRoute(builder: (context) => ChatDesigns(
+                        isSwitchedAccount: true,
+                        brandFirebaseTokenResponse: widget.brandCustomTokensList[index])));
               },
               title: Text(
                   widget.brandCustomTokensList[index].brandName!
