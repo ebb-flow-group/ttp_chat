@@ -15,19 +15,20 @@ import 'merchants_chat_screen.dart';
 
 class ChatDesigns extends StatelessWidget {
 
-  final bool? isSwitchedAccount;
-  final Map<String, dynamic>? authData;
-  final BrandChatFirebaseTokenResponse? brandFirebaseTokenResponse;
+  bool isSwitchedAccount;
+  Map<String, dynamic>? authData;
+  BrandChatFirebaseTokenResponse? brandFirebaseTokenResponse;
 
   ChatDesigns({this.isSwitchedAccount = false, this.authData, this.brandFirebaseTokenResponse});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ChatProvider>(
-      create: (context) => isSwitchedAccount!
-          ? ChatProvider.brandSignIn(isSwitchedAccount!, brandFirebaseTokenResponse!)
-          : ChatProvider.userSignIn(isSwitchedAccount!, authData!),
-      child: _ChatDesigns(isSwitchedAccount!, brandFirebaseTokenResponse!.brandName),
+    return
+      ChangeNotifierProvider<ChatProvider>(
+      create: (context) => isSwitchedAccount
+          ? ChatProvider.brandSignIn(isSwitchedAccount, brandFirebaseTokenResponse!)
+          : ChatProvider.userSignIn(isSwitchedAccount, authData!),
+      child: _ChatDesigns(isSwitchedAccount, brandFirebaseTokenResponse != null ? brandFirebaseTokenResponse!.brandName : null),
     );
   }
 }

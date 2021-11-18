@@ -61,7 +61,7 @@ class _UserAccountsState extends State<UserAccounts> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => ChatDesigns(
-                        isSwitchedAccount: true,
+                      isSwitchedAccount: true,
                         brandFirebaseTokenResponse: widget.brandCustomTokensList[index])));
               },
               title: Text(
