@@ -247,6 +247,9 @@ class ChatProvider extends ChangeNotifier {
           print('USER CREDENTIAL: $firebaseToken');
         }
       }
+      apiStatus = ApiStatus.success;
+      notifyListeners();
+
     }catch (e, s){
       print('CUSTOM SIGN IN ERROR: $e\n$s');
     }

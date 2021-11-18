@@ -73,10 +73,11 @@ class _ChatDesignsState extends State<_ChatDesigns> with TickerProviderStateMixi
   Widget build(BuildContext context) {
     chatProvider = context.watch<ChatProvider>();
 
-    if(!widget.isSwitchedAccount!)
+    if(!widget.isSwitchedAccount!) {
       if(chatProvider.apiStatus == ApiStatus.called) {
-        return Scaffold(body: Center(child: CircularProgressIndicator()));
+        return const Scaffold(body: Center(child: CircularProgressIndicator()));
       }
+    }
 
     return WillPopScope(
       onWillPop: () async{
