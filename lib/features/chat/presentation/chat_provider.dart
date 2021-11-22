@@ -216,6 +216,7 @@ class ChatProvider extends ChangeNotifier {
   }
 
   ChatProvider.userSignIn(bool isSwitchedAccount, Map<String, dynamic> authData) {
+    selectedTab = tabs[0];
     ChatSignInModel chatSignInModel = ChatSignInModel.fromJson(authData);
     this.chatSignInModel = chatSignInModel;
     customTokenFirebaseAuthSignIn(isSwitchedAccount, chatSignInModel.firebaseToken!);
