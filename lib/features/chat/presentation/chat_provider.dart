@@ -246,6 +246,7 @@ class ChatProvider extends ChangeNotifier {
           await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
           print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
           print('USER CREDENTIAL: $firebaseToken');
+          registerUserOnFirestore(userCredential.user!.uid, isSwitchedAccount);
         }
       }
       apiStatus = ApiStatus.success;
