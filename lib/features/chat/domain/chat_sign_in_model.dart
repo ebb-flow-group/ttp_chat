@@ -34,7 +34,7 @@ class ChatSignInModel {
     brandFirebaseTokenList: json["brand_firebase_tokens"] == null
         ? []
         : List<BrandChatFirebaseTokenResponse>.from(
-        json["results"].map((x) => BrandChatFirebaseTokenResponse.fromJson(x))),
+        json["brand_firebase_tokens"].map((x) => BrandChatFirebaseTokenResponse.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -44,7 +44,7 @@ class ChatSignInModel {
     "access_token_expiry": accessTokenExpiry ?? null,
     "user_data": userData == null ? null : userData!.toJson(),
     "brand_firebase_tokens": brandFirebaseTokenList == null
-        ? null
+        ? []
         : List<dynamic>.from(brandFirebaseTokenList!.map((x) => x.toJson())),
   };
 }
