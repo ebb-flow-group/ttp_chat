@@ -235,6 +235,8 @@ class ChatProvider extends ChangeNotifier {
       print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
       print('USER CREDENTIAL: ${chatSignInModel.firebaseToken!}');
       createUserOnFirestore(chatSignInModel, userCredential.user!.uid);
+      apiStatus = ApiStatus.success;
+      notifyListeners();
     }
   }
 
@@ -245,6 +247,8 @@ class ChatProvider extends ChangeNotifier {
     print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
     print('USER CREDENTIAL: ${selectedBrand.firebaseToken!}');
     createBrandOnFirestore(selectedBrand, userCredential.user!.uid);
+    apiStatus = ApiStatus.success;
+    notifyListeners();
   }
 
   createUserOnFirestore(ChatSignInModel chatSignInModel, String uid) async{
