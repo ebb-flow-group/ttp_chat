@@ -215,16 +215,68 @@ class ChatProvider extends ChangeNotifier {
 
   }
 
+  ///START
   ChatProvider.userSignIn(bool isSwitchedAccount, Map<String, dynamic> authData) {
     selectedTab = tabs[0];
     ChatSignInModel chatSignInModel = ChatSignInModel.fromJson(authData);
     this.chatSignInModel = chatSignInModel;
-    customTokenFirebaseAuthSignIn(isSwitchedAccount, chatSignInModel.firebaseToken!);
+    userCustomFirebaseTokenSignIn(chatSignInModel);
   }
 
   ChatProvider.brandSignIn(bool isSwitchedAccount, BrandChatFirebaseTokenResponse brandFirebaseTokenResponse){
-    customTokenFirebaseAuthSignIn(isSwitchedAccount, brandFirebaseTokenResponse.firebaseToken!);
+    brandCustomFirebaseTokenSignIn(brandFirebaseTokenResponse);
   }
+
+  userCustomFirebaseTokenSignIn(ChatSignInModel chatSignInModel) async{
+    print('PRIMARY FB APP');
+    if (chatSignInModel != null) {
+      UserCredential userCredential =
+      await FirebaseAuth.instance.signInWithCustomToken(chatSignInModel.firebaseToken!);
+      print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
+      print('USER CREDENTIAL: ${chatSignInModel.firebaseToken!}');
+      createUserOnFirestore(chatSignInModel, userCredential.user!.uid);
+    }
+  }
+
+  brandCustomFirebaseTokenSignIn(BrandChatFirebaseTokenResponse selectedBrand) async{
+    print('SECONDARY FB APP');
+    FirebaseApp secondaryApp = Firebase.app('secondary');
+    UserCredential userCredential = await FirebaseAuth.instanceFor(app: secondaryApp).signInWithCustomToken(selectedBrand.firebaseToken!);
+    print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
+    print('USER CREDENTIAL: ${selectedBrand.firebaseToken!}');
+    createBrandOnFirestore(selectedBrand, userCredential.user!.uid);
+  }
+
+  createUserOnFirestore(ChatSignInModel chatSignInModel, String uid) async{
+    try {
+      await FirebaseChatCore.instance.createUserInFirestore(
+        types.User(
+          firstName: chatSignInModel.userData != null ? chatSignInModel.userData!.firstName : 'Guest',
+          id: uid,
+          imageUrl: 'https://i.pravatar.cc/300?u=Shubham',
+          lastName: chatSignInModel.userData != null ? chatSignInModel.userData!.lastName : '',
+        ),
+      );
+    } catch (e) {
+      print('CUSTOM USER SIGN UP ERROR: $e');
+    }
+  }
+
+  createBrandOnFirestore(BrandChatFirebaseTokenResponse selectedBrand, String uid) async{
+    try {
+      await FirebaseChatCore.instance.createUserInFirestore(
+        types.User(
+          firstName: selectedBrand.brandName,
+          id: uid,
+          imageUrl: 'https://i.pravatar.cc/300?u=Shubham',
+          lastName: '',
+        ),
+      );
+    } catch (e) {
+      print('CUSTOM USER SIGN UP ERROR: $e');
+    }
+  }
+  /// END
 
   customTokenFirebaseAuthSignIn(bool isSwitchedAccount, String firebaseToken) async {
     try{
@@ -254,6 +306,29 @@ class ChatProvider extends ChangeNotifier {
 
     }catch (e, s){
       print('CUSTOM SIGN IN ERROR: $e\n$s');
+    }
+  }
+
+  void registerUserOnFirestore(String uid, bool isSwitchedAccount) async {
+    print('INSIDE REGISTER');
+    print('UID: $uid');
+
+    try {
+      await FirebaseChatCore.instance.createUserInFirestore(
+        types.User(
+          firstName: 'Shubham',
+          id: uid,
+          imageUrl: 'https://i.pravatar.cc/300?u=Shubham',
+          lastName: isSwitchedAccount ? 'Bichkar Brand' : 'Bichkar',
+        ),
+      );
+      /*Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ChatScreen(widget.chatUsersModel),
+          ));*/
+
+    } catch (e) {
+      print('CUSTOM SIGN UP ERROR: $e');
     }
   }
 
@@ -816,29 +891,6 @@ class ChatProvider extends ChangeNotifier {
 
     } catch (e) {
       print('CUSTOM SIGN IN ERROR: $e');
-    }
-  }
-
-  void registerUserOnFirestore(String uid, bool isSwitchedAccount) async {
-    print('INSIDE REGISTER');
-    print('UID: $uid');
-
-    try {
-      await FirebaseChatCore.instance.createUserInFirestore(
-        types.User(
-          firstName: 'Shubham',
-          id: uid,
-          imageUrl: 'https://i.pravatar.cc/300?u=Shubham',
-          lastName: isSwitchedAccount ? 'Bichkar Brand' : 'Bichkar',
-        ),
-      );
-      /*Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ChatScreen(widget.chatUsersModel),
-          ));*/
-
-    } catch (e) {
-      print('CUSTOM SIGN UP ERROR: $e');
     }
   }
 
