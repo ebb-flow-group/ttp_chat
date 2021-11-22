@@ -32,7 +32,7 @@ class ChatSignInModel {
         ? null
         : UserData.fromJson(json["user_data"]),
     brandFirebaseTokenList: json["brand_firebase_tokens"] == null
-        ? null
+        ? []
         : List<BrandChatFirebaseTokenResponse>.from(
         json["results"].map((x) => BrandChatFirebaseTokenResponse.fromJson(x))),
   );
