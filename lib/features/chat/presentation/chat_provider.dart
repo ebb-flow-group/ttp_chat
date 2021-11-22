@@ -224,6 +224,7 @@ class ChatProvider extends ChangeNotifier {
   }
 
   ChatProvider.brandSignIn(bool isSwitchedAccount, BrandChatFirebaseTokenResponse brandFirebaseTokenResponse){
+    selectedTab = tabs[0];
     brandCustomFirebaseTokenSignIn(brandFirebaseTokenResponse);
   }
 
