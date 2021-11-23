@@ -69,9 +69,18 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
     ? await FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).createRoom(otherUser)
     : await FirebaseChatCore.instance.createRoom(otherUser);
 
+    types.Room selectedRoom = types.Room(
+      id: room.id,
+      type: types.RoomType.direct,
+      name: room.name,
+      imageUrl: room.imageUrl,
+      userIds: room.userIds,
+      users: room.users
+    );
+
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => ChatPage(room, widget.isSwitchedAccount!),
+        builder: (context) => ChatPage(selectedRoom, widget.isSwitchedAccount!),
       ),
     );
   }
