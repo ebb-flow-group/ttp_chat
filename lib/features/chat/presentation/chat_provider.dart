@@ -230,26 +230,36 @@ class ChatProvider extends ChangeNotifier {
 
   userCustomFirebaseTokenSignIn(ChatSignInModel chatSignInModel) async{
     print('PRIMARY FB APP');
-    if (chatSignInModel != null) {
-      UserCredential userCredential =
-      await FirebaseAuth.instance.signInWithCustomToken(chatSignInModel.firebaseToken!);
-      print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
-      print('USER CREDENTIAL: ${chatSignInModel.firebaseToken!}');
-      createUserOnFirestore(chatSignInModel, userCredential.user!.uid);
-      apiStatus = ApiStatus.success;
-      notifyListeners();
+    try{
+      if (chatSignInModel != null) {
+        UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCustomToken(chatSignInModel.firebaseToken!);
+        print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
+        print('USER CREDENTIAL: ${chatSignInModel.firebaseToken!}');
+        createUserOnFirestore(chatSignInModel, userCredential.user!.uid);
+        apiStatus = ApiStatus.success;
+        notifyListeners();
+      }
+    }
+    catch(e, s){
+      print('USER CUSTOM FIREBASE TOKEN SIGN IN ERROR: $e\n$s');
     }
   }
 
   brandCustomFirebaseTokenSignIn(BrandChatFirebaseTokenResponse selectedBrand) async{
     print('SECONDARY FB APP');
-    FirebaseApp secondaryApp = Firebase.app('secondary');
-    UserCredential userCredential = await FirebaseAuth.instanceFor(app: secondaryApp).signInWithCustomToken(selectedBrand.firebaseToken!);
-    print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
-    print('USER CREDENTIAL: ${selectedBrand.firebaseToken!}');
-    createBrandOnFirestore(selectedBrand, userCredential.user!.uid);
-    apiStatus = ApiStatus.success;
-    notifyListeners();
+    try{
+      FirebaseApp secondaryApp = Firebase.app('secondary');
+      UserCredential userCredential = await FirebaseAuth.instanceFor(app: secondaryApp).signInWithCustomToken(selectedBrand.firebaseToken!);
+      print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
+      print('USER CREDENTIAL: ${selectedBrand.firebaseToken!}');
+      createBrandOnFirestore(selectedBrand, userCredential.user!.uid);
+      apiStatus = ApiStatus.success;
+      notifyListeners();
+    }
+    catch(e, s){
+      print('BRAND CUSTOM FIREBASE TOKEN SIGN IN ERROR: $e\n$s');
+    }
   }
 
   createUserOnFirestore(ChatSignInModel chatSignInModel, String uid) async{
@@ -263,7 +273,7 @@ class ChatProvider extends ChangeNotifier {
         ),
       );
     } catch (e) {
-      print('CUSTOM USER SIGN UP ERROR: $e');
+      print('USER SIGN UP ERROR: $e');
     }
   }
 
@@ -278,7 +288,7 @@ class ChatProvider extends ChangeNotifier {
         ),
       );
     } catch (e) {
-      print('CUSTOM USER SIGN UP ERROR: $e');
+      print('BRAND SIGN UP ERROR: $e');
     }
   }
   /// END
