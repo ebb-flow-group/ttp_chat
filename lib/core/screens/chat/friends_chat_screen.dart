@@ -70,6 +70,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
     : await FirebaseChatCore.instance.createRoom(otherUser);
 
     print('ROOM NAME: ${room.name}');
+    print('ROOM ID: ${room.name}');
 
     types.Room selectedRoom = types.Room(
       id: room.id,
