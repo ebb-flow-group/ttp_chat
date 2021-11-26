@@ -155,10 +155,8 @@ class _ChatPageState extends State<_ChatPage>
                               ? FirebaseChatCore.instanceFor(
                                           app: Firebase.app('secondary'))
                                       .firebaseUser
-                                      .uid ??
-                                  ''
-                              : FirebaseChatCore.instance.firebaseUser.uid ??
-                                  '',
+                                      .uid
+                              : FirebaseChatCore.instance.firebaseUser.uid,
                         ),
                         buildCustomMessage: (message) => const SizedBox(),
                         onMessageLongPress: (message){},
