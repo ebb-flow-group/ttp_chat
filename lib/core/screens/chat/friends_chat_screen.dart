@@ -71,6 +71,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
 
     print('ROOM NAME: ${room.name}');
     print('ROOM ID: ${room.name}');
+    print('ROOM ID: ${room.userIds}');
 
     types.Room selectedRoom = types.Room(
       id: room.id,
