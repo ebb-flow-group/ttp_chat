@@ -448,10 +448,10 @@ class ChatProvider extends ChangeNotifier {
       author: user!,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       id: const Uuid().v4(),
-      mimeType: lookupMimeType(voiceMessageFilePath ?? ''),
+      mimeType: lookupMimeType(voiceMessageFilePath == null ? '' : voiceMessageFilePath),
       name: voiceMessageFilePath.split('/').last,
       size: File(voiceMessageFilePath).lengthSync(),
-      uri: voiceMessageFilePath ?? '',
+      uri: voiceMessageFilePath == null ? '' : voiceMessageFilePath,
       duration: Duration.zero.inSeconds
     );
 
@@ -1045,7 +1045,7 @@ class ChatProvider extends ChangeNotifier {
         print('VOICE MESSAGE FILE NAME: $name');
         final filePath = voiceMessageFile!.path;
         print('VOICE MESSAGE FILE PATH: $filePath');
-        final file = File(filePath ?? '');
+        final file = File(filePath == null ? '' : filePath);
         print('VOICE MESSAGE FILE: $file');
         print('VOICE MESSAGE FILE SIZE: ${voiceMessageFile!.lengthSync()}');
 
@@ -1056,10 +1056,10 @@ class ChatProvider extends ChangeNotifier {
           await reference.putFile(file);
           final uri = await reference.getDownloadURL();
           print('VOICE MESSAGE FILE FB STORAGE URL: $uri');
-          print('VOICE MESSAGE FILE MIME TYPE: ${lookupMimeType(filePath ?? '')}');
+          print('VOICE MESSAGE FILE MIME TYPE: ${lookupMimeType(filePath == null ? '' : filePath)}');
 
           final message = types.PartialVoice(
-            mimeType: lookupMimeType(filePath ?? ''),
+            mimeType: lookupMimeType(filePath == null ? '' : filePath),
             name: name,
             size: voiceMessageFile!.lengthSync(),
             uri: uri,
