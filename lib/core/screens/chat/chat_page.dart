@@ -158,7 +158,10 @@ class _ChatPageState extends State<_ChatPage>
                                       .uid
                               : FirebaseChatCore.instance.firebaseUser.uid,
                         ),
-                        buildCustomMessage: (message) => const SizedBox(),
+                        buildCustomMessage: (message) {
+                          print('CUSTOM MESSAGE METADATA: ${message.metadata}');
+                          return const SizedBox();
+                        },
                         onMessageLongPress: (message){},
                         showUserAvatars: false,
                         theme: DefaultChatTheme(
