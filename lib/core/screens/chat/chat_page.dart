@@ -160,7 +160,104 @@ class _ChatPageState extends State<_ChatPage>
                         ),
                         buildCustomMessage: (message) {
                           print('CUSTOM MESSAGE METADATA: ${message.metadata}');
-                          return const SizedBox();
+                          return Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey[300]!),
+                                borderRadius: BorderRadius.circular(2)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12.0, vertical: 6.0),
+                                      child: Text(
+                                        'ACCEPTED',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Divider(color: Colors.grey[300]!),
+                                  SizedBox(height: 8),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+
+                                      Expanded    (
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Order 1234',
+                                              style: TextStyle(
+                                                  color: Theme.of(context).primaryColor,
+                                                  fontSize: 22,
+                                                  fontWeight: FontWeight.w700),
+                                            ),
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
+                                            Text(
+                                              'Today \u2022 7 items \u2022 \$87.00 \u2022 Delivery',
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                              softWrap: true,
+                                            ),
+                                            SizedBox(
+                                              height: 26.0,
+                                            ),
+                                            Container(
+                                              width: MediaQuery.of(context).size.width,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: Colors.grey[300]!)),
+                                              child: Padding(
+                                                padding:
+                                                const EdgeInsets.symmetric(vertical: 12),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      'assets/icon/order_details.svg',
+                                                      width: 18,
+                                                      height: 18,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10.0,
+                                                    ),
+                                                    Text(
+                                                      'View Order Details',
+                                                      style: TextStyle(
+                                                          color: Theme.of(context).primaryColor,
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w700),
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
                         },
                         onMessageLongPress: (message){},
                         showUserAvatars: false,
