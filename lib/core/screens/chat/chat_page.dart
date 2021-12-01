@@ -159,7 +159,7 @@ class _ChatPageState extends State<_ChatPage>
                               : FirebaseChatCore.instance.firebaseUser.uid,
                         ),
                         buildCustomMessage: (message) {
-                          print('CUSTOM MESSAGE METADATA: ${message.metadata}');
+                          print('CUSTOM MESSAGE METADATA: ${message.createdAt}');
                           return Container(
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.grey[300]!),
