@@ -163,7 +163,8 @@ class _ChatPageState extends State<_ChatPage>
                           return Container(
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.grey[300]!),
-                                borderRadius: BorderRadius.circular(2)
+                                borderRadius: BorderRadius.circular(2),
+                              color: ThemeUtils.defaultAppThemeData.scaffoldBackgroundColor
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(20.0),
