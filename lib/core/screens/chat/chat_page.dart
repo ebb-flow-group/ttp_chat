@@ -160,10 +160,6 @@ class _ChatPageState extends State<_ChatPage>
                         ),
                         buildCustomMessage: (message) {
                           print('CUSTOM MESSAGE METADATA: ${message.createdAt}');
-                          DateTime date = DateTime.fromMillisecondsSinceEpoch(message.createdAt!);
-                          print('ORDER DATE: ${date.day}');
-                          print('ORDER DATE: ${date.month}');
-                          print('ORDER DATE: ${date.year}');
                           return Container(
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.grey[300]!),
@@ -211,9 +207,9 @@ class _ChatPageState extends State<_ChatPage>
                                             ),
                                             Row(
                                               children: [
-                                                const Text(
-                                                  'Today',
-                                                  style: TextStyle(
+                                                Text(
+                                                  getOrderDate(message.createdAt!),
+                                                  style: const TextStyle(
                                                     color: Colors.grey,
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.w400,
@@ -683,6 +679,23 @@ class _ChatPageState extends State<_ChatPage>
         return 'Pick Up';
       default:
         return '';
+    }
+  }
+
+  String getOrderDate(int orderDate){
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(orderDate);
+    print('ORDER DATE: ${date.day}');
+    print('ORDER DATE: ${date.month}');
+    print('ORDER DATE: ${date.year}');
+
+    if(date == DateTime.now()){
+      return 'Today';
+    }
+    else if(date.isBefore(DateTime.now())){
+      return DateFormat('dd MMM').format(date);
+    }
+    else{
+      return '';
     }
   }
 }
