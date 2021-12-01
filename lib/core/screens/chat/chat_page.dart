@@ -172,23 +172,21 @@ class _ChatPageState extends State<_ChatPage>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0, vertical: 6.0),
                                     decoration: BoxDecoration(
                                         color: Theme.of(context).primaryColor),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12.0, vertical: 6.0),
-                                      child: Text(
-                                        'ACCEPTED',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w700),
-                                      ),
+                                    child: Text(
+                                      getOrderStatus(message.metadata!['status']),
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700),
                                     ),
                                   ),
-                                  SizedBox(height: 8),
+                                  const SizedBox(height: 8),
                                   Divider(color: Colors.grey[300]!),
-                                  SizedBox(height: 8),
+                                  const SizedBox(height: 8),
                                   Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -302,172 +300,6 @@ class _ChatPageState extends State<_ChatPage>
                               .toUpperCase();
                         },
                       ),
-                      /*if(chatProvider.voiceMessageFile != null)
-                        SlideTransition(
-                          position: offset,
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Container(
-                              padding: EdgeInsets.fromLTRB(
-                                0, //24 + _query.padding.left,
-                                20,
-                                0, //24 + _query.padding.right,
-                                20 +
-                                    MediaQuery.of(context).viewInsets.bottom +
-                                    MediaQuery.of(context).padding.bottom,
-                              ),
-                              decoration: BoxDecoration(
-                                color: ThemeUtils
-                                    .defaultAppThemeData.scaffoldBackgroundColor,
-                                boxShadow: [
-                                  BoxShadow(
-                                    spreadRadius: 0,
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 1),
-                                    color:
-                                        const Color(0xFF000000).withOpacity(.15),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                children: [
-                                  */ /*IconButton(
-                            icon: Icon(
-                              chatProvider.isRecordedVoiceMessageFilePlaying
-                                  ? Icons.delete
-                                  : Icons.play_arrow_rounded,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            onPressed: () {
-                              // chatProvider.removeRecordedVoiceMessage();
-                              // chatProvider.stopVoiceMessageAnimation();
-
-                              if (chatProvider.voiceMessageFile != null) {
-                                if (chatProvider
-                                    .isRecordedVoiceMessageFilePlaying) {
-                                  chatProvider.stopVoiceMessageAnimation();
-                                } else {
-                                chatProvider.playVoiceMessageAnimation();
-                                }
-                                }
-                              },ing
-                              ),*/ /*
-                                  chatProvider.isAttachmentUpload
-                                  ? Container(
-                                      height: 24,
-                                        margin: const EdgeInsets.only(right: 16),
-                                        width: 24,
-                                        child: CircularProgressIndicator(
-                                          backgroundColor: Colors.transparent,
-                                          strokeWidth: 2,
-                                          valueColor: AlwaysStoppedAnimation<Color>(
-                                            Theme.of(context).primaryColor,
-                                          ),
-                                        ),
-                                      )
-                                  : IconButton(
-                                    icon: SvgPicture.asset(
-                                      chatProvider
-                                              .isRecordedVoiceMessageFilePlaying
-                                          ? 'assets/icon/delete.svg'
-                                          : 'assets/icon/play.svg',
-                                      color: Theme.of(context).primaryColor,
-                                      width: 18,
-                                      height: 18,
-                                    ),
-                                    onPressed: () {
-                                      // chatProvider.removeRecordedVoiceMessage();
-                                      // chatProvider.stopVoiceMessageAnimation();
-
-                                      if (chatProvider.voiceMessageFile != null) {
-                                        if (chatProvider
-                                            .isRecordedVoiceMessageFilePlaying) {
-                                          chatProvider
-                                              .stopVoiceMessageAnimation();
-                                        } else {
-                                          chatProvider
-                                              .playVoiceMessageAnimation();
-                                        }
-                                      }
-                                    },
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      height: 46,
-                                      alignment: Alignment.centerLeft,
-                                      decoration: BoxDecoration(
-                                          color: ThemeUtils.defaultAppThemeData
-                                              .scaffoldBackgroundColor,
-                                          borderRadius: BorderRadius.circular(20),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.grey[300],
-                                                blurRadius: 10.0,
-                                                spreadRadius: 5),
-                                          ]),
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 20),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          chatProvider
-                                                  .isRecordedVoiceMessageFilePlaying
-                                              ? MusicVisualizer()
-                                              : Container(
-                                                  height: 20,
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: List.generate(16,
-                                                        (index) {
-                                                      return Container(
-                                                        width: 7,
-                                                        margin: EdgeInsets.only(
-                                                            right: 2),
-                                                        decoration: BoxDecoration(
-                                                            color:
-                                                                Theme.of(context)
-                                                                    .accentColor,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(5)),
-                                                        height: 5,
-                                                      );
-                                                    }),
-                                                  ),
-                                                ),
-                                          if (chatProvider.voiceMessageFile !=
-                                              null)
-                                            Text(
-                                              '${chatProvider.recordedVoiceMessageFileDuration ?? 0}s',
-                                              style: appBarTitleStyle(context)
-                                                  .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontSize: 14),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: SvgPicture.asset(
-                                      'assets/icon/send.svg',
-                                      color: Theme.of(context).accentColor,
-                                      width: 18,
-                                      height: 18,
-                                    ),
-                                    onPressed: () {
-                                      chatProvider
-                                          .handleSendVoiceMessagePressed();
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),*/
                       if (isOk)
                         SlideTransition(
                           position: offset,
@@ -799,6 +631,15 @@ class _ChatPageState extends State<_ChatPage>
         ],
       ),
     );
+  }
+
+  String getOrderStatus(String status){
+    switch (status){
+      case 'paid':
+        return 'PAID';
+      default:
+        return '';
+    }
   }
 }
 
