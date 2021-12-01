@@ -196,25 +196,56 @@ class _ChatPageState extends State<_ChatPage>
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              'Order 1234',
+                                              'Order ${message.metadata!['id']}',
                                               style: TextStyle(
                                                   color: Theme.of(context).primaryColor,
                                                   fontSize: 22,
                                                   fontWeight: FontWeight.w700),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 6.0,
                                             ),
-                                            Text(
-                                              'Today \u2022 7 items \u2022 \$87.00 \u2022 Delivery',
-                                              style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                              softWrap: true,
+                                            Row(
+                                              children: [
+                                                const Text(
+                                                  'Today',
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                  softWrap: true,
+                                                ),
+                                                Text(
+                                                  ' \u2022 ${message.metadata!['total_items']} items',
+                                                  style: const TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                  softWrap: true,
+                                                ),
+                                                Text(
+                                                  ' \u2022 \$${message.metadata!['total_price_db']}',
+                                                  style: const TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                  softWrap: true,
+                                                ),
+                                                Text(
+                                                  ' \u2022 ${getOrderType(message.metadata!['type'])}',
+                                                  style: const TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                  softWrap: true,
+                                                ),
+                                              ],
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 26.0,
                                             ),
                                             Container(
@@ -233,7 +264,7 @@ class _ChatPageState extends State<_ChatPage>
                                                       width: 18,
                                                       height: 18,
                                                     ),
-                                                    SizedBox(
+                                                    const SizedBox(
                                                       width: 10.0,
                                                     ),
                                                     Text(
@@ -637,6 +668,15 @@ class _ChatPageState extends State<_ChatPage>
     switch (status){
       case 'paid':
         return 'PAID';
+      default:
+        return '';
+    }
+  }
+
+  String getOrderType(String orderType){
+    switch (orderType){
+      case 'pick_up':
+        return 'Pick Up';
       default:
         return '';
     }
