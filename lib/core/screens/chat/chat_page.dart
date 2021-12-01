@@ -160,6 +160,10 @@ class _ChatPageState extends State<_ChatPage>
                         ),
                         buildCustomMessage: (message) {
                           print('CUSTOM MESSAGE METADATA: ${message.createdAt}');
+                          DateTime date = DateTime.fromMillisecondsSinceEpoch(message.createdAt!);
+                          print('ORDER DATE: ${date.day}');
+                          print('ORDER DATE: ${date.month}');
+                          print('ORDER DATE: ${date.year}');
                           return Container(
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.grey[300]!),
