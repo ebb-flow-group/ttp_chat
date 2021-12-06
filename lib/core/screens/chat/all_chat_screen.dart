@@ -68,8 +68,12 @@ class _AllChatScreenState extends State<AllChatScreen> {
           'Chat with friends and sellers. Keep track of purchases and gifts. Get status updates on your orders. All in one place.',
           style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
         ),
-        const SizedBox(height: 8),
-        GestureDetector(
+        chatProvider.chatSignInModel!.brandFirebaseTokenList!.isEmpty
+            ? const SizedBox()
+            : const SizedBox(height: 8),
+        chatProvider.chatSignInModel!.brandFirebaseTokenList!.isEmpty
+        ? const SizedBox()
+        : GestureDetector(
           onTap: () {
             Navigator.push(
                 context,
