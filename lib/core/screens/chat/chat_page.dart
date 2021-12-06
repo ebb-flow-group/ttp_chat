@@ -668,6 +668,22 @@ class _ChatPageState extends State<_ChatPage>
     switch (status){
       case 'paid':
         return 'PAID';
+      case 'checked_out':
+        return 'CHECKED OUT';
+      case 'failed':
+        return 'FAILED';
+      case 'rejected':
+        return 'REJECTED';
+      case 'accepted':
+        return 'ACCEPTED';
+      case 'scheduled':
+        return 'SCHEDULED';
+      case 'pending_completion':
+        return 'PENDING COMPLETION';
+      case 'completed':
+        return 'COMPLETED';
+      case 'dispute':
+        return 'DISPUTE';
       default:
         return '';
     }
@@ -676,7 +692,13 @@ class _ChatPageState extends State<_ChatPage>
   String getOrderType(String orderType){
     switch (orderType){
       case 'pick_up':
-        return 'Pick Up';
+        return 'Take Away';
+      case 'take_away':
+        return 'Take Away';
+      case 'dine_in':
+        return 'Dine In';
+      case 'delivery':
+        return 'Delivery';
       default:
         return '';
     }
@@ -684,9 +706,6 @@ class _ChatPageState extends State<_ChatPage>
 
   String getOrderDate(int orderDate){
     DateTime date = DateTime.fromMillisecondsSinceEpoch(orderDate);
-    print('ORDER DATE: ${date.day}');
-    print('ORDER DATE: ${date.month}');
-    print('ORDER DATE: ${date.year}');
 
     if(date == DateTime.now()){
       return 'Today';
