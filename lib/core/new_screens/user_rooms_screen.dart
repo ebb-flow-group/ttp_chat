@@ -92,94 +92,92 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
   }
 
   Widget roomsListWidget(AsyncSnapshot<List<types.Room>> snapshot){
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 17),
-        padding: const EdgeInsets.only(top: 17),
-        child: ListView.separated(
-          shrinkWrap: true,
-          itemCount: snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'user').toList().length,
-          itemBuilder: (context, index) {
-            var brandList = snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'user').toList();
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 17),
+      padding: const EdgeInsets.only(top: 17),
+      child: ListView.separated(
+        shrinkWrap: true,
+        itemCount: snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'user').toList().length,
+        itemBuilder: (context, index) {
+          var brandList = snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'user').toList();
 
-            return GestureDetector(
-              onTap: (){
-                /*Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ChatScreen(widget.chatUsersModel),
-                ));*/
-              },
-              child: Row(
-                children: [
-                  _buildAvatar(brandList[index]),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                brandList[index].name!,
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              const Text(
-                                'Last message',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+          return GestureDetector(
+            onTap: (){
+              /*Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChatScreen(widget.chatUsersModel),
+              ));*/
+            },
+            child: Row(
+              children: [
+                _buildAvatar(brandList[index]),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              '11:30 AM',
-                              // DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(widget.chatUsersModel.lastMessageTimeStamp! * 1000)),
+                            Text(
+                              brandList[index].name!,
                               style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12
+                                color: Theme.of(context).primaryColor,
                               ),
                             ),
-                            const SizedBox(height: 6),
-                            Container(
-                              alignment: Alignment.center,
-                              padding: const EdgeInsets.all(3),
-                              decoration: const BoxDecoration(
-                                color: Colors.red,
+                            const SizedBox(height: 4),
+                            const Text(
+                              'Last message',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.normal,
                               ),
-                              child: const Text(
-                                '3',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    height: 1
-                                ),
-                              ),
-                            )
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ],
                         ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            );
-          },
-          separatorBuilder: (context, index) {
-            return const SizedBox(height: 17);
-          },
-        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          const Text(
+                            '11:30 AM',
+                            // DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(widget.chatUsersModel.lastMessageTimeStamp! * 1000)),
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.all(3),
+                            decoration: const BoxDecoration(
+                              color: Colors.red,
+                            ),
+                            child: const Text(
+                              '3',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  height: 1
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          );
+        },
+        separatorBuilder: (context, index) {
+          return const SizedBox(height: 17);
+        },
       ),
     );
   }
