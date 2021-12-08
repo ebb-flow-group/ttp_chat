@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ttp_chat/core/new_screens/brand_rooms_screen.dart';
+import 'package:ttp_chat/core/new_screens/user_rooms_screen.dart';
 import 'package:ttp_chat/core/screens/chat/chats_screen.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
@@ -101,7 +102,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
           ],
           centerTitle: false,
         ),
-        body: SizedBox(
+        body:SizedBox(
           width: MediaQuery.of(context).size.width,
           child: StreamBuilder<List<types.Room>>(
             stream: widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : FirebaseChatCore.instance.rooms(),
@@ -115,7 +116,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                   if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return startChatMessageWidget();
                   }
-                  return roomsListWidget(snapshot);
+                  return roomsListWidget();
               }
 
             },
@@ -172,7 +173,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     );
   }
 
-  Widget roomsListWidget(AsyncSnapshot<List<types.Room>> snapshot){
+  Widget roomsListWidget(/*AsyncSnapshot<List<types.Room>> snapshot*/){
     return Column(
       children: [
         const SizedBox(height: 17),
@@ -186,24 +187,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         _tabs(),
         chatProvider.selectedTabIndex == 0
         ? BrandRoomsScreen(widget.isSwitchedAccount)
-        : Expanded(
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 17),
-            padding: const EdgeInsets.only(top: 17),
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount:
-              context.read<ChatProvider>().chatUsersList.length,
-              itemBuilder: (context, index) {
-                return ChatUsersWidget(0,
-                    context.read<ChatProvider>().chatUsersList[index]);
-              },
-              separatorBuilder: (context, index) {
-                return const SizedBox(height: 17);
-              },
-            ),
-          ),
-        ),
+        : UserRoomsScreen(widget.isSwitchedAccount),
         /*chatProvider.selectedTabIndex == 0
         ? Expanded(
           child: Container(

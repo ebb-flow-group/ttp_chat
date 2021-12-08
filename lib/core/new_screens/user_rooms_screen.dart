@@ -8,16 +8,16 @@ import 'package:ttp_chat/core/screens/chat/util.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
 import 'package:ttp_chat/theme/style.dart';
 
-class BrandRoomsScreen extends StatefulWidget {
+class UserRoomsScreen extends StatefulWidget {
   final bool? isSwitchedAccount;
 
-  const BrandRoomsScreen(this.isSwitchedAccount, {Key? key}) : super(key: key);
+  const UserRoomsScreen(this.isSwitchedAccount, {Key? key}) : super(key: key);
 
   @override
-  _BrandRoomsScreenState createState() => _BrandRoomsScreenState();
+  _UserRoomsScreenState createState() => _UserRoomsScreenState();
 }
 
-class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
+class _UserRoomsScreenState extends State<UserRoomsScreen> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -98,9 +98,9 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
         padding: const EdgeInsets.only(top: 17),
         child: ListView.separated(
           shrinkWrap: true,
-          itemCount: snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'brand').toList().length,
+          itemCount: snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'user').toList().length,
           itemBuilder: (context, index) {
-            var brandList = snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'brand').toList();
+            var brandList = snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'user').toList();
 
             return GestureDetector(
               onTap: (){
