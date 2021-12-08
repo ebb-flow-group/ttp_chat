@@ -186,7 +186,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     return Column(
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceE`venly,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             _tab(0, 'Brands', brandListCount),
             _tab(1, 'People', userListCount),
