@@ -52,14 +52,19 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   int selectedTabIndex = 0;
   bool _error = false;
   bool _initialized = false;
+  bool isRoomListEmpty = false;
+  bool isLoading = false;
   User? _user;
 
   late ChatProvider chatProvider;
+
+  int brandListCount = 0, userListCount = 0;
 
   @override
   void initState() {
     chatProvider = context.read<ChatProvider>();
     initializeFlutterFire();
+    getData();
     super.initState();
   }
 
@@ -102,26 +107,11 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
           ],
           centerTitle: false,
         ),
-        body:SizedBox(
-          width: MediaQuery.of(context).size.width,
-          child: StreamBuilder<List<types.Room>>(
-            stream: widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : FirebaseChatCore.instance.rooms(),
-            initialData: const [],
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState){
-                case ConnectionState.none:
-                case ConnectionState.waiting:
-                  return const Center(child: CircularProgressIndicator());
-                default:
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return startChatMessageWidget();
-                  }
-                  return roomsListWidget();
-              }
-
-            },
-          ),
-        ));
+        body: isLoading
+        ? const CircularProgressIndicator()
+        : isRoomListEmpty
+            ? startChatMessageWidget()
+            : roomsListWidget());
   }
 
   Widget startChatMessageWidget() {
@@ -173,7 +163,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     );
   }
 
-  Widget roomsListWidget(/*AsyncSnapshot<List<types.Room>> snapshot*/){
+  Widget roomsListWidget(){
     return Column(
       children: [
         const SizedBox(height: 17),
@@ -188,127 +178,18 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         chatProvider.selectedTabIndex == 0
         ? BrandRoomsScreen(widget.isSwitchedAccount)
         : UserRoomsScreen(widget.isSwitchedAccount),
-        /*chatProvider.selectedTabIndex == 0
-        ? Expanded(
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 17),
-            padding: const EdgeInsets.only(top: 17),
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount: snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'brand').toList().length,
-              itemBuilder: (context, index) {
-                var brandList = snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'brand').toList();
-
-                return GestureDetector(
-                  onTap: (){
-                    *//*Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ChatScreen(widget.chatUsersModel),
-                    ));*//*
-                  },
-                  child: Row(
-                    children: [
-                      _buildAvatar(brandList[index]),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    brandList[index].name!,
-                                    style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  const Text(
-                                    'Last message',
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.normal,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                const Text(
-                                  '11:30 AM',
-                                  // DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(widget.chatUsersModel.lastMessageTimeStamp! * 1000)),
-                                  style: TextStyle(
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Container(
-                                  alignment: Alignment.center,
-                                  padding: const EdgeInsets.all(3),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.red,
-                                  ),
-                                  child: const Text(
-                                    '3',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        height: 1
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                );
-              },
-              separatorBuilder: (context, index) {
-                return const SizedBox(height: 17);
-              },
-            ),
-          ),
-        )
-        : Expanded(
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 17),
-            padding: const EdgeInsets.only(top: 17),
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount:
-              context.read<ChatProvider>().chatUsersList.length,
-              itemBuilder: (context, index) {
-                return ChatUsersWidget(0,
-                    context.read<ChatProvider>().chatUsersList[index]);
-              },
-              separatorBuilder: (context, index) {
-                return const SizedBox(height: 17);
-              },
-            ),
-          ),
-        ),*/
       ],
     );
   }
 
-  Widget _tabs(/*AsyncSnapshot<List<types.Room>> snapshot*/) {
+  Widget _tabs() {
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _tab(0, 'Brands', 3/*getRoomCountAsPerUserType(snapshot, 'brand')*/),
-            _tab(1, 'People', 4/*getRoomCountAsPerUserType(snapshot, 'user')*/),
+            _tab(0, 'Brands', brandListCount),
+            _tab(1, 'People', userListCount),
           ],
         ),
         Container(
@@ -402,37 +283,25 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     }
   }
 
-  Widget _buildAvatar(types.Room room) {
-    var color = Colors.white;
-
-    if (room.type == types.RoomType.direct) {
-      try {
-        final otherUser = room.users.firstWhere(
-              (u) => u.id != _user!.uid,
-        );
-
-        color = getUserAvatarNameColor(otherUser);
-      } catch (e) {
-        // Do nothing if other user is not found
+  getData(){
+    setState(() {
+      isLoading = true;
+    });
+    FirebaseChatCore.instance.rooms().listen((event) {
+      setState(() {
+        isLoading = false;
+      });
+      if(event.isEmpty){
+        setState(() {
+          isRoomListEmpty = true;
+        });
       }
-    }
-
-    final hasImage = room.imageUrl != null;
-    final name = room.name ?? '';
-
-    return Container(
-      margin: const EdgeInsets.only(right: 16),
-      child: CircleAvatar(
-        backgroundColor: color,
-        backgroundImage: hasImage ? NetworkImage(room.imageUrl!) : null,
-        radius: 20,
-        child: !hasImage
-            ? Text(
-          name.isEmpty ? '' : name[0].toUpperCase(),
-          style: const TextStyle(color: Colors.white),
-        )
-            : null,
-      ),
-    );
+      else{
+        setState(() {
+          brandListCount = event.where((element) => element.metadata!['other_user_type'] == 'brand').toList().length;
+          userListCount = event.where((element) => element.metadata!['other_user_type'] == 'user').toList().length;
+        });
+      }
+    });
   }
 }
