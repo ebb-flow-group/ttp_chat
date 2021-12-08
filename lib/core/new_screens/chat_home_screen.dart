@@ -233,30 +233,14 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                   },
                   child: Row(
                     children: [
-
-                      Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: NetworkImage(
-                                    brandList[index].imageUrl!
-                                )
-                            )
-                        ),
-                      ),
-
+                      _buildAvatar(brandList[index]),
                       const SizedBox(
                         width: 10,
                       ),
-
                       Expanded(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,10 +253,11 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                                   ),
                                   const SizedBox(height: 6),
                                   const Text(
-                                    'LAST MESSAGE',
+                                    'Last message',
                                     style: TextStyle(
                                         color: Colors.grey,
-                                        fontWeight: FontWeight.normal
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 12,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -299,9 +284,9 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                                   decoration: const BoxDecoration(
                                     color: Colors.red,
                                   ),
-                                  child: Text(
-                                    '',
-                                    style: const TextStyle(
+                                  child: const Text(
+                                    '3',
+                                    style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 12,
                                         height: 1
@@ -310,11 +295,9 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                                 )
                               ],
                             ),
-
                           ],
                         ),
                       )
-
                     ],
                   ),
                 );
@@ -374,7 +357,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          chatProvider.selectedTabIndex = index;
+          chatProvider.updateTabIndex(index);
         },
         child: Padding(
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
