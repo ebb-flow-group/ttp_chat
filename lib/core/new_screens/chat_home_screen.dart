@@ -5,6 +5,7 @@ import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:ttp_chat/core/new_screens/brand_rooms_screen.dart';
 import 'package:ttp_chat/core/screens/chat/chats_screen.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
@@ -100,8 +101,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
           ],
           centerTitle: false,
         ),
-        body: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 10),
+        body: roomsListWidget()/*SizedBox(
           width: MediaQuery.of(context).size.width,
           child: StreamBuilder<List<types.Room>>(
             stream: widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : FirebaseChatCore.instance.rooms(),
@@ -116,7 +116,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                     return startChatMessageWidget();
                   }
                   return roomsListWidget(snapshot);
-                  /*return ListView.builder(
+                  *//*return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       final room = snapshot.data![index];
@@ -124,11 +124,11 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                       return GestureDetector(
                         onTap: () {
 
-                          *//*Navigator.of(context).push(
+                          *//**//*Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => ChatPage(room, widget.isSwitchedAccount!),
                         ),
-                      );*//*
+                      );*//**//*
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -144,12 +144,12 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                         ),
                       );
                     },
-                  );*/
+                  );*//*
               }
 
             },
           ),
-        ));
+        )*/);
   }
 
   Widget startChatMessageWidget() {
@@ -201,7 +201,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     );
   }
 
-  Widget roomsListWidget(AsyncSnapshot<List<types.Room>> snapshot){
+  Widget roomsListWidget(/*AsyncSnapshot<List<types.Room>> snapshot*/){
     return Column(
       children: [
         const SizedBox(height: 17),
@@ -212,8 +212,28 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
               onChanged: (String value) {}),
         ),
         const SizedBox(height: 17),
-        _tabs(snapshot),
+        _tabs(),
         chatProvider.selectedTabIndex == 0
+        ? BrandRoomsScreen(widget.isSwitchedAccount)
+        : Expanded(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 17),
+            padding: const EdgeInsets.only(top: 17),
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount:
+              context.read<ChatProvider>().chatUsersList.length,
+              itemBuilder: (context, index) {
+                return ChatUsersWidget(0,
+                    context.read<ChatProvider>().chatUsersList[index]);
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(height: 17);
+              },
+            ),
+          ),
+        ),
+        /*chatProvider.selectedTabIndex == 0
         ? Expanded(
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 17),
@@ -226,17 +246,14 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
 
                 return GestureDetector(
                   onTap: (){
-                    /*Navigator.push(
+                    *//*Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => ChatScreen(widget.chatUsersModel),
-                    ));*/
+                    ));*//*
                   },
                   child: Row(
                     children: [
                       _buildAvatar(brandList[index]),
-                      const SizedBox(
-                        width: 10,
-                      ),
                       Expanded(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -251,13 +268,12 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                                       color: Theme.of(context).primaryColor,
                                     ),
                                   ),
-                                  const SizedBox(height: 6),
+                                  const SizedBox(height: 4),
                                   const Text(
                                     'Last message',
                                     style: TextStyle(
                                         color: Colors.grey,
                                         fontWeight: FontWeight.normal,
-                                        fontSize: 12,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -325,19 +341,19 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
               },
             ),
           ),
-        ),
+        ),*/
       ],
     );
   }
 
-  Widget _tabs(AsyncSnapshot<List<types.Room>> snapshot) {
+  Widget _tabs(/*AsyncSnapshot<List<types.Room>> snapshot*/) {
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _tab(0, 'Brands', getRoomCountAsPerUserType(snapshot, 'brand')),
-            _tab(1, 'People', getRoomCountAsPerUserType(snapshot, 'user')),
+            _tab(0, 'Brands', 3/*getRoomCountAsPerUserType(snapshot, 'brand')*/),
+            _tab(1, 'People', 4/*getRoomCountAsPerUserType(snapshot, 'user')*/),
           ],
         ),
         Container(
