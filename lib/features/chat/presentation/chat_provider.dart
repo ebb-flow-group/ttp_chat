@@ -240,7 +240,7 @@ class ChatProvider extends ChangeNotifier {
       if (chatSignInModel != null) {
         UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(chatSignInModel.firebaseToken!);
         checkIfUserIsBrandOrUser(userCredential.user!.uid);
-        createUserOnFirestore(chatSignInModel, userCredential.user!.uid);
+        // createUserOnFirestore(chatSignInModel, userCredential.user!.uid);
         apiStatus = ApiStatus.success;
         notifyListeners();
       }
@@ -256,7 +256,7 @@ class ChatProvider extends ChangeNotifier {
       FirebaseApp secondaryApp = Firebase.app('secondary');
       UserCredential userCredential = await FirebaseAuth.instanceFor(app: secondaryApp).signInWithCustomToken(selectedBrand.firebaseToken!);
       checkIfUserIsBrandOrUser(userCredential.user!.uid);
-      createBrandOnFirestore(selectedBrand, userCredential.user!.uid);
+      // createBrandOnFirestore(selectedBrand, userCredential.user!.uid);
       apiStatus = ApiStatus.success;
       notifyListeners();
     }
