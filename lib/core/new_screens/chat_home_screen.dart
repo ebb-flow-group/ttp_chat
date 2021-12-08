@@ -283,27 +283,28 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Text(
+                                const Text(
                                   '11:30 AM',
                                   // DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(widget.chatUsersModel.lastMessageTimeStamp! * 1000)),
                                   style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.w600
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 12
                                   ),
                                 ),
                                 const SizedBox(height: 6),
                                 Container(
                                   alignment: Alignment.center,
-                                  padding: const EdgeInsets.all(4),
+                                  padding: const EdgeInsets.all(3),
                                   decoration: const BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle
+                                    color: Colors.red,
                                   ),
-                                  child: const Text(
-                                    '3',
-                                    style: TextStyle(
+                                  child: Text(
+                                    '',
+                                    style: const TextStyle(
                                         color: Colors.white,
-                                        fontSize: 12
+                                        fontSize: 12,
+                                        height: 1
                                     ),
                                   ),
                                 )
@@ -390,7 +391,9 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                             : Colors.grey[400]),
                   ),
                   const SizedBox(width: 6),
-                  Container(
+                  count == 0
+                      ? const SizedBox()
+                      : Container(
                     alignment: Alignment.center,
                     padding: const EdgeInsets.all(3),
                     decoration: const BoxDecoration(
