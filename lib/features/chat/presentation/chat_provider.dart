@@ -4,6 +4,7 @@ import 'dart:developer' as d;
 import 'dart:io';
 import 'dart:math';
 import 'package:audioplayers/audioplayers.dart' as ap;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -216,8 +217,8 @@ class ChatProvider extends ChangeNotifier {
   }
 
   ///START
-
   int selectedTabIndex = 0;
+  bool isBrand = false;
 
   ChatProvider.userSignIn(bool isSwitchedAccount, Map<String, dynamic> authData) {
     selectedTab = tabs[0];
@@ -237,10 +238,8 @@ class ChatProvider extends ChangeNotifier {
     print('PRIMARY FB APP');
     try{
       if (chatSignInModel != null) {
-        UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithCustomToken(chatSignInModel.firebaseToken!);
-        print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
-        print('USER CREDENTIAL: ${chatSignInModel.firebaseToken!}');
+        UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(chatSignInModel.firebaseToken!);
+        checkIfUserIsBrandOrUser(userCredential.user!.uid);
         createUserOnFirestore(chatSignInModel, userCredential.user!.uid);
         apiStatus = ApiStatus.success;
         notifyListeners();
@@ -256,8 +255,7 @@ class ChatProvider extends ChangeNotifier {
     try{
       FirebaseApp secondaryApp = Firebase.app('secondary');
       UserCredential userCredential = await FirebaseAuth.instanceFor(app: secondaryApp).signInWithCustomToken(selectedBrand.firebaseToken!);
-      print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
-      print('USER CREDENTIAL: ${selectedBrand.firebaseToken!}');
+      checkIfUserIsBrandOrUser(userCredential.user!.uid);
       createBrandOnFirestore(selectedBrand, userCredential.user!.uid);
       apiStatus = ApiStatus.success;
       notifyListeners();
@@ -299,6 +297,19 @@ class ChatProvider extends ChangeNotifier {
 
   updateTabIndex(int value){
     selectedTabIndex = value;
+    notifyListeners();
+  }
+
+  checkIfUserIsBrandOrUser(String uid) async{
+    final snapshot = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+    final data = snapshot.data();
+    if(data!['user_type'] == 'brand'){
+      isBrand = true;
+    }
+    else if(data['user_type'] == 'user'){
+      isBrand = false;
+    }
     notifyListeners();
   }
   /// END

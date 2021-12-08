@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ttp_chat/core/new_screens/brand_rooms_screen.dart';
 import 'package:ttp_chat/core/new_screens/user_rooms_screen.dart';
+import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/screens/chat/chats_screen.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
@@ -111,7 +112,28 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         ? const Center(child: CircularProgressIndicator())
         : isRoomListEmpty
             ? startChatMessageWidget()
-            : roomsListWidget());
+            : chatProvider.isBrand
+              ? SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: StreamBuilder<List<types.Room>>(
+              stream: widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : FirebaseChatCore.instance.rooms(),
+              initialData: const [],
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState){
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return const Center(child: CircularProgressIndicator());
+                  default:
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return noRoomWidget();
+                    }
+                    return brandRoomsListWidget(snapshot);
+                }
+
+              },
+            ),
+          )
+              : roomsListWidget());
   }
 
   Widget startChatMessageWidget() {
@@ -179,6 +201,132 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         ? BrandRoomsScreen(widget.isSwitchedAccount)
         : UserRoomsScreen(widget.isSwitchedAccount),
       ],
+    );
+  }
+
+  Widget brandRoomsListWidget(AsyncSnapshot<List<types.Room>> snapshot){
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 17),
+      padding: const EdgeInsets.only(top: 17),
+      child: ListView.separated(
+        shrinkWrap: true,
+        itemCount: snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'brand').toList().length,
+        itemBuilder: (context, index) {
+          var brandList = snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'brand').toList();
+
+          return GestureDetector(
+            onTap: (){
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => ChatPage(brandList[index], widget.isSwitchedAccount!),
+                ),
+              );
+            },
+            child: Row(
+              children: [
+                _buildAvatar(brandList[index]),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              brandList[index].name!,
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            const Text(
+                              'Last message',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.normal,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          const Text(
+                            '11:30 AM',
+                            // DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(widget.chatUsersModel.lastMessageTimeStamp! * 1000)),
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.all(3),
+                            decoration: const BoxDecoration(
+                              color: Colors.red,
+                            ),
+                            child: const Text(
+                              '3',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  height: 1
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          );
+        },
+        separatorBuilder: (context, index) {
+          return const SizedBox(height: 17);
+        },
+      ),
+    );
+  }
+
+  Widget _buildAvatar(types.Room room) {
+    var color = Colors.white;
+
+    if (room.type == types.RoomType.direct) {
+      try {
+        final otherUser = room.users.firstWhere(
+              (u) => u.id != FirebaseAuth.instance.currentUser!.uid,
+        );
+
+        color = getUserAvatarNameColor(otherUser);
+      } catch (e) {
+        // Do nothing if other user is not found
+      }
+    }
+
+    final hasImage = room.imageUrl != null;
+    final name = room.name ?? '';
+
+    return Container(
+      margin: const EdgeInsets.only(right: 16),
+      child: CircleAvatar(
+        backgroundColor: color,
+        backgroundImage: hasImage ? NetworkImage(room.imageUrl!) : null,
+        radius: 20,
+        child: !hasImage
+            ? Text(
+          name.isEmpty ? '' : name[0].toUpperCase(),
+          style: const TextStyle(color: Colors.white),
+        )
+            : null,
+      ),
     );
   }
 
@@ -252,6 +400,28 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                 : const SizedBox(height: 6),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget noRoomWidget(){
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 17),
+      child: Row(
+        children: [
+          SvgPicture.asset(
+            'assets/chat_icons/no_chat_user.svg',
+            width: 20,
+            height: 20,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            'No result',
+            style: appBarTitleStyle(context).copyWith(fontSize: 16),
+            softWrap: true,
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

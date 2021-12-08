@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
 import 'package:ttp_chat/theme/style.dart';
@@ -103,10 +104,11 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
 
           return GestureDetector(
             onTap: (){
-              /*Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ChatScreen(widget.chatUsersModel),
-              ));*/
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => ChatPage(brandList[index], widget.isSwitchedAccount!),
+                ),
+              );
             },
             child: Row(
               children: [
@@ -218,7 +220,7 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
 
   Widget noRoomWidget(){
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 17),
+      margin: const EdgeInsets.symmetric(horizontal: 17),
       child: Row(
         children: [
           SvgPicture.asset(
@@ -226,7 +228,7 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
             width: 20,
             height: 20,
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Text(
             'No result',
             style: appBarTitleStyle(context).copyWith(fontSize: 16),

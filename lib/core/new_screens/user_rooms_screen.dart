@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
 import 'package:ttp_chat/theme/style.dart';
@@ -99,18 +100,19 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
         shrinkWrap: true,
         itemCount: snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'user').toList().length,
         itemBuilder: (context, index) {
-          var brandList = snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'user').toList();
+          var userList = snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'user').toList();
 
           return GestureDetector(
             onTap: (){
-              /*Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ChatScreen(widget.chatUsersModel),
-              ));*/
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => ChatPage(userList[index], widget.isSwitchedAccount!),
+                ),
+              );
             },
             child: Row(
               children: [
-                _buildAvatar(brandList[index]),
+                _buildAvatar(userList[index]),
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -120,7 +122,7 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              brandList[index].name!,
+                              userList[index].name!,
                               style: TextStyle(
                                 color: Theme.of(context).primaryColor,
                               ),
