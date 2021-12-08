@@ -216,8 +216,12 @@ class ChatProvider extends ChangeNotifier {
   }
 
   ///START
+
+  int selectedTabIndex = 0;
+
   ChatProvider.userSignIn(bool isSwitchedAccount, Map<String, dynamic> authData) {
     selectedTab = tabs[0];
+    selectedTabIndex = 0;
     ChatSignInModel chatSignInModel = ChatSignInModel.fromJson(authData);
     this.chatSignInModel = chatSignInModel;
     userCustomFirebaseTokenSignIn(chatSignInModel);
@@ -225,6 +229,7 @@ class ChatProvider extends ChangeNotifier {
 
   ChatProvider.brandSignIn(bool isSwitchedAccount, BrandChatFirebaseTokenResponse brandFirebaseTokenResponse){
     selectedTab = tabs[0];
+    selectedTabIndex = 0;
     brandCustomFirebaseTokenSignIn(brandFirebaseTokenResponse);
   }
 
@@ -290,6 +295,11 @@ class ChatProvider extends ChangeNotifier {
     } catch (e) {
       print('BRAND SIGN UP ERROR: $e');
     }
+  }
+
+  updateTabIndex(int value){
+    selectedTabIndex = value;
+    notifyListeners();
   }
   /// END
 

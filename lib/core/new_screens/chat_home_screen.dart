@@ -51,14 +51,18 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   bool _initialized = false;
   User? _user;
 
+  late ChatProvider chatProvider;
+
   @override
   void initState() {
+    chatProvider = context.read<ChatProvider>();
     initializeFlutterFire();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    chatProvider = context.watch<ChatProvider>();
     if (_error) {
       return Container();
     }
@@ -105,12 +109,12 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
               switch (snapshot.connectionState){
                 case ConnectionState.none:
                 case ConnectionState.waiting:
-                  return const CircularProgressIndicator();
+                  return const Center(child: CircularProgressIndicator());
                 default:
                   if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return startChatMessageWidget();
                   }
-                  return roomsListWidget();
+                  // return roomsListWidget(snapshot);
                   return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
@@ -196,7 +200,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     );
   }
 
-  Widget roomsListWidget(){
+  Widget roomsListWidget(AsyncSnapshot<List<types.Room>> snapshot){
     return Column(
       children: [
         const SizedBox(height: 17),
@@ -207,7 +211,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
               onChanged: (String value) {}),
         ),
         const SizedBox(height: 17),
-        _tabs(),
+        _tabs(snapshot),
         Expanded(
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 17),
@@ -230,14 +234,14 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     );
   }
 
-  Widget _tabs() {
+  Widget _tabs(AsyncSnapshot<List<types.Room>> snapshot) {
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _tab(0, 'Brands', 3),
-            _tab(1, 'People', 4),
+            _tab(0, 'Brands', getRoomCountAsPerUserType(snapshot, 'brand')),
+            _tab(1, 'People', getRoomCountAsPerUserType(snapshot, 'user')),
           ],
         ),
         Container(
@@ -248,14 +252,16 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     );
   }
 
+  int getRoomCountAsPerUserType(AsyncSnapshot<List<types.Room>> snapshot, String userType){
+    return snapshot.data!.where((element) => element.metadata!['other_user_type'] == userType).toList().length;
+  }
+
   Widget _tab(int index, String title, int count) {
     return Expanded(
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          setState(() {
-            selectedTabIndex = index;
-          });
+          chatProvider.selectedTabIndex = index;
         },
         child: Padding(
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
