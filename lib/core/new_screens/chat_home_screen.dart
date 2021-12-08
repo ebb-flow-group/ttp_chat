@@ -101,7 +101,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
           ],
           centerTitle: false,
         ),
-        body: roomsListWidget()/*SizedBox(
+        body: SizedBox(
           width: MediaQuery.of(context).size.width,
           child: StreamBuilder<List<types.Room>>(
             stream: widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : FirebaseChatCore.instance.rooms(),
@@ -116,40 +116,11 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                     return startChatMessageWidget();
                   }
                   return roomsListWidget(snapshot);
-                  *//*return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      final room = snapshot.data![index];
-
-                      return GestureDetector(
-                        onTap: () {
-
-                          *//**//*Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => ChatPage(room, widget.isSwitchedAccount!),
-                        ),
-                      );*//**//*
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          child: Row(
-                            children: [
-                              _buildAvatar(room),
-                              Text(room.name ?? '', style: const TextStyle(color: Colors.black)),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );*//*
               }
 
             },
           ),
-        )*/);
+        ));
   }
 
   Widget startChatMessageWidget() {
@@ -201,7 +172,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     );
   }
 
-  Widget roomsListWidget(/*AsyncSnapshot<List<types.Room>> snapshot*/){
+  Widget roomsListWidget(AsyncSnapshot<List<types.Room>> snapshot){
     return Column(
       children: [
         const SizedBox(height: 17),
