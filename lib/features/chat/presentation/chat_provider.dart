@@ -304,7 +304,8 @@ class ChatProvider extends ChangeNotifier {
     final snapshot = await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
     final data = snapshot.data();
-    if(data!['user_type'] == 'brand'){
+    print('USER TYPE: ${data!['user_type']}');
+    if(data['user_type'] == 'brand'){
       isBrand = true;
     }
     else if(data['user_type'] == 'user'){
