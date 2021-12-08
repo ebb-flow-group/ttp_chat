@@ -114,8 +114,8 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                   if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return startChatMessageWidget();
                   }
-                  // return roomsListWidget(snapshot);
-                  return ListView.builder(
+                  return roomsListWidget(snapshot);
+                  /*return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       final room = snapshot.data![index];
@@ -123,11 +123,11 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                       return GestureDetector(
                         onTap: () {
 
-                          /*Navigator.of(context).push(
+                          *//*Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => ChatPage(room, widget.isSwitchedAccount!),
                         ),
-                      );*/
+                      );*//*
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -143,7 +143,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                         ),
                       );
                     },
-                  );
+                  );*/
               }
 
             },
