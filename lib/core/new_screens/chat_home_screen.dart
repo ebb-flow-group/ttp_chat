@@ -102,45 +102,46 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
             stream: widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : FirebaseChatCore.instance.rooms(),
             initialData: const [],
             builder: (context, snapshot) {
-              if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Container(
-                  alignment: Alignment.center,
-                  margin: const EdgeInsets.only(
-                    bottom: 200,
-                  ),
-                  child: const Text('No rooms'),
-                );
-              }
+              switch (snapshot.connectionState){
+                case ConnectionState.none:
+                case ConnectionState.waiting:
+                  return const CircularProgressIndicator();
+                default:
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return startChatMessageWidget();
+                  }
+                  return roomsListWidget();
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final room = snapshot.data![index];
 
-              return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  final room = snapshot.data![index];
+                      return GestureDetector(
+                        onTap: () {
 
-                  return GestureDetector(
-                    onTap: () {
-
-                      /*Navigator.of(context).push(
+                          /*Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => ChatPage(room, widget.isSwitchedAccount!),
                         ),
                       );*/
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          child: Row(
+                            children: [
+                              _buildAvatar(room),
+                              Text(room.name ?? '', style: const TextStyle(color: Colors.black)),
+                            ],
+                          ),
+                        ),
+                      );
                     },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      child: Row(
-                        children: [
-                          _buildAvatar(room),
-                          Text(room.name ?? '', style: const TextStyle(color: Colors.black)),
-                        ],
-                      ),
-                    ),
                   );
-                },
-              );
+              }
+
             },
           ),
         ));
