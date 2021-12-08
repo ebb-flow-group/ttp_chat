@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ttp_chat/core/screens/chat/chats_screen.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
@@ -212,7 +213,118 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         ),
         const SizedBox(height: 17),
         _tabs(snapshot),
-        Expanded(
+        chatProvider.selectedTabIndex == 0
+        ? Expanded(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 17),
+            padding: const EdgeInsets.only(top: 17),
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'brand').toList().length,
+              itemBuilder: (context, index) {
+                var brandList = snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'brand').toList();
+
+                return GestureDetector(
+                  onTap: (){
+                    /*Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ChatScreen(widget.chatUsersModel),
+                    ));*/
+                  },
+                  child: Row(
+                    children: [
+
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(
+                                    brandList[index].imageUrl!
+                                )
+                            )
+                        ),
+                      ),
+
+                      const SizedBox(
+                        width: 10,
+                      ),
+
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    brandList[index].name!,
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  const Text(
+                                    'LAST MESSAGE',
+                                    style: TextStyle(
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.normal
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '11:30 AM',
+                                  // DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(widget.chatUsersModel.lastMessageTimeStamp! * 1000)),
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.w600
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Container(
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: const BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle
+                                  ),
+                                  child: const Text(
+                                    '3',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+
+                          ],
+                        ),
+                      )
+
+                    ],
+                  ),
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(height: 17);
+              },
+            ),
+          ),
+        )
+        : Expanded(
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 17),
             padding: const EdgeInsets.only(top: 17),
@@ -273,7 +385,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                   Text(
                     title,
                     style: TextStyle(
-                        color: selectedTabIndex == index
+                        color: chatProvider.selectedTabIndex == index
                             ? Theme.of(context).primaryColor
                             : Colors.grey[400]),
                   ),
@@ -293,7 +405,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                 ],
               ),
               const SizedBox(height: 2),
-              selectedTabIndex == index
+              chatProvider.selectedTabIndex == index
                   ? CustomPaint(
                       painter: TrianglePainter(
                         strokeColor: Theme.of(context).primaryColor,
