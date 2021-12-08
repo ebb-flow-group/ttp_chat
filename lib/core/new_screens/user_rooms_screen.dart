@@ -220,7 +220,7 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
 
   Widget noRoomWidget(){
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 17),
+      margin: const EdgeInsets.symmetric(horizontal: 17),
       child: Row(
         children: [
           SvgPicture.asset(
@@ -228,7 +228,7 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
             width: 20,
             height: 20,
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Text(
             'No result',
             style: appBarTitleStyle(context).copyWith(fontSize: 16),

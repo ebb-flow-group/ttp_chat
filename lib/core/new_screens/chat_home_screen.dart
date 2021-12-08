@@ -108,7 +108,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
           centerTitle: false,
         ),
         body: isLoading
-        ? const CircularProgressIndicator()
+        ? const Center(child: CircularProgressIndicator())
         : isRoomListEmpty
             ? startChatMessageWidget()
             : roomsListWidget());
@@ -200,63 +200,57 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     );
   }
 
-  int getRoomCountAsPerUserType(AsyncSnapshot<List<types.Room>> snapshot, String userType){
-    return snapshot.data!.where((element) => element.metadata!['other_user_type'] == userType).toList().length;
-  }
-
   Widget _tab(int index, String title, int count) {
-    return Expanded(
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          chatProvider.updateTabIndex(index);
-        },
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                        color: chatProvider.selectedTabIndex == index
-                            ? Theme.of(context).primaryColor
-                            : Colors.grey[400]),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        chatProvider.updateTabIndex(index);
+      },
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                      color: chatProvider.selectedTabIndex == index
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey[400]),
+                ),
+                const SizedBox(width: 6),
+                count == 0
+                    ? const SizedBox()
+                    : Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(3),
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
                   ),
-                  const SizedBox(width: 6),
-                  count == 0
-                      ? const SizedBox()
-                      : Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(3),
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
+                  child: Text(
+                    count.toString(),
+                    style: const TextStyle(
+                        color: Colors.white, fontSize: 12, height: 1),
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(height: 2),
+            chatProvider.selectedTabIndex == index
+                ? CustomPaint(
+                    painter: TrianglePainter(
+                      strokeColor: Theme.of(context).primaryColor,
+                      paintingStyle: PaintingStyle.fill,
                     ),
-                    child: Text(
-                      count.toString(),
-                      style: const TextStyle(
-                          color: Colors.white, fontSize: 12, height: 1),
+                    child: const SizedBox(
+                      height: 6,
+                      width: 12,
                     ),
                   )
-                ],
-              ),
-              const SizedBox(height: 2),
-              chatProvider.selectedTabIndex == index
-                  ? CustomPaint(
-                      painter: TrianglePainter(
-                        strokeColor: Theme.of(context).primaryColor,
-                        paintingStyle: PaintingStyle.fill,
-                      ),
-                      child: const SizedBox(
-                        height: 6,
-                        width: 12,
-                      ),
-                    )
-                  : const SizedBox(height: 6),
-            ],
-          ),
+                : const SizedBox(height: 6),
+          ],
         ),
       ),
     );

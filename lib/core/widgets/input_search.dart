@@ -57,7 +57,7 @@ class _InputSearchState extends State<InputSearch> {
     return IconButton(
       onPressed: null,
       icon: SvgPicture.asset(
-        "assets/icons/search.svg",
+        "assets/chat_icons/search.svg",
         width: kBaseSize,
         height: kBaseSize,
         color: Config.primaryColor,
