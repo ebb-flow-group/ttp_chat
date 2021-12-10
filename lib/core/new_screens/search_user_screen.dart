@@ -11,7 +11,9 @@ import 'package:ttp_chat/network/api_service.dart';
 import 'package:ttp_chat/theme/style.dart';
 
 class SearchUserScreen extends StatefulWidget {
-  const SearchUserScreen({Key? key}) : super(key: key);
+  final String? accessToken;
+
+  const SearchUserScreen({Key? key, this.accessToken}) : super(key: key);
 
   @override
   _SearchUserScreenState createState() => _SearchUserScreenState();
@@ -22,17 +24,14 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
   List<Users> usersList = [];
   int selectedTabIndex = 0;
 
-  late ChatProvider chatProvider;
-
   @override
   void initState() {
     super.initState();
-    chatProvider = context.read<ChatProvider>();
   }
 
   @override
   Widget build(BuildContext context) {
-    chatProvider = context.watch<ChatProvider>();
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xFFFDFBEF).withOpacity(0.2),
@@ -83,7 +82,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
 
   void searchUser(String searchValue) async {
     BaseModel<SearchUserModel> response =
-    await GetIt.I<ApiService>().searchUser(chatProvider.accessToken!, searchValue);
+    await GetIt.I<ApiService>().searchUser(widget.accessToken!, searchValue);
 
     if (response.data != null) {
       setState(() {

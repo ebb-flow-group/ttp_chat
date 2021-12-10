@@ -50,6 +50,7 @@ class _ChatPageState extends State<_ChatPage>
     super.initState();
 
     chatProvider = context.read<ChatProvider>();
+    print('ACCESS TOOOOOO: ${chatProvider.accessToken!}');
     chatProvider.openTheRecorder();
     chatProvider.flutterSoundPlayer.openAudioSession();
 
