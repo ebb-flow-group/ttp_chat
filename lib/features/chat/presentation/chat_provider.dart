@@ -1064,9 +1064,9 @@ class ChatProvider extends ChangeNotifier {
 
       try {
         final reference =
-        isSwitchedAccount!
+        /*isSwitchedAccount!
             ? FirebaseStorage.instanceFor(app: Firebase.app('secondary')).ref(name)
-            : FirebaseStorage.instance.ref(name);
+            : */FirebaseStorage.instance.ref(name);
         await reference.putFile(file);
         final uri = await reference.getDownloadURL();
 
@@ -1102,9 +1102,9 @@ class ChatProvider extends ChangeNotifier {
 
       try {
         final reference =
-        isSwitchedAccount!
+        /*isSwitchedAccount!
             ? FirebaseStorage.instanceFor(app: Firebase.app('secondary')).ref(name)
-            : FirebaseStorage.instance.ref(name);
+            : */FirebaseStorage.instance.ref(name);
         await reference.putFile(file);
         final uri = await reference.getDownloadURL();
 
