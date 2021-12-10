@@ -67,6 +67,14 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
+    FirebaseAuth.instance.signOut();
+  }
+
+  @override
   Widget build(BuildContext context) {
     chatProvider = context.watch<ChatProvider>();
     if (_error) {
