@@ -24,6 +24,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:http/http.dart' as http;
 import 'package:record/record.dart';
+import 'package:ttp_chat/features/chat/domain/brand_firebase_token_model.dart';
 import 'package:ttp_chat/features/chat/domain/chat_sign_in_model.dart';
 import 'package:ttp_chat/features/chat/domain/chat_users_model.dart';
 import 'package:ttp_chat/features/chat/domain/tabs_model.dart';
@@ -232,10 +233,10 @@ class ChatProvider extends ChangeNotifier {
     getUserFirebaseToken(accessToken);
   }
 
-  ChatProvider.brandSignIn(bool isSwitchedAccount, BrandChatFirebaseTokenResponse brandFirebaseTokenResponse){
+  ChatProvider.brandSignIn(bool isSwitchedAccount, String accessToken, String refreshToken){
     selectedTab = tabs[0];
     selectedTabIndex = 0;
-    brandCustomFirebaseTokenSignIn(brandFirebaseTokenResponse);
+    getBrandFirebaseToken(accessToken);
   }
 
   userCustomFirebaseTokenSignIn(String firebaseToken/*ChatSignInModel chatSignInModel*/) async{
@@ -254,11 +255,10 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  brandCustomFirebaseTokenSignIn(BrandChatFirebaseTokenResponse selectedBrand) async{
+  brandCustomFirebaseTokenSignIn(List<BrandFirebaseTokenData> brandsList) async{
     print('SECONDARY FB APP');
     try{
-      FirebaseApp secondaryApp = Firebase.app('secondary');
-      UserCredential userCredential = await FirebaseAuth.instanceFor(app: secondaryApp).signInWithCustomToken(selectedBrand.firebaseToken!);
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(brandsList[0].firebaseToken!);
       checkIfUserIsBrandOrUser(userCredential.user!.uid);
       // createBrandOnFirestore(selectedBrand, userCredential.user!.uid);
       apiStatus = ApiStatus.success;
@@ -330,6 +330,34 @@ class ChatProvider extends ChangeNotifier {
 
       apiStatus = ApiStatus.success;
       notifyListeners();
+
+    } else {
+      apiStatus = ApiStatus.failed;
+      notifyListeners();
+
+      print('CUSTOM SIGN IN ERROR: ${response.getException.getErrorMessage()}');
+    }
+  }
+
+  getBrandFirebaseToken(String accessToken) async{
+    print('ACCESS TOKEN 1: $accessToken');
+    BaseModel<BrandFirebaseTokenModel> response =
+    await GetIt.I<ApiService>().getBrandFirebaseToken(accessToken);
+
+    if (response.data != null) {
+
+      print('BRAND FIREBASE TOKEN 1: ${response.data!.toJson()}');
+
+      if(response.data!.brandFirebaseTokenList!.isEmpty || response.data!.brandFirebaseTokenList!.length > 1){
+        apiStatus = ApiStatus.failed;
+        notifyListeners();
+      }
+      else{
+        brandCustomFirebaseTokenSignIn(response.data!.brandFirebaseTokenList!);
+
+        apiStatus = ApiStatus.success;
+        notifyListeners();
+      }
 
     } else {
       apiStatus = ApiStatus.failed;

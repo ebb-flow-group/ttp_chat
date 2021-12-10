@@ -30,7 +30,7 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
           switch (snapshot.connectionState){
             case ConnectionState.none:
             case ConnectionState.waiting:
-              return const Expanded(child: Center(child: CircularProgressIndicator()));
+              return const Center(child: CircularProgressIndicator());
             default:
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return noRoomWidget();

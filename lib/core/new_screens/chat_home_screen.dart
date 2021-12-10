@@ -5,6 +5,7 @@ import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:ttp_chat/core/new_screens/brand_rooms_screen.dart';
+import 'package:ttp_chat/core/new_screens/chat_error_screen.dart';
 import 'package:ttp_chat/core/new_screens/user_rooms_screen.dart';
 import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
@@ -28,7 +29,7 @@ class ChatHomeScreen extends StatelessWidget {
     return
       ChangeNotifierProvider<ChatProvider>(
         create: (context) => isSwitchedAccount
-            ? ChatProvider.brandSignIn(isSwitchedAccount, BrandChatFirebaseTokenResponse())
+            ? ChatProvider.brandSignIn(isSwitchedAccount, accessToken!, refreshToken!)
             : ChatProvider.userSignIn(isSwitchedAccount, accessToken!, refreshToken!),
         child: _ChatHomeScreen(isSwitchedAccount),
       );
@@ -75,6 +76,15 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     if (!_initialized) {
       return Container();
     }
+
+    if(chatProvider.apiStatus == ApiStatus.called) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    if(chatProvider.apiStatus == ApiStatus.failed){
+      return const ChatErrorScreen();
+    }
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xFFFDFBEF).withOpacity(0.2),

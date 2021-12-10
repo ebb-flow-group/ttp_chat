@@ -26,7 +26,7 @@ class ChatDesigns extends StatelessWidget {
     return
       ChangeNotifierProvider<ChatProvider>(
       create: (context) => isSwitchedAccount
-          ? ChatProvider.brandSignIn(isSwitchedAccount, brandFirebaseTokenResponse!)
+          ? ChatProvider.brandSignIn(isSwitchedAccount, '', '')
           : ChatProvider.userSignIn(isSwitchedAccount, '', ''),
       child: _ChatDesigns(isSwitchedAccount, brandFirebaseTokenResponse != null ? brandFirebaseTokenResponse!.brandName : null),
     );
