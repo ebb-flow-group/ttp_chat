@@ -32,15 +32,16 @@ class ChatHomeScreen extends StatelessWidget {
         create: (context) => isSwitchedAccount
             ? ChatProvider.brandSignIn(isSwitchedAccount, accessToken!, refreshToken!)
             : ChatProvider.userSignIn(isSwitchedAccount, accessToken!, refreshToken!),
-        child: _ChatHomeScreen(isSwitchedAccount),
+        child: _ChatHomeScreen(isSwitchedAccount, accessToken),
       );
   }
 }
 
 class _ChatHomeScreen extends StatefulWidget {
   final bool? isSwitchedAccount;
+  final String? accessToken;
 
-  const _ChatHomeScreen(this.isSwitchedAccount);
+  const _ChatHomeScreen(this.isSwitchedAccount, this.accessToken);
 
   @override
   _ChatHomeScreenState createState() => _ChatHomeScreenState();
@@ -110,7 +111,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SearchUserScreen()));
+                            builder: (context) => SearchUserScreen(accessToken: widget.accessToken,)));
                   },
                   icon: SvgPicture.asset(
                     'assets/chat_icons/start_new_chat.svg',
