@@ -364,9 +364,10 @@ class ChatProvider extends ChangeNotifier {
   }
 
   void getCountData(){
-
+    isLoading = true;
+    notifyListeners();
     FirebaseChatCore.instance.rooms().listen((event) {
-      isLoading = true;
+      isLoading = false;
       notifyListeners();
       if(event.isEmpty){
         isRoomListEmpty = true;
