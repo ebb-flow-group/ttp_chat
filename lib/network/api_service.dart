@@ -39,7 +39,7 @@ class ApiService {
   Future<BaseModel<UserFirebaseTokenModel>> getUserFirebaseToken(String accessToken) async {
     UserFirebaseTokenModel response;
     try {
-      response = await apiClient.getUserFirebaseToken(accessToken);
+      response = await apiClient.getUserFirebaseToken('Bearer $accessToken');
     } catch (error) {
       print('USERR ERRPRRRR: $error');
       return BaseModel()..setException(ServerError.withError(error: error as DioError));
@@ -50,7 +50,7 @@ class ApiService {
   Future<BaseModel<BrandFirebaseTokenModel>> getBrandFirebaseToken(String accessToken) async {
     BrandFirebaseTokenModel response;
     try {
-      response = await apiClient.getBrandFirebaseToken(accessToken);
+      response = await apiClient.getBrandFirebaseToken('Bearer $accessToken');
     } catch (error) {
       print('BRANDD ERRPRRRR: $error');
       return BaseModel()..setException(ServerError.withError(error: error as DioError));
