@@ -260,6 +260,7 @@ class ChatProvider extends ChangeNotifier {
     print('SECONDARY FB APP');
     try{
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(brandsList[0].firebaseToken!);
+      print('UIDDDDD: ${userCredential.user!.uid}');
       checkIfUserIsBrandOrUser(userCredential.user!.uid);
       getCountData();
       // createBrandOnFirestore(selectedBrand, userCredential.user!.uid);
