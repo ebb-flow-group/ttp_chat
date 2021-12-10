@@ -221,22 +221,18 @@ class ChatProvider extends ChangeNotifier {
   ///START
   int selectedTabIndex = 0, brandListCount = 0, userListCount = 0;
   bool isBrand = false, isLoading = false, isRoomListEmpty = false;
+  String? accessToken, refreshToken;
 
-  ChatProvider.userSignIn(bool isSwitchedAccount, String accessToken, String refreshToken) {
+  ChatProvider.userSignIn(bool isSwitchedAccount, this.accessToken, this.refreshToken) {
     selectedTab = tabs[0];
     selectedTabIndex = 0;
-    /*ChatSignInModel chatSignInModel = ChatSignInModel.fromJson(authData);
-    this.chatSignInModel = chatSignInModel;
-    userCustomFirebaseTokenSignIn(chatSignInModel);*/
-    print('ACCESS TOKEN 1: $accessToken');
-    print('REFRESH TOKEN 1: $refreshToken');
-    getUserFirebaseToken(accessToken);
+    getUserFirebaseToken(accessToken!);
   }
 
-  ChatProvider.brandSignIn(bool isSwitchedAccount, String accessToken, String refreshToken){
+  ChatProvider.brandSignIn(bool isSwitchedAccount, this.accessToken, this.refreshToken){
     selectedTab = tabs[0];
     selectedTabIndex = 0;
-    getBrandFirebaseToken(accessToken);
+    getBrandFirebaseToken(accessToken!);
   }
 
   void userCustomFirebaseTokenSignIn(String firebaseToken) async{

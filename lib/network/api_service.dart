@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 import 'package:ttp_chat/features/chat/domain/brand_firebase_token_model.dart';
 import 'package:ttp_chat/features/chat/domain/chat_sign_in_model.dart';
+import 'package:ttp_chat/features/chat/domain/search_user_model.dart';
 import 'package:ttp_chat/features/chat/domain/user_firebase_token_model.dart';
 import 'package:ttp_chat/global.dart';
 import 'package:ttp_chat/models/base_model.dart';
@@ -53,6 +54,18 @@ class ApiService {
       response = await apiClient.getBrandFirebaseToken('Bearer $accessToken');
     } catch (error) {
       print('BRANDD ERRPRRRR: $error');
+      return BaseModel()..setException(ServerError.withError(error: error as DioError));
+    }
+    return BaseModel()..data = response;
+  }
+
+  Future<BaseModel<SearchUserModel>> searchUser(String token, String searchValue) async {
+    SearchUserModel response;
+    try {
+      response = await apiClient.searchChatUser('Bearer $token', searchValue);
+      print('SEARCH USER RESP: ${response.toJson()}');
+    } catch (error) {
+      print('ERRPRRRR: $error');
       return BaseModel()..setException(ServerError.withError(error: error as DioError));
     }
     return BaseModel()..data = response;

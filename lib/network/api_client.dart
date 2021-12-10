@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:ttp_chat/features/chat/domain/brand_firebase_token_model.dart';
 import 'package:ttp_chat/features/chat/domain/chat_sign_in_model.dart';
+import 'package:ttp_chat/features/chat/domain/search_user_model.dart';
 import 'package:ttp_chat/features/chat/domain/user_firebase_token_model.dart';
 
 import '../global.dart';
@@ -23,6 +24,12 @@ abstract class ApiClient {
   Future<BrandFirebaseTokenModel> getBrandFirebaseToken(
     @Header("Authorization") String authorization,
   );
+
+  @GET('/api/chat-users/')
+  Future<SearchUserModel> searchChatUser(
+      @Header("Authorization") String authorization,
+      @Query("search") String searchValue
+      );
 
   /*@GET("/api/app-config/")
   Future<AppConfig> getAppConfig();

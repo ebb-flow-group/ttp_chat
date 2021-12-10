@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:ttp_chat/core/new_screens/brand_rooms_screen.dart';
 import 'package:ttp_chat/core/new_screens/chat_error_screen.dart';
+import 'package:ttp_chat/core/new_screens/search_user_screen.dart';
 import 'package:ttp_chat/core/new_screens/user_rooms_screen.dart';
 import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
@@ -106,10 +107,10 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
               children: [
                 IconButton(
                   onPressed: () {
-                    /*Navigator.push(
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ChatErrorScreen()));*/
+                            builder: (context) => const SearchUserScreen()));
                   },
                   icon: SvgPicture.asset(
                     'assets/chat_icons/start_new_chat.svg',
