@@ -354,7 +354,6 @@ class ChatProvider extends ChangeNotifier {
       }
       else{
         brandCustomFirebaseTokenSignIn(response.data!.brandFirebaseTokenList!);
-
         apiStatus = ApiStatus.success;
         notifyListeners();
       }
