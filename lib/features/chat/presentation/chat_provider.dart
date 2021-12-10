@@ -1143,9 +1143,9 @@ class ChatProvider extends ChangeNotifier {
         print('VOICE MESSAGE FILE SIZE: ${voiceMessageFile!.lengthSync()}');
 
         try {
-          final reference = isSwitchedAccount!
+          final reference = /*isSwitchedAccount!
           ? FirebaseStorage.instanceFor(app: Firebase.app('secondary')).ref(name)
-          : FirebaseStorage.instance.ref(name);
+          : */FirebaseStorage.instance.ref(name);
           await reference.putFile(file);
           final uri = await reference.getDownloadURL();
           print('VOICE MESSAGE FILE FB STORAGE URL: $uri');
@@ -1159,9 +1159,9 @@ class ChatProvider extends ChangeNotifier {
             duration: audioMessageDuration!.inSeconds
           );
 
-          isSwitchedAccount!
+          /*isSwitchedAccount!
               ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).sendMessage(message, selectedChatUser!.id)
-              : FirebaseChatCore.instance.sendMessage(message, selectedChatUser!.id);
+              : */FirebaseChatCore.instance.sendMessage(message, selectedChatUser!.id);
           isRecordedVoiceMessageFilePlaying = false;
           voiceMessageFile = null;
           voiceMessageFilePath = '';

@@ -114,19 +114,19 @@ class _ChatPageState extends State<_ChatPage>
           color: Theme.of(context).backgroundColor,
           child: StreamBuilder<types.Room>(
             initialData: chatProvider.selectedChatUser,
-            stream: widget.isSwitchedAccount
+            stream: /*widget.isSwitchedAccount
                 ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary'))
                     .room(chatProvider.selectedChatUser!.id)
-                : FirebaseChatCore.instance
+                : */FirebaseChatCore.instance
                     .room(chatProvider.selectedChatUser!.id),
             builder: (context, snapshot) {
               return StreamBuilder<List<types.Message>>(
                 initialData: const [],
-                stream: widget.isSwitchedAccount
+                stream: /*widget.isSwitchedAccount
                     ? FirebaseChatCore.instanceFor(
                             app: Firebase.app('secondary'))
                         .messages(snapshot.data!)
-                    : FirebaseChatCore.instance.messages(snapshot.data!),
+                    : */FirebaseChatCore.instance.messages(snapshot.data!),
                 builder: (context, snapshot) {
                   return Stack(
                     children: [

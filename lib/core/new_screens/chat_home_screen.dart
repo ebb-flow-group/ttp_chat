@@ -118,7 +118,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         ? const Center(child: CircularProgressIndicator())
         : chatProvider.isRoomListEmpty
             ? startChatMessageWidget()
-            : chatProvider.isBrand
+            : widget.isSwitchedAccount!
               ? SizedBox(
             width: MediaQuery.of(context).size.width,
             child: StreamBuilder<List<types.Room>>(
