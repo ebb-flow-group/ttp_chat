@@ -242,14 +242,13 @@ class ChatProvider extends ChangeNotifier {
   void userCustomFirebaseTokenSignIn(String firebaseToken) async{
     print('USER FIREBASE TOKEN 1: $firebaseToken');
     try{
-      if (chatSignInModel != null) {
-        UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
-        getCountData();
-        checkIfUserIsBrandOrUser(userCredential.user!.uid);
-        // createUserOnFirestore(chatSignInModel, userCredential.user!.uid);
-        apiStatus = ApiStatus.success;
-        notifyListeners();
-      }
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
+      print('UIDDDDD: ${userCredential.user!.uid}');
+      checkIfUserIsBrandOrUser(userCredential.user!.uid);
+      getCountData();
+      // createUserOnFirestore(chatSignInModel, userCredential.user!.uid);
+      apiStatus = ApiStatus.success;
+      notifyListeners();
     }
     catch(e, s){
       print('USER CUSTOM FIREBASE TOKEN SIGN IN ERROR: $e\n$s');
