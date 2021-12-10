@@ -999,12 +999,12 @@ class ChatProvider extends ChangeNotifier {
   }
 
   void handleFBSendPressed(types.PartialText message) {
-    isSwitchedAccount!
+    /*isSwitchedAccount!
         ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).sendMessage(
             message,
             selectedChatUser!.id,
           )
-        : FirebaseChatCore.instance.sendMessage(
+        : */FirebaseChatCore.instance.sendMessage(
       message,
       selectedChatUser!.id,
     );
@@ -1041,9 +1041,9 @@ class ChatProvider extends ChangeNotifier {
       types.TextMessage message, types.PreviewData previewData) {
     final updatedMessage = message.copyWith(previewData: previewData);
 
-    isSwitchedAccount!
+    /*isSwitchedAccount!
         ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).updateMessage(updatedMessage, selectedChatUser!.id)
-        : FirebaseChatCore.instance
+        : */FirebaseChatCore.instance
         .updateMessage(updatedMessage, selectedChatUser!.id);
   }
 
@@ -1078,9 +1078,9 @@ class ChatProvider extends ChangeNotifier {
           width: image.width.toDouble(),
         );
 
-        isSwitchedAccount!
+        /*isSwitchedAccount!
             ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).sendMessage(message, selectedChatUser!.id)
-            : FirebaseChatCore.instance.sendMessage(message, selectedChatUser!.id,);
+            : */FirebaseChatCore.instance.sendMessage(message, selectedChatUser!.id,);
         setAttachmentUploading(false);
       } on FirebaseException catch (e) {
         setAttachmentUploading(false);
@@ -1115,9 +1115,9 @@ class ChatProvider extends ChangeNotifier {
           uri: uri,
         );
 
-        isSwitchedAccount!
+        /*isSwitchedAccount!
             ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).sendMessage(message, selectedChatUser!.id)
-            : FirebaseChatCore.instance.sendMessage(message, selectedChatUser!.id);
+            : */FirebaseChatCore.instance.sendMessage(message, selectedChatUser!.id);
         setAttachmentUploading(false);
       } on FirebaseException catch (e) {
         setAttachmentUploading(false);
