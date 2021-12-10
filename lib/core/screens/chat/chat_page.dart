@@ -151,12 +151,12 @@ class _ChatPageState extends State<_ChatPage>
                             chatProvider.handleFBPreviewDataFetched,
                         onSendPressed: chatProvider.handleFBSendPressed,
                         user: types.User(
-                          id: widget.isSwitchedAccount
+                          id: /*widget.isSwitchedAccount
                               ? FirebaseChatCore.instanceFor(
                                           app: Firebase.app('secondary'))
                                       .firebaseUser
                                       .uid
-                              : FirebaseChatCore.instance.firebaseUser.uid,
+                              : */FirebaseChatCore.instance.firebaseUser.uid,
                         ),
                         buildCustomMessage: (message) {
                           print('CUSTOM MESSAGE METADATA: ${message.createdAt}');
