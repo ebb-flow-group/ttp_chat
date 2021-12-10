@@ -122,7 +122,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
               ? SizedBox(
             width: MediaQuery.of(context).size.width,
             child: StreamBuilder<List<types.Room>>(
-              stream: widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : FirebaseChatCore.instance.rooms(),
+              stream: /*widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : */FirebaseChatCore.instance.rooms(),
               initialData: const [],
               builder: (context, snapshot) {
                 switch (snapshot.connectionState){
