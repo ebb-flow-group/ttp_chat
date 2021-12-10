@@ -127,26 +127,23 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         : chatProvider.isRoomListEmpty
             ? startChatMessageWidget()
             : widget.isSwitchedAccount!
-              ? SizedBox(
-            width: MediaQuery.of(context).size.width,
-            child: StreamBuilder<List<types.Room>>(
-              stream: /*widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : */FirebaseChatCore.instance.rooms(),
-              initialData: const [],
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState){
-                  case ConnectionState.none:
-                  case ConnectionState.waiting:
-                    return const Center(child: CircularProgressIndicator());
-                  default:
-                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return noRoomWidget();
-                    }
-                    return brandRoomsListWidget(snapshot);
-                }
+              ? StreamBuilder<List<types.Room>>(
+                stream: /*widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : */FirebaseChatCore.instance.rooms(),
+                initialData: const [],
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState){
+                    case ConnectionState.none:
+                    case ConnectionState.waiting:
+                      return const Center(child: CircularProgressIndicator());
+                    default:
+                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return noRoomWidget();
+                      }
+                      return brandRoomsListWidget(snapshot);
+                  }
 
-              },
-            ),
-          )
+                },
+              )
               : roomsListWidget());
   }
 
