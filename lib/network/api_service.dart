@@ -18,7 +18,7 @@ class ApiService {
 
   ApiService({String url = BASE_URL}) {
     dio = Dio();
-    dio.interceptors.add(AccessTokenInterceptor(dio));
+    // dio.interceptors.add(AccessTokenInterceptor(dio));
 
     apiClient = ApiClient(dio, url);
   }

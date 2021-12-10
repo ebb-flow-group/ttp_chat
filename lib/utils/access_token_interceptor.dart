@@ -15,10 +15,6 @@ class AccessTokenInterceptor extends Interceptor {
       RequestOptions options,
       RequestInterceptorHandler handler,
       ) async {
-    // if (options.headers.containsKey('Authorization')) {
-    //   options.headers['Authorization'] = 'Bearer fail';
-    //   return options;
-    // }
 
     if (options.headers.containsKey('Authorization')) {
       return await validateAccessToken(options, handler);

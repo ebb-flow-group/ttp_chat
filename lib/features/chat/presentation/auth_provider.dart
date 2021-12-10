@@ -70,7 +70,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   bool shouldUpdateAccessToken() {
-    int accessTokenExpireAt = _sharedPrefService!.getAuthTokenExpireAt()!;
+    int accessTokenExpireAt = _sharedPrefService!.getAuthTokenExpireAt();
 
     // Cushion Duration -> better to refresh token a little earlier
     const Duration CUSHION_DURATION = const Duration(seconds: 10);
