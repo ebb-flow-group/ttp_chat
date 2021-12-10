@@ -331,9 +331,6 @@ class ChatProvider extends ChangeNotifier {
       print('USER FIREBASE TOKEN 1: ${response.data!.firebaseToken!}');
       userCustomFirebaseTokenSignIn(response.data!.firebaseToken!);
 
-      apiStatus = ApiStatus.success;
-      notifyListeners();
-
     } else {
       apiStatus = ApiStatus.failed;
       notifyListeners();
@@ -357,8 +354,6 @@ class ChatProvider extends ChangeNotifier {
       }
       else{
         brandCustomFirebaseTokenSignIn(response.data!.brandFirebaseTokenList!);
-        apiStatus = ApiStatus.success;
-        notifyListeners();
       }
 
     } else {
