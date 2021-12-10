@@ -14,12 +14,12 @@ abstract class ApiClient {
     return _ApiClient(dio, baseUrl: url);
   }
 
-  @POST("/api/firebase-token")
+  @POST("/auth/firebase-token")
   Future<UserFirebaseTokenModel> getUserFirebaseToken(
     @Header("Authorization") String authorization,
   );
 
-  @POST("/api/brand-firebase-tokens")
+  @POST("/auth/brand-firebase-tokens")
   Future<BrandFirebaseTokenModel> getBrandFirebaseToken(
     @Header("Authorization") String authorization,
   );
