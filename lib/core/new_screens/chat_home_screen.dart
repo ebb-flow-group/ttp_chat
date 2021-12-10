@@ -221,9 +221,9 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
       padding: const EdgeInsets.only(top: 17),
       child: ListView.separated(
         shrinkWrap: true,
-        itemCount: snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'brand').toList().length,
+        itemCount: snapshot.data!.length,
         itemBuilder: (context, index) {
-          var brandList = snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'brand').toList();
+          var brandList = snapshot.data!;
 
           return GestureDetector(
             onTap: (){
