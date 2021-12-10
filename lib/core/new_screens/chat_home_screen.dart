@@ -62,7 +62,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   void initState() {
     chatProvider = context.read<ChatProvider>();
     initializeFlutterFire();
-    getData();
+    // getData();
     super.initState();
   }
 
