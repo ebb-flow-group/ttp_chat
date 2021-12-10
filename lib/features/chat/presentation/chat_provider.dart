@@ -219,8 +219,8 @@ class ChatProvider extends ChangeNotifier {
   }
 
   ///START
-  int selectedTabIndex = 0;
-  bool isBrand = false;
+  int selectedTabIndex = 0, brandListCount = 0, userListCount = 0;
+  bool isBrand = false, isLoading = false, isRoomListEmpty = false;
 
   ChatProvider.userSignIn(bool isSwitchedAccount, String accessToken, String refreshToken) {
     selectedTab = tabs[0];
@@ -239,11 +239,12 @@ class ChatProvider extends ChangeNotifier {
     getBrandFirebaseToken(accessToken);
   }
 
-  userCustomFirebaseTokenSignIn(String firebaseToken/*ChatSignInModel chatSignInModel*/) async{
+  void userCustomFirebaseTokenSignIn(String firebaseToken) async{
     print('USER FIREBASE TOKEN 1: $firebaseToken');
     try{
       if (chatSignInModel != null) {
         UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
+        getCountData();
         checkIfUserIsBrandOrUser(userCredential.user!.uid);
         // createUserOnFirestore(chatSignInModel, userCredential.user!.uid);
         apiStatus = ApiStatus.success;
@@ -255,11 +256,12 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  brandCustomFirebaseTokenSignIn(List<BrandFirebaseTokenData> brandsList) async{
+  void brandCustomFirebaseTokenSignIn(List<BrandFirebaseTokenData> brandsList) async{
     print('SECONDARY FB APP');
     try{
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(brandsList[0].firebaseToken!);
       checkIfUserIsBrandOrUser(userCredential.user!.uid);
+      getCountData();
       // createBrandOnFirestore(selectedBrand, userCredential.user!.uid);
       apiStatus = ApiStatus.success;
       notifyListeners();
@@ -269,7 +271,7 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  createUserOnFirestore(ChatSignInModel chatSignInModel, String uid) async{
+  void createUserOnFirestore(ChatSignInModel chatSignInModel, String uid) async{
     try {
       await FirebaseChatCore.instance.createUserInFirestore(
         types.User(
@@ -284,7 +286,7 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  createBrandOnFirestore(BrandChatFirebaseTokenResponse selectedBrand, String uid) async{
+  void createBrandOnFirestore(BrandChatFirebaseTokenResponse selectedBrand, String uid) async{
     try {
       await FirebaseChatCore.instance.createUserInFirestore(
         types.User(
@@ -299,12 +301,12 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  updateTabIndex(int value){
+  void updateTabIndex(int value){
     selectedTabIndex = value;
     notifyListeners();
   }
 
-  checkIfUserIsBrandOrUser(String uid) async{
+  void checkIfUserIsBrandOrUser(String uid) async{
     final snapshot = await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
     final data = snapshot.data();
@@ -318,7 +320,7 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  getUserFirebaseToken(String accessToken) async{
+  void getUserFirebaseToken(String accessToken) async{
     print('ACCESS TOKEN 1: $accessToken');
     BaseModel<UserFirebaseTokenModel> response =
     await GetIt.I<ApiService>().getUserFirebaseToken(accessToken);
@@ -339,7 +341,7 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  getBrandFirebaseToken(String accessToken) async{
+  void getBrandFirebaseToken(String accessToken) async{
     print('ACCESS TOKEN 1: $accessToken');
     BaseModel<BrandFirebaseTokenModel> response =
     await GetIt.I<ApiService>().getBrandFirebaseToken(accessToken);
@@ -364,6 +366,23 @@ class ChatProvider extends ChangeNotifier {
 
       print('CUSTOM SIGN IN ERROR: ${response.getException.getErrorMessage()}');
     }
+  }
+
+  void getCountData(){
+
+    FirebaseChatCore.instance.rooms().listen((event) {
+      isLoading = true;
+      notifyListeners();
+      if(event.isEmpty){
+        isRoomListEmpty = true;
+        notifyListeners();
+      }
+      else{
+        brandListCount = event.where((element) => element.metadata!['other_user_type'] == 'brand').toList().length;
+        userListCount = event.where((element) => element.metadata!['other_user_type'] == 'user').toList().length;
+        notifyListeners();
+      }
+    });
   }
   /// END
 

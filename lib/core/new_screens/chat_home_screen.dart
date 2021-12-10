@@ -114,9 +114,9 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
           ],
           centerTitle: false,
         ),
-        body: isLoading
+        body: chatProvider.isLoading
         ? const Center(child: CircularProgressIndicator())
-        : isRoomListEmpty
+        : chatProvider.isRoomListEmpty
             ? startChatMessageWidget()
             : chatProvider.isBrand
               ? SizedBox(
@@ -342,8 +342,8 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _tab(0, 'Brands', brandListCount),
-            _tab(1, 'People', userListCount),
+            _tab(0, 'Brands', chatProvider.brandListCount),
+            _tab(1, 'People', chatProvider.userListCount),
           ],
         ),
         Container(
