@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:ttp_chat/features/chat/domain/brand_firebase_token_model.dart';
 import 'package:ttp_chat/features/chat/domain/chat_sign_in_model.dart';
+import 'package:ttp_chat/features/chat/domain/user_firebase_token_model.dart';
 
 import '../global.dart';
 
@@ -11,6 +13,16 @@ abstract class ApiClient {
   factory ApiClient(Dio dio, String url) {
     return _ApiClient(dio, baseUrl: url);
   }
+
+  @POST("/api/firebase-token")
+  Future<UserFirebaseTokenModel> getUserFirebaseToken(
+    @Header("Authorization") String authorization,
+  );
+
+  @POST("/api/brand-firebase-tokens")
+  Future<BrandFirebaseTokenModel> getBrandFirebaseToken(
+    @Header("Authorization") String authorization,
+  );
 
   /*@GET("/api/app-config/")
   Future<AppConfig> getAppConfig();

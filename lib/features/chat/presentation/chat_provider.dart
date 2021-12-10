@@ -28,6 +28,7 @@ import 'package:ttp_chat/features/chat/domain/chat_sign_in_model.dart';
 import 'package:ttp_chat/features/chat/domain/chat_users_model.dart';
 import 'package:ttp_chat/features/chat/domain/tabs_model.dart';
 import 'package:ttp_chat/features/chat/domain/token_model_class.dart';
+import 'package:ttp_chat/features/chat/domain/user_firebase_token_model.dart';
 import 'package:ttp_chat/features/chat/domain/users_model.dart';
 import 'package:ttp_chat/models/base_model.dart';
 import 'package:ttp_chat/network/api_service.dart';
@@ -220,12 +221,15 @@ class ChatProvider extends ChangeNotifier {
   int selectedTabIndex = 0;
   bool isBrand = false;
 
-  ChatProvider.userSignIn(bool isSwitchedAccount, Map<String, dynamic> authData) {
+  ChatProvider.userSignIn(bool isSwitchedAccount, String accessToken, String refreshToken) {
     selectedTab = tabs[0];
     selectedTabIndex = 0;
-    ChatSignInModel chatSignInModel = ChatSignInModel.fromJson(authData);
+    /*ChatSignInModel chatSignInModel = ChatSignInModel.fromJson(authData);
     this.chatSignInModel = chatSignInModel;
-    userCustomFirebaseTokenSignIn(chatSignInModel);
+    userCustomFirebaseTokenSignIn(chatSignInModel);*/
+    print('ACCESS TOKEN 1: $accessToken');
+    print('REFRESH TOKEN 1: $refreshToken');
+    getUserFirebaseToken(accessToken);
   }
 
   ChatProvider.brandSignIn(bool isSwitchedAccount, BrandChatFirebaseTokenResponse brandFirebaseTokenResponse){
@@ -234,11 +238,11 @@ class ChatProvider extends ChangeNotifier {
     brandCustomFirebaseTokenSignIn(brandFirebaseTokenResponse);
   }
 
-  userCustomFirebaseTokenSignIn(ChatSignInModel chatSignInModel) async{
-    print('PRIMARY FB APP');
+  userCustomFirebaseTokenSignIn(String firebaseToken/*ChatSignInModel chatSignInModel*/) async{
+    print('USER FIREBASE TOKEN 1: $firebaseToken');
     try{
       if (chatSignInModel != null) {
-        UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(chatSignInModel.firebaseToken!);
+        UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
         checkIfUserIsBrandOrUser(userCredential.user!.uid);
         // createUserOnFirestore(chatSignInModel, userCredential.user!.uid);
         apiStatus = ApiStatus.success;
@@ -312,6 +316,27 @@ class ChatProvider extends ChangeNotifier {
       isBrand = false;
     }
     notifyListeners();
+  }
+
+  getUserFirebaseToken(String accessToken) async{
+    print('ACCESS TOKEN 1: $accessToken');
+    BaseModel<UserFirebaseTokenModel> response =
+    await GetIt.I<ApiService>().getUserFirebaseToken(accessToken);
+
+    if (response.data != null) {
+
+      print('USER FIREBASE TOKEN 1: ${response.data!.firebaseToken!}');
+      userCustomFirebaseTokenSignIn(response.data!.firebaseToken!);
+
+      apiStatus = ApiStatus.success;
+      notifyListeners();
+
+    } else {
+      apiStatus = ApiStatus.failed;
+      notifyListeners();
+
+      print('CUSTOM SIGN IN ERROR: ${response.getException.getErrorMessage()}');
+    }
   }
   /// END
 

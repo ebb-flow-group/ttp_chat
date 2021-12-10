@@ -30,7 +30,7 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
           switch (snapshot.connectionState){
             case ConnectionState.none:
             case ConnectionState.waiting:
-              return const Center(child: CircularProgressIndicator());
+              return const Expanded(child: Center(child: CircularProgressIndicator()));
             default:
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return noRoomWidget();

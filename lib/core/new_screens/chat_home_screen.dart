@@ -3,12 +3,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ttp_chat/core/new_screens/brand_rooms_screen.dart';
 import 'package:ttp_chat/core/new_screens/user_rooms_screen.dart';
 import 'package:ttp_chat/core/screens/chat/chat_page.dart';
-import 'package:ttp_chat/core/screens/chat/chats_screen.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
 import 'package:ttp_chat/core/widgets/triangle_painter.dart';
@@ -21,28 +19,26 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 class ChatHomeScreen extends StatelessWidget {
 
   final bool isSwitchedAccount;
-  final Map<String, dynamic>? authData;
-  final BrandChatFirebaseTokenResponse? brandFirebaseTokenResponse;
+  final String? accessToken, refreshToken;
 
-  const ChatHomeScreen({Key? key, this.isSwitchedAccount = false, this.authData, this.brandFirebaseTokenResponse}) : super(key: key);
+  const ChatHomeScreen({Key? key, this.isSwitchedAccount = false, this.accessToken, this.refreshToken}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return
       ChangeNotifierProvider<ChatProvider>(
         create: (context) => isSwitchedAccount
-            ? ChatProvider.brandSignIn(isSwitchedAccount, brandFirebaseTokenResponse!)
-            : ChatProvider.userSignIn(isSwitchedAccount, authData!),
-        child: _ChatHomeScreen(isSwitchedAccount, brandFirebaseTokenResponse != null ? brandFirebaseTokenResponse!.brandName : null),
+            ? ChatProvider.brandSignIn(isSwitchedAccount, BrandChatFirebaseTokenResponse())
+            : ChatProvider.userSignIn(isSwitchedAccount, accessToken!, refreshToken!),
+        child: _ChatHomeScreen(isSwitchedAccount),
       );
   }
 }
 
 class _ChatHomeScreen extends StatefulWidget {
   final bool? isSwitchedAccount;
-  final String? brandName;
 
-  const _ChatHomeScreen(this.isSwitchedAccount, [this.brandName]);
+  const _ChatHomeScreen(this.isSwitchedAccount);
 
   @override
   _ChatHomeScreenState createState() => _ChatHomeScreenState();
