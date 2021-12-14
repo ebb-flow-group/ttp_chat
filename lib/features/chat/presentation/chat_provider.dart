@@ -228,10 +228,14 @@ class ChatProvider extends ChangeNotifier {
     selectedTabIndex = 0;
 
     if(FirebaseAuth.instance.currentUser == null){
+      print('CURRENT USER IS NULL');
       getUserFirebaseToken(accessToken!);
     }
     else{
-      print('CURRENT USER IS NULL');
+      FirebaseAuth.instance.currentUser!.reload();
+      apiStatus = ApiStatus.success;
+      notifyListeners();
+      print('CURRENT USER IS NOT NULL');
     }
   }
 
@@ -241,9 +245,13 @@ class ChatProvider extends ChangeNotifier {
 
     if(FirebaseAuth.instance.currentUser == null){
       getBrandFirebaseToken(accessToken!);
+      print('CURRENT BRAND IS NULL');
     }
     else{
-      print('CURRENT BRAND IS NULL');
+      FirebaseAuth.instance.currentUser!.reload();
+      apiStatus = ApiStatus.success;
+      notifyListeners();
+      print('CURRENT BRAND IS NOT NULL');
     }
   }
 
