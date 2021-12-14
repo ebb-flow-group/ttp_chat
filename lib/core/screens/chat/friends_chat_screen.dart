@@ -84,7 +84,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
 
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => ChatPage(selectedRoom, widget.isSwitchedAccount!),
+        builder: (context) => ChatPage(selectedRoom, widget.isSwitchedAccount!, null),
       ),
     );
   }

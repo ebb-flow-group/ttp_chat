@@ -64,7 +64,7 @@ class _MerchantsChatScreenState extends State<MerchantsChatScreen> {
 
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => ChatPage(room, widget.isSwitchedAccount!),
+                      builder: (context) => ChatPage(room, widget.isSwitchedAccount!, null),
                     ),
                   );
                 },

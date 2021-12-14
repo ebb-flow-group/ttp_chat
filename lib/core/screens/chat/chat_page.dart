@@ -13,25 +13,27 @@ import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/theme/style.dart';
 
 class ChatPage extends StatelessWidget {
-  types.Room selectedChatUser;
-  bool isSwitchedAccount;
+  final types.Room selectedChatUser;
+  final bool isSwitchedAccount;
+  final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  ChatPage(this.selectedChatUser, this.isSwitchedAccount);
+  ChatPage(this.selectedChatUser, this.isSwitchedAccount, this.onViewOrderDetailsClick);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ChatProvider>(
       create: (context) => ChatProvider.initialiseAndLoadMessages(
           selectedChatUser, isSwitchedAccount),
-      child: _ChatPage(isSwitchedAccount),
+      child: _ChatPage(isSwitchedAccount, onViewOrderDetailsClick),
     );
   }
 }
 
 class _ChatPage extends StatefulWidget {
   final bool isSwitchedAccount;
+  final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  _ChatPage(this.isSwitchedAccount);
+  _ChatPage(this.isSwitchedAccount, this.onViewOrderDetailsClick);
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -248,34 +250,43 @@ class _ChatPageState extends State<_ChatPage>
                                             const SizedBox(
                                               height: 26.0,
                                             ),
-                                            Container(
-                                              width: MediaQuery.of(context).size.width,
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: Colors.grey[300]!)),
-                                              child: Padding(
-                                                padding:
-                                                const EdgeInsets.symmetric(vertical: 12),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    SvgPicture.asset(
-                                                      'assets/icon/order_details.svg',
-                                                      width: 18,
-                                                      height: 18,
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 10.0,
-                                                    ),
-                                                    Text(
-                                                      'View Order Details',
-                                                      style: TextStyle(
-                                                          color: Theme.of(context).primaryColor,
-                                                          fontSize: 14,
-                                                          fontWeight: FontWeight.w700),
-                                                      textAlign: TextAlign.center,
-                                                    ),
-                                                  ],
+                                            GestureDetector(
+                                              onTap: (){
+                                                widget.onViewOrderDetailsClick!(
+                                                  message.metadata!['id'],
+                                                  message.metadata!['message_type'],
+                                                  message.metadata!['link'] ?? ''
+                                                );
+                                              },
+                                              child: Container(
+                                                width: MediaQuery.of(context).size.width,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: Colors.grey[300]!)),
+                                                child: Padding(
+                                                  padding:
+                                                  const EdgeInsets.symmetric(vertical: 12),
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      SvgPicture.asset(
+                                                        'assets/icon/order_details.svg',
+                                                        width: 18,
+                                                        height: 18,
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 10.0,
+                                                      ),
+                                                      Text(
+                                                        'View Order Details',
+                                                        style: TextStyle(
+                                                            color: Theme.of(context).primaryColor,
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.w700),
+                                                        textAlign: TextAlign.center,
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             )

@@ -11,8 +11,9 @@ import 'package:ttp_chat/theme/style.dart';
 
 class BrandRoomsScreen extends StatefulWidget {
   final bool? isSwitchedAccount;
+  final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const BrandRoomsScreen(this.isSwitchedAccount, {Key? key}) : super(key: key);
+  const BrandRoomsScreen(this.isSwitchedAccount, this.onViewOrderDetailsClick, {Key? key}) : super(key: key);
 
   @override
   _BrandRoomsScreenState createState() => _BrandRoomsScreenState();
@@ -106,7 +107,7 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
             onTap: (){
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => ChatPage(brandList[index], widget.isSwitchedAccount!),
+                  builder: (context) => ChatPage(brandList[index], widget.isSwitchedAccount!, widget.onViewOrderDetailsClick),
                 ),
               );
             },

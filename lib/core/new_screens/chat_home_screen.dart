@@ -22,8 +22,9 @@ class ChatHomeScreen extends StatelessWidget {
 
   final bool isSwitchedAccount;
   final String? accessToken, refreshToken;
+  final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const ChatHomeScreen({Key? key, this.isSwitchedAccount = false, this.accessToken, this.refreshToken}) : super(key: key);
+  const ChatHomeScreen({Key? key, this.isSwitchedAccount = false, this.accessToken, this.refreshToken, this.onViewOrderDetailsClick}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class ChatHomeScreen extends StatelessWidget {
         create: (context) => isSwitchedAccount
             ? ChatProvider.brandSignIn(isSwitchedAccount, accessToken!, refreshToken!)
             : ChatProvider.userSignIn(isSwitchedAccount, accessToken!, refreshToken!),
-        child: _ChatHomeScreen(isSwitchedAccount, accessToken),
+        child: _ChatHomeScreen(isSwitchedAccount, accessToken, onViewOrderDetailsClick),
       );
   }
 }
@@ -40,8 +41,9 @@ class ChatHomeScreen extends StatelessWidget {
 class _ChatHomeScreen extends StatefulWidget {
   final bool? isSwitchedAccount;
   final String? accessToken;
+  final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const _ChatHomeScreen(this.isSwitchedAccount, this.accessToken);
+  const _ChatHomeScreen(this.isSwitchedAccount, this.accessToken, this.onViewOrderDetailsClick);
 
   @override
   _ChatHomeScreenState createState() => _ChatHomeScreenState();
@@ -211,8 +213,8 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         const SizedBox(height: 17),
         _tabs(),
         chatProvider.selectedTabIndex == 0
-        ? BrandRoomsScreen(widget.isSwitchedAccount)
-        : UserRoomsScreen(widget.isSwitchedAccount),
+        ? BrandRoomsScreen(widget.isSwitchedAccount, widget.onViewOrderDetailsClick)
+        : UserRoomsScreen(widget.isSwitchedAccount, widget.onViewOrderDetailsClick),
       ],
     );
   }
@@ -231,7 +233,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
             onTap: (){
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => ChatPage(brandList[index], widget.isSwitchedAccount!),
+                  builder: (context) => ChatPage(brandList[index], widget.isSwitchedAccount!, widget.onViewOrderDetailsClick!),
                 ),
               );
             },
