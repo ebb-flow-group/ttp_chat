@@ -226,13 +226,25 @@ class ChatProvider extends ChangeNotifier {
   ChatProvider.userSignIn(bool isSwitchedAccount, this.accessToken, this.refreshToken) {
     selectedTab = tabs[0];
     selectedTabIndex = 0;
-    getUserFirebaseToken(accessToken!);
+
+    if(FirebaseAuth.instance.currentUser == null){
+      getUserFirebaseToken(accessToken!);
+    }
+    else{
+      print('CURRENT USER IS NULL');
+    }
   }
 
   ChatProvider.brandSignIn(bool isSwitchedAccount, this.accessToken, this.refreshToken){
     selectedTab = tabs[0];
     selectedTabIndex = 0;
-    getBrandFirebaseToken(accessToken!);
+
+    if(FirebaseAuth.instance.currentUser == null){
+      getBrandFirebaseToken(accessToken!);
+    }
+    else{
+      print('CURRENT BRAND IS NULL');
+    }
   }
 
   void userCustomFirebaseTokenSignIn(String firebaseToken) async{
