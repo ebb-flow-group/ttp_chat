@@ -263,25 +263,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),*/
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.image,
-                                  color: Theme.of(context).primaryColor,
-                                  size: 18,
-                                ),
-                                const SizedBox(width: 10),
-                                Text(
-                                  brandList[index].metadata!['last_messages']['type'],
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
+                            getLastMessageWidget(brandList[index].metadata!['last_messages']),
                           ],
                         ),
                       ),
