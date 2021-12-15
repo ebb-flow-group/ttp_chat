@@ -140,7 +140,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                       return const Center(child: CircularProgressIndicator());
                     default:
                       if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return noRoomWidget();
+                        return startChatMessageWidget();
                       }
 
                       if (snapshot.hasError) {
