@@ -270,6 +270,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                                   color: Theme.of(context).primaryColor,
                                   size: 18,
                                 ),
+                                const SizedBox(width: 10),
                                 Text(
                                   brandList[index].metadata!['last_messages']['type'],
                                   style: const TextStyle(
@@ -483,13 +484,100 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     String lastMessage = '';
 
     if(data['type'] == 'image'){
-      lastMessage = 'Image';
+      return Row(
+        children: [
+          Icon(
+            Icons.image,
+            color: Theme.of(context).primaryColor,
+            size: 18,
+          ),
+          const SizedBox(width: 10),
+          const Text(
+            'Image',
+            style: TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.normal,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      );
     }
     else if(data['type'] == 'file'){
-      lastMessage = 'File';
+      return Row(
+        children: [
+          Icon(
+            Icons.file_present,
+            color: Theme.of(context).primaryColor,
+            size: 18,
+          ),
+          const SizedBox(width: 10),
+          const Text(
+            'File',
+            style: TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.normal,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      );
     }
     else if(data['type'] == 'voice'){
-      lastMessage = 'Voice Message';
+      return Row(
+        children: [
+          Icon(
+            Icons.mic,
+            color: Theme.of(context).primaryColor,
+            size: 18,
+          ),
+          const SizedBox(width: 10),
+          const Text(
+            'Voice message',
+            style: TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.normal,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      );
+    }
+    else if(data['type'] == 'custom'){
+      return Row(
+        children: [
+          SvgPicture.asset(
+            'assets/chat_icons/order_history.svg',
+            width: 10,
+            height: 10,
+            color: Theme.of(context).primaryColor,
+          ),
+          const SizedBox(width: 10),
+          const Text(
+            'Order',
+            style: TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.normal,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      );
+    }
+    else if(data['type'] == 'text'){
+      return Text(
+        data['text'],
+        style: const TextStyle(
+          color: Colors.grey,
+          fontWeight: FontWeight.normal,
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      );
     }
 
     return Row(
