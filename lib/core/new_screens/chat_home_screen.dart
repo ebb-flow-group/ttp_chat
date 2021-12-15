@@ -473,7 +473,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
             color: Theme.of(context).primaryColor,
             size: 18,
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 6),
           const Text(
             'Image',
             style: TextStyle(
@@ -494,7 +494,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
             color: Theme.of(context).primaryColor,
             size: 18,
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 6),
           const Text(
             'File',
             style: TextStyle(
@@ -533,11 +533,11 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         children: [
           SvgPicture.asset(
             'assets/chat_icons/order_history.svg',
-            width: 10,
-            height: 10,
+            width: 14,
+            height: 14,
             color: Theme.of(context).primaryColor,
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 6),
           const Text(
             'Order',
             style: TextStyle(
@@ -562,23 +562,6 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
       );
     }
 
-    return Row(
-      children: [
-        Icon(
-          Icons.image,
-          color: Theme.of(context).primaryColor,
-          size: 18,
-        ),
-        Text(
-          lastMessage,
-          style: const TextStyle(
-            color: Colors.grey,
-            fontWeight: FontWeight.normal,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
-    );
+    return const SizedBox();
   }
 }
