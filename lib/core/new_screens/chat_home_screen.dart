@@ -255,9 +255,9 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                               ),
                             ),
                             const SizedBox(height: 4),
-                            const Text(
-                              'Last message',
-                              style: TextStyle(
+                            Text(
+                              brandList[index].metadata!['last_messages']['type'],
+                              style: const TextStyle(
                                 color: Colors.grey,
                                 fontWeight: FontWeight.normal,
                               ),
