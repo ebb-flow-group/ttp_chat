@@ -66,7 +66,6 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   void initState() {
     chatProvider = context.read<ChatProvider>();
     initializeFlutterFire();
-    // getData();
     super.initState();
   }
 
@@ -255,7 +254,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                               ),
                             ),
                             const SizedBox(height: 4),
-                            Text(
+                            /*Text(
                               brandList[index].metadata!['last_messages']['type'],
                               style: const TextStyle(
                                 color: Colors.grey,
@@ -263,6 +262,24 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
+                            ),*/
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.image,
+                                  color: Theme.of(context).primaryColor,
+                                  size: 18,
+                                ),
+                                Text(
+                                  brandList[index].metadata!['last_messages']['type'],
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -462,25 +479,36 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     }
   }
 
-  getData(){
-    setState(() {
-      isLoading = true;
-    });
-    FirebaseChatCore.instance.rooms().listen((event) {
-      setState(() {
-        isLoading = false;
-      });
-      if(event.isEmpty){
-        setState(() {
-          isRoomListEmpty = true;
-        });
-      }
-      else{
-        setState(() {
-          brandListCount = event.where((element) => element.metadata!['other_user_type'] == 'brand').toList().length;
-          userListCount = event.where((element) => element.metadata!['other_user_type'] == 'user').toList().length;
-        });
-      }
-    });
+  Widget getLastMessageWidget(Map<String, dynamic> data){
+    String lastMessage = '';
+
+    if(data['type'] == 'image'){
+      lastMessage = 'Image';
+    }
+    else if(data['type'] == 'file'){
+      lastMessage = 'File';
+    }
+    else if(data['type'] == 'voice'){
+      lastMessage = 'Voice Message';
+    }
+
+    return Row(
+      children: [
+        Icon(
+          Icons.image,
+          color: Theme.of(context).primaryColor,
+          size: 18,
+        ),
+        Text(
+          lastMessage,
+          style: const TextStyle(
+            color: Colors.grey,
+            fontWeight: FontWeight.normal,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
   }
 }
