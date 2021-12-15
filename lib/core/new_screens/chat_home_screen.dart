@@ -142,6 +142,10 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                       if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return noRoomWidget();
                       }
+
+                      if (snapshot.hasError) {
+                        print('BRAND STREAM B ERROR: ${snapshot.error}');
+                      }
                       return brandRoomsListWidget(snapshot);
                   }
 
@@ -229,12 +233,16 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
           var brandList = snapshot.data!;
 
           return GestureDetector(
-            onTap: (){
-              Navigator.of(context).push(
+            onTap: () async{
+              var result = await Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => ChatPage(brandList[index], widget.isSwitchedAccount!, widget.onViewOrderDetailsClick!),
                 ),
               );
+
+              if(result != null){
+                setState(() {});
+              }
             },
             child: Row(
               children: [
