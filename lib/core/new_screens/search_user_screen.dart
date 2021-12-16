@@ -243,6 +243,8 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
 
                             if(exists){
 
+                              existedRoom.remove('createdAt');
+                              existedRoom.remove('updatedAt');
                               types.Room room = types.Room.fromJson(existedRoom);
 
                               types.Room selectedRoom = types.Room(
