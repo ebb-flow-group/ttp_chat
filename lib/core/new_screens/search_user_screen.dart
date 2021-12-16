@@ -381,7 +381,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
       for (var element in snapshot.docs) {
         var singleRoom = element.data() as Map<String, dynamic>;
         print('SINGLE ROOM DATA: $singleRoom');
-        List<String> userIdsList  = singleRoom['userIds'] as List<String>;
+        List<String> userIdsList  = singleRoom['userIds'].cast<String>();
         print('SINGLE ROOM USER IDS LIST: $userIdsList');
         if(userIdsList.contains(docId)){
           print('SINGLE ROOM USER IDS LIST EXISTS: $docId');
