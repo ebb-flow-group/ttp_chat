@@ -112,7 +112,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SearchUserScreen(accessToken: widget.accessToken,)));
+                            builder: (context) => SearchUserScreen(accessToken: widget.accessToken, onViewOrderDetailsClick: widget.onViewOrderDetailsClick!)));
                   },
                   icon: SvgPicture.asset(
                     'assets/chat_icons/start_new_chat.svg',

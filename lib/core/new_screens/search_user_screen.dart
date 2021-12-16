@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
+import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
 import 'package:ttp_chat/core/widgets/triangle_painter.dart';
 import 'package:ttp_chat/features/chat/domain/search_user_model.dart';
@@ -11,11 +12,13 @@ import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/models/base_model.dart';
 import 'package:ttp_chat/network/api_service.dart';
 import 'package:ttp_chat/theme/style.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class SearchUserScreen extends StatefulWidget {
   final String? accessToken;
+  final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const SearchUserScreen({Key? key, this.accessToken}) : super(key: key);
+  const SearchUserScreen({Key? key, this.accessToken, this.onViewOrderDetailsClick}) : super(key: key);
 
   @override
   _SearchUserScreenState createState() => _SearchUserScreenState();
@@ -26,6 +29,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
   List<Users> usersList = [];
   int selectedTabIndex = 0;
   bool documentExists = false;
+  Map<String, dynamic> existedRoom = {};
 
   @override
   void initState() {
@@ -238,7 +242,23 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                             bool exists = await checkExist(brandsList[index].username!);
 
                             if(exists){
-                              print("SAPADLAAAAAAAA");
+
+                              types.Room room = types.Room.fromJson(existedRoom);
+
+                              types.Room selectedRoom = types.Room(
+                                  id: room.id,
+                                  type: types.RoomType.direct,
+                                  name: room.name,
+                                  imageUrl: room.imageUrl,
+                                  userIds: room.userIds,
+                                  users: room.users
+                              );
+
+                              await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ChatPage(selectedRoom, false, widget.onViewOrderDetailsClick!),
+                                ),
+                              );
                             }
                             else{
                               print('NAHIII SAPADALAAAA');
@@ -380,12 +400,11 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
 
       for (var element in snapshot.docs) {
         var singleRoom = element.data() as Map<String, dynamic>;
-        print('SINGLE ROOM DATA: $singleRoom');
         List<String> userIdsList  = singleRoom['userIds'].cast<String>();
-        print('SINGLE ROOM USER IDS LIST: $userIdsList');
         if(userIdsList.contains(docId)){
-          print('SINGLE ROOM USER IDS LIST EXISTS: $docId');
+          existedRoom = singleRoom;
           documentExists = true;
+          break;
         }
       }
       return documentExists;
