@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
@@ -23,6 +25,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
   List<Brands> brandsList = [];
   List<Users> usersList = [];
   int selectedTabIndex = 0;
+  bool documentExists = false;
 
   @override
   void initState() {
@@ -230,7 +233,17 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                           ),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () async {
+
+                            bool exists = await checkExist(brandsList[index].username!);
+
+                            if(exists){
+                              print("SAPADLAAAAAAAA");
+                            }
+                            else{
+                              print('NAHIII SAPADALAAAA');
+                            }
+                          },
                           icon: SvgPicture.asset(
                             'assets/chat_icons/chat.svg',
                             width: 20,
@@ -317,7 +330,9 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                           ),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+
+                          },
                           icon: SvgPicture.asset(
                             'assets/chat_icons/chat.svg',
                             width: 20,
@@ -353,5 +368,32 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
               ],
             ),
           );
+  }
+
+  Future<bool> checkExist(String docId) async {
+    
+    try{
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('rooms')
+          .where('userIds', arrayContains: FirebaseAuth.instance.currentUser!.uid)
+          .get();
+
+      for (var element in snapshot.docs) {
+        var singleRoom = element.data() as Map<String, dynamic>;
+        print('SINGLE ROOM DATA: $singleRoom');
+        List<String> userIdsList  = singleRoom['userIds'] as List<String>;
+        print('SINGLE ROOM USER IDS LIST: $userIdsList');
+        if(userIdsList.contains(docId)){
+          print('SINGLE ROOM USER IDS LIST EXISTS: $docId');
+          documentExists = true;
+        }
+      }
+      return documentExists;
+    }
+    catch (e){
+      // If any error
+      print('CHECK EXISTS ERROR $e');
+      return false;
+    }
   }
 }
