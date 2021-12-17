@@ -243,17 +243,13 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
 
                             if(exists){
 
-                              existedRoom.remove('createdAt');
-                              existedRoom.remove('updatedAt');
-                              types.Room room = types.Room.fromJson(existedRoom);
-
                               types.Room selectedRoom = types.Room(
-                                  id: room.id,
+                                  id: existedRoom['id'],
                                   type: types.RoomType.direct,
-                                  name: room.name,
-                                  imageUrl: room.imageUrl,
-                                  userIds: room.userIds,
-                                  users: room.users
+                                  name: existedRoom['name'],
+                                  imageUrl: existedRoom['imageUrl'],
+                                  userIds: existedRoom['userIds'],
+                                  users: existedRoom['users'],
                               );
 
                               await Navigator.of(context).push(
@@ -405,6 +401,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
         List<String> userIdsList  = singleRoom['userIds'].cast<String>();
         if(userIdsList.contains(docId)){
           existedRoom = singleRoom;
+          existedRoom['id'] = element.id;
           documentExists = true;
           break;
         }
