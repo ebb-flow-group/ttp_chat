@@ -261,7 +261,6 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                               );
                             }
                             else{
-                              print('NAHIII SAPADALAAAA');
                               await getUserFromFireStore(brandsList[index].username!);
 
                               final room = await FirebaseChatCore.instance.createRoom(user!);
@@ -472,11 +471,9 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
 
       types.User result = types.User(
         id: snapshot.id,
-        createdAt: data['createdAt'],
         firstName: data['firstName'],
         lastName: data['lastName'],
         imageUrl: data['imageUrl'],
-        updatedAt: data['updatedAt']
       );
 
       user = result;
