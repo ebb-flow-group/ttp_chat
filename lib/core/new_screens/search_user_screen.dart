@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
@@ -260,6 +261,28 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                             }
                             else{
                               print('NAHIII SAPADALAAAA');
+                              types.User? user = await getUserFromFireStore(brandsList[index].username!);
+
+                              final room = await FirebaseChatCore.instance.createRoom(user!);
+
+                              print('ROOM NAME: ${room.name}');
+                              print('ROOM ID: ${room.name}');
+                              print('ROOM ID: ${room.userIds}');
+
+                              types.Room selectedRoom = types.Room(
+                                  id: room.id,
+                                  type: types.RoomType.direct,
+                                  name: room.name,
+                                  imageUrl: room.imageUrl,
+                                  userIds: room.userIds,
+                                  users: room.users
+                              );
+
+                              await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ChatPage(selectedRoom, false, widget.onViewOrderDetailsClick!),
+                                ),
+                              );
                             }
                           },
                           icon: SvgPicture.asset(
@@ -348,8 +371,29 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                           ),
                         ),
                         IconButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            bool exists = await checkExist(brandsList[index].username!);
 
+                            if(exists){
+
+                              types.Room selectedRoom = types.Room(
+                                id: existedRoom['id'],
+                                type: types.RoomType.direct,
+                                name: existedRoom['name'],
+                                imageUrl: existedRoom['imageUrl'],
+                                userIds: existedRoom['userIds'],
+                                users: [],
+                              );
+
+                              await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ChatPage(selectedRoom, false, widget.onViewOrderDetailsClick!),
+                                ),
+                              );
+                            }
+                            else{
+                              print('NAHIII SAPADALAAAA');
+                            }
                           },
                           icon: SvgPicture.asset(
                             'assets/chat_icons/chat.svg',
@@ -413,5 +457,36 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
       print('CHECK EXISTS ERROR $e');
       return false;
     }
+  }
+
+  Future<types.User?> getUserFromFireStore(String userId) async{
+
+    types.User? user;
+
+    try{
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      var data = snapshot.data() as Map<String, dynamic>;
+
+      user = types.User(
+        id: snapshot.id,
+        createdAt: data['createdAt'],
+        firstName: data['firstName'],
+        lastName: data['lastName'],
+        imageUrl: data['imageUrl'],
+        updatedAt: data['updatedAt']
+      );
+
+      return user;
+    }
+    catch (e){
+      // If any error
+      print('GET USER ERROR $e');
+    }
+
+    return user;
   }
 }
