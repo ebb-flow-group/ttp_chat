@@ -249,7 +249,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                                   name: existedRoom['name'],
                                   imageUrl: existedRoom['imageUrl'],
                                   userIds: existedRoom['userIds'],
-                                  users: existedRoom['users'],
+                                  users: [],
                               );
 
                               await Navigator.of(context).push(
