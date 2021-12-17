@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
@@ -136,10 +138,9 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          const Text(
-                            '11:30 AM',
-                            // DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(widget.chatUsersModel.lastMessageTimeStamp! * 1000)),
-                            style: TextStyle(
+                          Text(
+                            getLastMessageDateTime(userList[index].metadata!['last_messages']['createdAt'] as Timestamp),
+                            style: const TextStyle(
                                 color: Colors.grey,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 12
@@ -334,5 +335,10 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
     }
 
     return const SizedBox();
+  }
+
+  String getLastMessageDateTime(Timestamp timeStamp){
+    DateTime d = timeStamp.toDate();
+    return DateFormat('hh:mm a').format(d);
   }
 }

@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ttp_chat/core/new_screens/brand_rooms_screen.dart';
 import 'package:ttp_chat/core/new_screens/chat_error_screen.dart';
@@ -262,15 +264,6 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                               ),
                             ),
                             const SizedBox(height: 4),
-                            /*Text(
-                              brandList[index].metadata!['last_messages']['type'],
-                              style: const TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.normal,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),*/
                             getLastMessageWidget(brandList[index].metadata!['last_messages']),
                           ],
                         ),
@@ -278,10 +271,9 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          const Text(
-                            '11:30 AM',
-                            // DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(widget.chatUsersModel.lastMessageTimeStamp! * 1000)),
-                            style: TextStyle(
+                          Text(
+                            getLastMessageDateTime(brandList[index].metadata!['last_messages']['createdAt'] as Timestamp),
+                            style: const TextStyle(
                                 color: Colors.grey,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 12
@@ -571,5 +563,10 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     }
 
     return const SizedBox();
+  }
+
+  String getLastMessageDateTime(Timestamp timeStamp){
+    DateTime d = timeStamp.toDate();
+    return DateFormat('hh:mm a').format(d);
   }
 }
