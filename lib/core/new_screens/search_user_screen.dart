@@ -31,6 +31,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
   int selectedTabIndex = 0;
   bool documentExists = false;
   Map<String, dynamic> existedRoom = {};
+  types.User? user;
 
   @override
   void initState() {
@@ -461,8 +462,6 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
 
   Future<types.User?> getUserFromFireStore(String userId) async{
 
-    types.User? user;
-
     try{
       DocumentSnapshot snapshot = await FirebaseFirestore.instance
           .collection('users')
@@ -479,8 +478,6 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
         imageUrl: data['imageUrl'],
         updatedAt: data['updatedAt']
       );
-
-      return user;
     }
     catch (e){
       // If any error
