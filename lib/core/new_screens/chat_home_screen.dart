@@ -125,33 +125,33 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
           ],
           centerTitle: false,
         ),
-        body: chatProvider.isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : chatProvider.isRoomListEmpty
-            ? startChatMessageWidget()
-            : widget.isSwitchedAccount!
-              ? StreamBuilder<List<types.Room>>(
-                stream: /*widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : */FirebaseChatCore.instance.rooms(),
-                initialData: const [],
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState){
-                    case ConnectionState.none:
-                    case ConnectionState.waiting:
-                      return const Center(child: CircularProgressIndicator());
-                    default:
-                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return startChatMessageWidget();
-                      }
+        body: widget.isSwitchedAccount!
+            ? StreamBuilder<List<types.Room>>(
+          stream: /*widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : */FirebaseChatCore.instance.rooms(),
+          initialData: const [],
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState){
+              case ConnectionState.none:
+              case ConnectionState.waiting:
+                return const Center(child: CircularProgressIndicator());
+              default:
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return startChatMessageWidget();
+                }
 
-                      if (snapshot.hasError) {
-                        print('BRAND STREAM B ERROR: ${snapshot.error}');
-                      }
-                      return brandRoomsListWidget(snapshot);
-                  }
+                if (snapshot.hasError) {
+                  print('BRAND STREAM B ERROR: ${snapshot.error}');
+                }
+                return brandRoomsListWidget(snapshot);
+            }
 
-                },
-              )
-              : roomsListWidget());
+          },
+        )
+            : chatProvider.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : chatProvider.isRoomListEmpty
+                ? startChatMessageWidget()
+                : roomsListWidget());
   }
 
   Widget startChatMessageWidget() {
