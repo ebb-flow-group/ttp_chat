@@ -33,6 +33,9 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
             case ConnectionState.waiting:
               return const Center(child: CircularProgressIndicator());
             default:
+              if (snapshot.hasError) {
+                print('BRAND STREAM B ERROR: ${snapshot.error}');
+              }
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return noRoomWidget();
               }
