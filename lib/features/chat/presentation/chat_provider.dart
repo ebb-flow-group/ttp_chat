@@ -233,6 +233,7 @@ class ChatProvider extends ChangeNotifier {
     }
     else{
       FirebaseAuth.instance.currentUser!.reload();
+      getCountData();
       apiStatus = ApiStatus.success;
       notifyListeners();
       print('CURRENT USER IS NOT NULL');
@@ -249,6 +250,7 @@ class ChatProvider extends ChangeNotifier {
     }
     else{
       FirebaseAuth.instance.currentUser!.reload();
+      getCountData();
       apiStatus = ApiStatus.success;
       notifyListeners();
       print('CURRENT BRAND IS NOT NULL');

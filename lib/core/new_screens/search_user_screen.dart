@@ -392,7 +392,28 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                               );
                             }
                             else{
-                              print('NAHIII SAPADALAAAA');
+                              await getUserFromFireStore(brandsList[index].username!);
+
+                              final room = await FirebaseChatCore.instance.createRoom(user!);
+
+                              print('ROOM NAME: ${room.name}');
+                              print('ROOM ID: ${room.name}');
+                              print('ROOM ID: ${room.userIds}');
+
+                              types.Room selectedRoom = types.Room(
+                                  id: room.id,
+                                  type: types.RoomType.direct,
+                                  name: room.name,
+                                  imageUrl: room.imageUrl,
+                                  userIds: room.userIds,
+                                  users: room.users
+                              );
+
+                              await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ChatPage(selectedRoom, false, widget.onViewOrderDetailsClick!),
+                                ),
+                              );
                             }
                           },
                           icon: SvgPicture.asset(
