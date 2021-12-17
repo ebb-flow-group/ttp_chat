@@ -141,8 +141,9 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
+                            brandList[index].metadata!['last_messages']['createdAt'].toString(),
                             // '11:30 AM',
-                            DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(brandList[index].metadata!['last_messages']['createdAt'] * 1000)),
+                            // DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(brandList[index].metadata!['last_messages']['createdAt'] * 1000)),
                             style: const TextStyle(
                                 color: Colors.grey,
                                 fontWeight: FontWeight.w600,
