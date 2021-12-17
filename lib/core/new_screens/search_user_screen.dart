@@ -262,7 +262,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                             }
                             else{
                               print('NAHIII SAPADALAAAA');
-                              types.User? user = await getUserFromFireStore(brandsList[index].username!);
+                              await getUserFromFireStore(brandsList[index].username!);
 
                               final room = await FirebaseChatCore.instance.createRoom(user!);
 
@@ -460,7 +460,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
     }
   }
 
-  Future<types.User?> getUserFromFireStore(String userId) async{
+  getUserFromFireStore(String userId) async{
 
     try{
       DocumentSnapshot snapshot = await FirebaseFirestore.instance
@@ -470,7 +470,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
 
       var data = snapshot.data() as Map<String, dynamic>;
 
-      user = types.User(
+      types.User result = types.User(
         id: snapshot.id,
         createdAt: data['createdAt'],
         firstName: data['firstName'],
@@ -478,12 +478,14 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
         imageUrl: data['imageUrl'],
         updatedAt: data['updatedAt']
       );
+
+      user = result;
     }
     catch (e){
       // If any error
       print('GET USER ERROR $e');
     }
 
-    return user;
+    return user!;
   }
 }
