@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
@@ -139,10 +140,10 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          const Text(
-                            '11:30 AM',
-                            // DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(widget.chatUsersModel.lastMessageTimeStamp! * 1000)),
-                            style: TextStyle(
+                          Text(
+                            // '11:30 AM',
+                            DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(brandList[index].metadata!['last_messages']['createdAt'] * 1000)),
+                            style: const TextStyle(
                                 color: Colors.grey,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 12
