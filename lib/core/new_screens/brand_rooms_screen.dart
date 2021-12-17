@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -141,9 +142,7 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            brandList[index].metadata!['last_messages']['createdAt'].toString(),
-                            // '11:30 AM',
-                            // DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(brandList[index].metadata!['last_messages']['createdAt'] * 1000)),
+                            getLastMessageDateTime(brandList[index].metadata!['last_messages']['createdAt'] as Timestamp),
                             style: const TextStyle(
                                 color: Colors.grey,
                                 fontWeight: FontWeight.w600,
@@ -339,5 +338,10 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
     }
 
     return const SizedBox();
+  }
+
+  String getLastMessageDateTime(Timestamp timeStamp){
+    DateTime d = timeStamp.toDate();
+    return DateFormat('hh:mm a').format(d);
   }
 }
