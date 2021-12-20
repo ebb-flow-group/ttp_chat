@@ -142,7 +142,7 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            getLastMessageDateTime(brandList[index].metadata!['last_messages']['createdAt'] as Timestamp),
+                            getLastMessageDateTime(brandList[index].metadata!['last_messages']),
                             style: const TextStyle(
                                 color: Colors.grey,
                                 fontWeight: FontWeight.w600,
@@ -240,108 +240,117 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
   Widget getLastMessageWidget(Map<String, dynamic> data){
     String lastMessage = '';
 
-    if(data['type'] == 'image'){
-      return Row(
-        children: [
-          Icon(
-            Icons.image,
-            color: Theme.of(context).primaryColor,
-            size: 18,
-          ),
-          const SizedBox(width: 6),
-          const Text(
-            'Image',
-            style: TextStyle(
-              color: Colors.grey,
-              fontWeight: FontWeight.normal,
+    if(data.isNotEmpty){
+      if(data['type'] == 'image'){
+        return Row(
+          children: [
+            Icon(
+              Icons.image,
+              color: Theme.of(context).primaryColor,
+              size: 18,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      );
-    }
-    else if(data['type'] == 'file'){
-      return Row(
-        children: [
-          Icon(
-            Icons.file_present,
-            color: Theme.of(context).primaryColor,
-            size: 18,
-          ),
-          const SizedBox(width: 6),
-          const Text(
-            'File',
-            style: TextStyle(
-              color: Colors.grey,
-              fontWeight: FontWeight.normal,
+            const SizedBox(width: 6),
+            const Text(
+              'Image',
+              style: TextStyle(
+                color: Colors.grey,
+                fontWeight: FontWeight.normal,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      );
-    }
-    else if(data['type'] == 'voice'){
-      return Row(
-        children: [
-          Icon(
-            Icons.mic,
-            color: Theme.of(context).primaryColor,
-            size: 18,
-          ),
-          const SizedBox(width: 10),
-          const Text(
-            'Voice message',
-            style: TextStyle(
-              color: Colors.grey,
-              fontWeight: FontWeight.normal,
+          ],
+        );
+      }
+      else if(data['type'] == 'file'){
+        return Row(
+          children: [
+            Icon(
+              Icons.file_present,
+              color: Theme.of(context).primaryColor,
+              size: 18,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      );
-    }
-    else if(data['type'] == 'custom'){
-      return Row(
-        children: [
-          SvgPicture.asset(
-            'assets/chat_icons/order_history.svg',
-            width: 14,
-            height: 14,
-            color: Theme.of(context).primaryColor,
-          ),
-          const SizedBox(width: 6),
-          const Text(
-            'Order',
-            style: TextStyle(
-              color: Colors.grey,
-              fontWeight: FontWeight.normal,
+            const SizedBox(width: 6),
+            const Text(
+              'File',
+              style: TextStyle(
+                color: Colors.grey,
+                fontWeight: FontWeight.normal,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+          ],
+        );
+      }
+      else if(data['type'] == 'voice'){
+        return Row(
+          children: [
+            Icon(
+              Icons.mic,
+              color: Theme.of(context).primaryColor,
+              size: 18,
+            ),
+            const SizedBox(width: 10),
+            const Text(
+              'Voice message',
+              style: TextStyle(
+                color: Colors.grey,
+                fontWeight: FontWeight.normal,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        );
+      }
+      else if(data['type'] == 'custom'){
+        return Row(
+          children: [
+            SvgPicture.asset(
+              'assets/chat_icons/order_history.svg',
+              width: 14,
+              height: 14,
+              color: Theme.of(context).primaryColor,
+            ),
+            const SizedBox(width: 6),
+            const Text(
+              'Order',
+              style: TextStyle(
+                color: Colors.grey,
+                fontWeight: FontWeight.normal,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        );
+      }
+      else if(data['type'] == 'text'){
+        return Text(
+          data['text'],
+          style: const TextStyle(
+            color: Colors.grey,
+            fontWeight: FontWeight.normal,
           ),
-        ],
-      );
-    }
-    else if(data['type'] == 'text'){
-      return Text(
-        data['text'],
-        style: const TextStyle(
-          color: Colors.grey,
-          fontWeight: FontWeight.normal,
-        ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      );
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        );
+      }
     }
 
     return const SizedBox();
   }
 
-  String getLastMessageDateTime(Timestamp timeStamp){
-    DateTime d = timeStamp.toDate();
-    return DateFormat('hh:mm a').format(d);
+  String getLastMessageDateTime(Map<String, dynamic> lastMessageData){
+
+    String formattedDate = '';
+
+    if(lastMessageData.isNotEmpty){
+      Timestamp timestamp = ['createdAt'] as Timestamp;
+      DateTime d = timestamp.toDate();
+      formattedDate = DateFormat('hh:mm a').format(d);
+    }
+    return formattedDate;
   }
 }
