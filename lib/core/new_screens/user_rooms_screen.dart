@@ -6,6 +6,7 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:ttp_chat/core/new_screens/search_user_screen.dart';
 import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
@@ -13,9 +14,10 @@ import 'package:ttp_chat/theme/style.dart';
 
 class UserRoomsScreen extends StatefulWidget {
   final bool? isSwitchedAccount;
+  final String accessToken;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const UserRoomsScreen(this.isSwitchedAccount, this.onViewOrderDetailsClick, {Key? key}) : super(key: key);
+  const UserRoomsScreen(this.isSwitchedAccount, this.accessToken, this.onViewOrderDetailsClick, {Key? key}) : super(key: key);
 
   @override
   _UserRoomsScreenState createState() => _UserRoomsScreenState();
@@ -85,10 +87,10 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
                 style: appBarTitleStyle(context).copyWith(fontSize: 14),
               ),
               onPressed: () {
-                /*Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => SearchUserScreen()));*/
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SearchUserScreen(accessToken: widget.accessToken, onViewOrderDetailsClick: widget.onViewOrderDetailsClick!)));
               })
         ],
       ),

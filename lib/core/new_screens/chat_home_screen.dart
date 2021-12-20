@@ -195,10 +195,10 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                 style: appBarTitleStyle(context).copyWith(fontSize: 14),
               ),
               onPressed: () {
-                /*Navigator.push(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => SearchUserScreen()));*/
+                      builder: (context) => const SearchUserScreen()));
               })
         ],
       ),
@@ -218,8 +218,8 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         const SizedBox(height: 17),
         _tabs(),
         chatProvider.selectedTabIndex == 0
-        ? BrandRoomsScreen(widget.isSwitchedAccount, widget.onViewOrderDetailsClick)
-        : UserRoomsScreen(widget.isSwitchedAccount, widget.onViewOrderDetailsClick),
+        ? BrandRoomsScreen(widget.isSwitchedAccount, widget.accessToken!, widget.onViewOrderDetailsClick)
+        : UserRoomsScreen(widget.isSwitchedAccount, widget.accessToken!, widget.onViewOrderDetailsClick),
       ],
     );
   }
