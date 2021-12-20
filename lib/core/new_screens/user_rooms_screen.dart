@@ -344,7 +344,7 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
     String formattedDate = '';
 
     if(lastMessageData.isNotEmpty){
-      Timestamp timestamp = ['createdAt'] as Timestamp;
+      Timestamp timestamp = lastMessageData['createdAt'] as Timestamp;
       DateTime d = timestamp.toDate();
       formattedDate = DateFormat('hh:mm a').format(d);
     }

@@ -572,7 +572,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     String formattedDate = '';
 
     if(lastMessageData.isNotEmpty){
-      Timestamp timestamp = ['createdAt'] as Timestamp;
+      Timestamp timestamp = lastMessageData['createdAt'] as Timestamp;
       DateTime d = timestamp.toDate();
       formattedDate = DateFormat('hh:mm a').format(d);
     }

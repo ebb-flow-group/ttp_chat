@@ -347,7 +347,7 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
     String formattedDate = '';
 
     if(lastMessageData.isNotEmpty){
-      Timestamp timestamp = ['createdAt'] as Timestamp;
+      Timestamp timestamp = lastMessageData['createdAt'] as Timestamp;
       DateTime d = timestamp.toDate();
       formattedDate = DateFormat('hh:mm a').format(d);
     }
