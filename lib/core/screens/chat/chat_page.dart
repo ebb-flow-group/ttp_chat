@@ -60,6 +60,8 @@ class _ChatPageState extends State<_ChatPage>
 
     offset = Tween<Offset>(begin: const Offset(-2.0, 0.0), end: Offset.zero)
         .animate(controller);
+
+    updateUnreadMessageStatus();
   }
 
   @override
@@ -726,6 +728,30 @@ class _ChatPageState extends State<_ChatPage>
     }
     else{
       return '';
+    }
+  }
+
+  void updateUnreadMessageStatus() async{
+    try{
+      final collection = await FirebaseFirestore.instance
+          .collection('rooms')
+          .doc(chatProvider.selectedChatUser!.id)
+          .collection('messages')
+          .where('status', isEqualTo: 'sent')
+          .get();
+
+
+      for(QueryDocumentSnapshot<Map<String, dynamic>> singleMessage in collection.docs){
+        FirebaseFirestore.instance
+            .collection('rooms')
+            .doc(chatProvider.selectedChatUser!.id)
+            .collection('messages')
+            .doc(singleMessage.id)
+            .update({'status': 'delivered'});
+      }
+    }
+    catch (e, s){
+      print('UPDATE UNREAD MESSAGE STATUS ERROR CAUGHT: $e\n$s');
     }
   }
 }
