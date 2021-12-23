@@ -374,7 +374,7 @@ packages:
     description:
       path: "."
       ref: voice_message
-      resolved-ref: "844bfb57d0d5ed93406b1e90d9289108db5cda30"
+      resolved-ref: "093dd9cb7b9db8e63d12b517e1af789aec149265"
       url: "https://github.com/ebb-flow-group/flutter_firebase_chat_core"
     source: git
     version: "1.3.1"
