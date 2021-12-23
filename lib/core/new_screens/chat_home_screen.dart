@@ -280,21 +280,23 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                             ),
                           ),
                           const SizedBox(height: 6),
-                          Container(
+                          brandList[index].metadata!['unread_message_count'] != 0
+                              ? Container(
                             alignment: Alignment.center,
                             padding: const EdgeInsets.all(3),
                             decoration: const BoxDecoration(
                               color: Colors.red,
                             ),
-                            child: const Text(
-                              '3',
-                              style: TextStyle(
+                            child: Text(
+                              brandList[index].metadata!['unread_message_count'].toString(),
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
                                   height: 1
                               ),
                             ),
                           )
+                              : const SizedBox()
                         ],
                       ),
                     ],
