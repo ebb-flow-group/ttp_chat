@@ -196,9 +196,9 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
               ),
               onPressed: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SearchUserScreen()));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SearchUserScreen(accessToken: widget.accessToken, onViewOrderDetailsClick: widget.onViewOrderDetailsClick!)));
               })
         ],
       ),
