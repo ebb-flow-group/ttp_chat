@@ -124,12 +124,18 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
           var brandList = snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'brand').toList();
 
           return GestureDetector(
-            onTap: (){
-              Navigator.of(context).push(
+            onTap: () async {
+              var result = await Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => ChatPage(brandList[index], widget.isSwitchedAccount!, widget.onViewOrderDetailsClick),
                 ),
               );
+
+              if(result == null){
+                setState(() {
+                  stream = FirebaseChatCore.instance.rooms();
+                });
+              }
             },
             child: Row(
               children: [
