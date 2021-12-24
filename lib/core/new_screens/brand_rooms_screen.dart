@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -23,12 +25,24 @@ class BrandRoomsScreen extends StatefulWidget {
 }
 
 class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
+
+  late Stream<List<types.Room>> stream;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    stream = FirebaseChatCore.instance.rooms();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: StreamBuilder<List<types.Room>>(
-        stream: /*widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : */FirebaseChatCore.instance.rooms(),
+        stream: stream,
+        //stream: /*widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : */FirebaseChatCore.instance.rooms(),
         initialData: const [],
         builder: (context, snapshot) {
           switch (snapshot.connectionState){
