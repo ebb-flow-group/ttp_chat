@@ -737,6 +737,7 @@ class _ChatPageState extends State<_ChatPage>
           .collection('rooms')
           .doc(chatProvider.selectedChatUser!.id)
           .collection('messages')
+          .where('authorId', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)
           .where('status', isEqualTo: 'sent')
           .get();
 
