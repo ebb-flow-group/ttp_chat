@@ -372,7 +372,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                         ),
                         IconButton(
                           onPressed: () async {
-                            bool exists = await checkExist(brandsList[index].username!);
+                            bool exists = await checkExist(usersList[index].phoneNumber!);
 
                             if(exists){
 
