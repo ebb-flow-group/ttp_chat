@@ -392,7 +392,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                               );
                             }
                             else{
-                              await getUserFromFireStore(brandsList[index].username!);
+                              await getUserFromFireStore(usersList[index].phoneNumber!);
 
                               final room = await FirebaseChatCore.instance.createRoom(user!);
 
