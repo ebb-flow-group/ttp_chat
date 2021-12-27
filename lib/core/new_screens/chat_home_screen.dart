@@ -64,10 +64,13 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
 
   int brandListCount = 0, userListCount = 0;
 
+  late Stream<List<types.Room>> stream;
+
   @override
   void initState() {
     chatProvider = context.read<ChatProvider>();
     initializeFlutterFire();
+    stream = FirebaseChatCore.instance.rooms();
     super.initState();
   }
 
@@ -129,7 +132,8 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         ),
         body: widget.isSwitchedAccount!
             ? StreamBuilder<List<types.Room>>(
-          stream: /*widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : */FirebaseChatCore.instance.rooms(),
+          stream: stream,
+          // stream: /*widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : */FirebaseChatCore.instance.rooms(),
           initialData: const [],
           builder: (context, snapshot) {
             switch (snapshot.connectionState){
@@ -242,8 +246,10 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                 ),
               );
 
-              if(result != null){
-                setState(() {});
+              if(result == null){
+                setState(() {
+                  stream = FirebaseChatCore.instance.rooms();
+                });
               }
             },
             child: Row(

@@ -24,12 +24,24 @@ class UserRoomsScreen extends StatefulWidget {
 }
 
 class _UserRoomsScreenState extends State<UserRoomsScreen> {
+
+  late Stream<List<types.Room>> stream;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    stream = FirebaseChatCore.instance.rooms();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: StreamBuilder<List<types.Room>>(
-        stream: /*widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : */FirebaseChatCore.instance.rooms(),
+        stream: stream,
+        // stream: /*widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : */FirebaseChatCore.instance.rooms(),
         initialData: const [],
         builder: (context, snapshot) {
           switch (snapshot.connectionState){
@@ -108,12 +120,18 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
           var userList = snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'user').toList();
 
           return GestureDetector(
-            onTap: (){
-              Navigator.of(context).push(
+            onTap: () async {
+              var result = await Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => ChatPage(userList[index], widget.isSwitchedAccount!, widget.onViewOrderDetailsClick),
                 ),
               );
+
+              if(result == null){
+                setState(() {
+                  stream = FirebaseChatCore.instance.rooms();
+                });
+              }
             },
             child: Row(
               children: [
