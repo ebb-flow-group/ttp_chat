@@ -232,7 +232,7 @@ class ChatProvider extends ChangeNotifier {
       getUserFirebaseToken(accessToken!);
     }
     else{
-      FirebaseAuth.instance.currentUser!.reload();
+      // FirebaseAuth.instance.currentUser!.reload();
       getCountData();
       apiStatus = ApiStatus.success;
       notifyListeners();
@@ -249,7 +249,7 @@ class ChatProvider extends ChangeNotifier {
       print('CURRENT BRAND IS NULL');
     }
     else{
-      FirebaseAuth.instance.currentUser!.reload();
+      // FirebaseAuth.instance.currentUser!.reload();
       getCountData();
       apiStatus = ApiStatus.success;
       notifyListeners();
