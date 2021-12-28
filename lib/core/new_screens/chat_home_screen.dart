@@ -80,7 +80,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-
+    FirebaseChatCore.instance.firebaseUser = null as User;
   }
 
   @override
