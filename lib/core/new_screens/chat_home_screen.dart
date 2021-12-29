@@ -30,8 +30,7 @@ class ChatHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-      ChangeNotifierProvider<ChatProvider>(
+    return ChangeNotifierProvider<ChatProvider>(
         create: (context) => isSwitchedAccount
             ? ChatProvider.brandSignIn(isSwitchedAccount, accessToken!, refreshToken!)
             : ChatProvider.userSignIn(isSwitchedAccount, accessToken!, refreshToken!),
@@ -70,7 +69,11 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   void initState() {
     chatProvider = context.read<ChatProvider>();
     initializeFlutterFire();
-    stream = FirebaseChatCore.instance.rooms();
+
+    if(FirebaseAuth.instance.currentUser != null) {
+      stream = FirebaseChatCore.instance.rooms();
+    }
+
     super.initState();
   }
 
