@@ -11,22 +11,19 @@ import 'package:ttp_chat/network/api_service.dart';
 import 'package:ttp_chat/utils/show_message.dart';
 
 class AllChatScreen extends StatefulWidget {
-
   final bool? isSwitchedAccount;
 
-  AllChatScreen(this.isSwitchedAccount);
+  const AllChatScreen(this.isSwitchedAccount, {Key? key}) : super(key: key);
 
   @override
   _AllChatScreenState createState() => _AllChatScreenState();
 }
 
 class _AllChatScreenState extends State<AllChatScreen> {
-
   late ChatProvider chatProvider;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     chatProvider = context.read<ChatProvider>();
@@ -72,23 +69,23 @@ class _AllChatScreenState extends State<AllChatScreen> {
             ? const SizedBox()
             : const SizedBox(height: 8),
         chatProvider.chatSignInModel!.brandFirebaseTokenList!.isEmpty
-        ? const SizedBox()
-        : GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => UserAccounts(
-                        chatProvider.chatSignInModel!.brandFirebaseTokenList!)));
-          },
-          child: Text(
-            'Brand managing >',
-            style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor),
-          ),
-        ),
+            ? const SizedBox()
+            : GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserAccounts(chatProvider
+                              .chatSignInModel!.brandFirebaseTokenList!)));
+                },
+                child: Text(
+                  'Brand managing >',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor),
+                ),
+              ),
         const SizedBox(height: 40),
         Row(
           children: [
@@ -191,7 +188,7 @@ class UserWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    usersModel.fullName!,
+                    usersModel.fullName ?? "",
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                     ),

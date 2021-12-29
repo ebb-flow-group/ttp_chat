@@ -1,41 +1,40 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer' as d;
 import 'dart:io';
 import 'dart:math';
+
 import 'package:audioplayers/audioplayers.dart' as ap;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-import 'package:get_it/get_it.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:get_it/get_it.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:http/http.dart' as http;
 import 'package:record/record.dart';
 import 'package:ttp_chat/features/chat/domain/brand_firebase_token_model.dart';
 import 'package:ttp_chat/features/chat/domain/chat_sign_in_model.dart';
 import 'package:ttp_chat/features/chat/domain/chat_users_model.dart';
 import 'package:ttp_chat/features/chat/domain/tabs_model.dart';
-import 'package:ttp_chat/features/chat/domain/token_model_class.dart';
 import 'package:ttp_chat/features/chat/domain/user_firebase_token_model.dart';
 import 'package:ttp_chat/features/chat/domain/users_model.dart';
 import 'package:ttp_chat/models/base_model.dart';
 import 'package:ttp_chat/network/api_service.dart';
 import 'package:uuid/uuid.dart';
 
-enum ApiStatus{called, success, failed}
+enum ApiStatus { called, success, failed }
 
 class ChatProvider extends ChangeNotifier {
   types.User? user;
@@ -197,25 +196,27 @@ class ChatProvider extends ChangeNotifier {
   }
 
   /// Not Needed Now
-  ChatProvider.initialiseChats(String customFirebaseToken, [ChatSignInModel? chatSignInModel]) {
+  ChatProvider.initialiseChats(String customFirebaseToken,
+      [ChatSignInModel? chatSignInModel]) {
     selectedTab = tabs[0];
-    signInUserWithCustomFBTokenAndRegister(false, customFirebaseToken, chatSignInModel!);
+    signInUserWithCustomFBTokenAndRegister(
+        false, customFirebaseToken, chatSignInModel!);
     notifyListeners();
   }
 
   /// Not Needed Now
-  ChatProvider.signInAndInit(bool isSwitchedAccount){
+  ChatProvider.signInAndInit(bool isSwitchedAccount) {
     selectedTab = tabs[0];
     isSwitchedAccount = isSwitchedAccount;
     signInMVP();
   }
 
   /// Not Needed Now
-  ChatProvider.customSignIn(String customFirebaseToken, bool isSwitchedAccount){
+  ChatProvider.customSignIn(
+      String customFirebaseToken, bool isSwitchedAccount) {
     selectedTab = tabs[0];
     isSwitchedAccount = isSwitchedAccount;
     signInUserWithCustomFBTokenAndRegister(true, customFirebaseToken);
-
   }
 
   ///START
@@ -223,15 +224,15 @@ class ChatProvider extends ChangeNotifier {
   bool isBrand = false, isLoading = false, isRoomListEmpty = false;
   String? accessToken, refreshToken;
 
-  ChatProvider.userSignIn(bool isSwitchedAccount, this.accessToken, this.refreshToken) {
+  ChatProvider.userSignIn(
+      bool isSwitchedAccount, this.accessToken, this.refreshToken) {
     selectedTab = tabs[0];
     selectedTabIndex = 0;
 
-    if(FirebaseAuth.instance.currentUser == null){
+    if (FirebaseAuth.instance.currentUser == null) {
       print('CURRENT USER IS NULL');
       getUserFirebaseToken(accessToken!);
-    }
-    else{
+    } else {
       // FirebaseAuth.instance.currentUser!.reload();
       getCountData();
       apiStatus = ApiStatus.success;
@@ -240,16 +241,16 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  ChatProvider.brandSignIn(bool isSwitchedAccount, this.accessToken, this.refreshToken){
+  ChatProvider.brandSignIn(
+      bool isSwitchedAccount, this.accessToken, this.refreshToken) {
     print('FIREBAE CHAT CORE: ${FirebaseChatCore.instance.firebaseUser.uid}');
     selectedTab = tabs[0];
     selectedTabIndex = 0;
 
-    if(FirebaseAuth.instance.currentUser == null){
+    if (FirebaseAuth.instance.currentUser == null) {
       getBrandFirebaseToken(accessToken!);
       print('CURRENT BRAND IS NULL');
-    }
-    else{
+    } else {
       // FirebaseAuth.instance.currentUser!.reload();
       getCountData();
       apiStatus = ApiStatus.success;
@@ -258,46 +259,52 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  void userCustomFirebaseTokenSignIn(String firebaseToken) async{
+  void userCustomFirebaseTokenSignIn(String firebaseToken) async {
     print('USER FIREBASE TOKEN 1: $firebaseToken');
-    try{
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
       print('UIDDDDD: ${userCredential.user!.uid}');
       checkIfUserIsBrandOrUser(userCredential.user!.uid);
       getCountData();
       // createUserOnFirestore(chatSignInModel, userCredential.user!.uid);
       apiStatus = ApiStatus.success;
       notifyListeners();
-    }
-    catch(e, s){
+    } catch (e, s) {
       print('USER CUSTOM FIREBASE TOKEN SIGN IN ERROR: $e\n$s');
     }
   }
 
-  void brandCustomFirebaseTokenSignIn(List<BrandFirebaseTokenData> brandsList) async{
+  void brandCustomFirebaseTokenSignIn(
+      List<BrandFirebaseTokenData> brandsList) async {
     print('SECONDARY FB APP');
-    try{
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(brandsList[0].firebaseToken!);
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithCustomToken(brandsList[0].firebaseToken!);
       print('UIDDDDD: ${userCredential.user!.uid}');
       checkIfUserIsBrandOrUser(userCredential.user!.uid);
       getCountData();
       // createBrandOnFirestore(selectedBrand, userCredential.user!.uid);
       apiStatus = ApiStatus.success;
       notifyListeners();
-    }
-    catch(e, s){
+    } catch (e, s) {
       print('BRAND CUSTOM FIREBASE TOKEN SIGN IN ERROR: $e\n$s');
     }
   }
 
-  void createUserOnFirestore(ChatSignInModel chatSignInModel, String uid) async{
+  void createUserOnFirestore(
+      ChatSignInModel chatSignInModel, String uid) async {
     try {
       await FirebaseChatCore.instance.createUserInFirestore(
         types.User(
-          firstName: chatSignInModel.userData != null ? chatSignInModel.userData!.firstName : 'Guest',
+          firstName: chatSignInModel.userData != null
+              ? chatSignInModel.userData!.firstName
+              : 'Guest',
           id: uid,
           imageUrl: 'https://i.pravatar.cc/300?u=Shubham',
-          lastName: chatSignInModel.userData != null ? chatSignInModel.userData!.lastName : '',
+          lastName: chatSignInModel.userData != null
+              ? chatSignInModel.userData!.lastName
+              : '',
         ),
       );
     } catch (e) {
@@ -305,7 +312,8 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  void createBrandOnFirestore(BrandChatFirebaseTokenResponse selectedBrand, String uid) async{
+  void createBrandOnFirestore(
+      BrandChatFirebaseTokenResponse selectedBrand, String uid) async {
     try {
       await FirebaseChatCore.instance.createUserInFirestore(
         types.User(
@@ -320,35 +328,33 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  void updateTabIndex(int value){
+  void updateTabIndex(int value) {
     selectedTabIndex = value;
     notifyListeners();
   }
 
-  void checkIfUserIsBrandOrUser(String uid) async{
-    final snapshot = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+  void checkIfUserIsBrandOrUser(String uid) async {
+    final snapshot =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
     final data = snapshot.data();
     print('USER TYPE: ${data!['user_type']}');
-    if(data['user_type'] == 'brand'){
+    if (data['user_type'] == 'brand') {
       isBrand = true;
-    }
-    else if(data['user_type'] == 'user'){
+    } else if (data['user_type'] == 'user') {
       isBrand = false;
     }
     notifyListeners();
   }
 
-  void getUserFirebaseToken(String accessToken) async{
+  void getUserFirebaseToken(String accessToken) async {
     print('ACCESS TOKEN 1: $accessToken');
     BaseModel<UserFirebaseTokenModel> response =
-    await GetIt.I<ApiService>().getUserFirebaseToken(accessToken);
+        await GetIt.I<ApiService>().getUserFirebaseToken(accessToken);
 
     if (response.data != null) {
-
       print('USER FIREBASE TOKEN 1: ${response.data!.firebaseToken!}');
       userCustomFirebaseTokenSignIn(response.data!.firebaseToken!);
-
     } else {
       apiStatus = ApiStatus.failed;
       notifyListeners();
@@ -357,23 +363,21 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  void getBrandFirebaseToken(String accessToken) async{
+  void getBrandFirebaseToken(String accessToken) async {
     print('ACCESS TOKEN 1: $accessToken');
     BaseModel<BrandFirebaseTokenModel> response =
-    await GetIt.I<ApiService>().getBrandFirebaseToken(accessToken);
+        await GetIt.I<ApiService>().getBrandFirebaseToken(accessToken);
 
     if (response.data != null) {
-
       print('BRAND FIREBASE TOKEN 1: ${response.data!.toJson()}');
 
-      if(response.data!.brandFirebaseTokenList!.isEmpty || response.data!.brandFirebaseTokenList!.length > 1){
+      if (response.data!.brandFirebaseTokenList!.isEmpty ||
+          response.data!.brandFirebaseTokenList!.length > 1) {
         apiStatus = ApiStatus.failed;
         notifyListeners();
-      }
-      else{
+      } else {
         brandCustomFirebaseTokenSignIn(response.data!.brandFirebaseTokenList!);
       }
-
     } else {
       apiStatus = ApiStatus.failed;
       notifyListeners();
@@ -382,35 +386,42 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  void getCountData(){
+  void getCountData() {
     isLoading = true;
     notifyListeners();
     FirebaseChatCore.instance.rooms().listen((event) {
       isLoading = false;
       notifyListeners();
-      if(event.isEmpty){
+      if (event.isEmpty) {
         isRoomListEmpty = true;
         notifyListeners();
-      }
-      else{
-        brandListCount = event.where((element) => element.metadata!['other_user_type'] == 'brand').toList().length;
-        userListCount = event.where((element) => element.metadata!['other_user_type'] == 'user').toList().length;
+      } else {
+        brandListCount = event
+            .where((element) => element.metadata!['other_user_type'] == 'brand')
+            .toList()
+            .length;
+        userListCount = event
+            .where((element) => element.metadata!['other_user_type'] == 'user')
+            .toList()
+            .length;
         notifyListeners();
       }
     });
   }
+
   /// END
 
-  customTokenFirebaseAuthSignIn(bool isSwitchedAccount, String firebaseToken) async {
-    try{
+  customTokenFirebaseAuthSignIn(
+      bool isSwitchedAccount, String firebaseToken) async {
+    try {
       if (isSwitchedAccount) {
         print('SECONDARY FB APP');
 
         FirebaseApp secondaryApp = Firebase.app('secondary');
 
         UserCredential userCredential =
-        await FirebaseAuth.instanceFor(app: secondaryApp)
-            .signInWithCustomToken(firebaseToken);
+            await FirebaseAuth.instanceFor(app: secondaryApp)
+                .signInWithCustomToken(firebaseToken);
         print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
         print('USER CREDENTIAL: $firebaseToken');
         registerUserOnFirestore(userCredential.user!.uid, isSwitchedAccount);
@@ -418,7 +429,7 @@ class ChatProvider extends ChangeNotifier {
         print('PRIMARY FB APP');
         if (chatSignInModel != null) {
           UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
+              await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
           print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
           print('USER CREDENTIAL: $firebaseToken');
           registerUserOnFirestore(userCredential.user!.uid, isSwitchedAccount);
@@ -426,8 +437,7 @@ class ChatProvider extends ChangeNotifier {
       }
       apiStatus = ApiStatus.success;
       notifyListeners();
-
-    }catch (e, s){
+    } catch (e, s) {
       print('CUSTOM SIGN IN ERROR: $e\n$s');
     }
   }
@@ -456,18 +466,20 @@ class ChatProvider extends ChangeNotifier {
   }
 
   /// Not Needed Now
+
+  /// Not Needed Now
   void signInMVP() async {
     BaseModel<ChatSignInModel> response =
-    await GetIt.I<ApiService>().signInMVP('shubham_8607', '8668292003');
+        await GetIt.I<ApiService>().signInMVP('shubham_8607', '8668292003');
 
     if (response.data != null) {
-
       apiStatus = ApiStatus.success;
       notifyListeners();
 
       chatSignInModel = response.data;
       notifyListeners();
-      signInUserWithCustomFBTokenAndRegister(false, response.data!.firebaseToken!, response.data!);
+      signInUserWithCustomFBTokenAndRegister(
+          false, response.data!.firebaseToken!, response.data!);
 
       /*Navigator.push(
           context,
@@ -544,7 +556,7 @@ class ChatProvider extends ChangeNotifier {
 
     voiceMessageFile = File(voiceMessageFilePath);
     audioMessageDuration =
-    await FlutterSoundHelper().duration(voiceMessageFilePath);
+        await FlutterSoundHelper().duration(voiceMessageFilePath);
 
     print('DURATION FOR METADATA: ${audioMessageDuration!.inSeconds}');
 
@@ -553,15 +565,15 @@ class ChatProvider extends ChangeNotifier {
     recordedVoiceMessage = null;
 
     recordedVoiceMessage = types.VoiceMessage(
-      author: user!,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-      id: const Uuid().v4(),
-      mimeType: lookupMimeType(voiceMessageFilePath == null ? '' : voiceMessageFilePath),
-      name: voiceMessageFilePath.split('/').last,
-      size: File(voiceMessageFilePath).lengthSync(),
-      uri: voiceMessageFilePath == null ? '' : voiceMessageFilePath,
-      duration: Duration.zero.inSeconds
-    );
+        author: user!,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        id: const Uuid().v4(),
+        mimeType: lookupMimeType(
+            voiceMessageFilePath == null ? '' : voiceMessageFilePath),
+        name: voiceMessageFilePath.split('/').last,
+        size: File(voiceMessageFilePath).lengthSync(),
+        uri: voiceMessageFilePath == null ? '' : voiceMessageFilePath,
+        duration: Duration.zero.inSeconds);
 
     print('METADATA: ${recordedVoiceMessage!.metadata}');
 
@@ -619,7 +631,8 @@ class ChatProvider extends ChangeNotifier {
     waveFormTimer = Timer.periodic(oneSec, (Timer t) {
       waveFormList.add(Random().nextInt(46).toDouble());
       waveFormListKey!.currentState?.insertItem(waveFormList.length - 1);
-      controller.animateTo(controller.position.maxScrollExtent, duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
+      controller.animateTo(controller.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
       notifyListeners();
     });
     notifyListeners();
@@ -640,8 +653,9 @@ class ChatProvider extends ChangeNotifier {
           recordedVoiceMessageFileDuration = audioMessageDuration!.inSeconds;
           notifyListeners();
         } else {
-          if(recordedVoiceMessageFileDuration != null) {
-            recordedVoiceMessageFileDuration = recordedVoiceMessageFileDuration! - 1;
+          if (recordedVoiceMessageFileDuration != null) {
+            recordedVoiceMessageFileDuration =
+                recordedVoiceMessageFileDuration! - 1;
           }
           notifyListeners();
         }
@@ -965,37 +979,35 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }*/
 
-  ChatProvider.initialiseAndLoadMessages(this.selectedChatUser, this.isSwitchedAccount) {
+  ChatProvider.initialiseAndLoadMessages(
+      this.selectedChatUser, this.isSwitchedAccount) {
     notifyListeners();
   }
 
-  void updateSwitchedAccountValue(bool value){
-
-  }
+  void updateSwitchedAccountValue(bool value) {}
 
   void setAttachmentUploading(bool uploading) {
     isAttachmentUploading = uploading;
     notifyListeners();
   }
 
-  void signInUserWithCustomFBTokenAndRegister(bool isSwitchedAccount, [String? customFirebaseToken, ChatSignInModel? chatSignInModel]) async {
+  void signInUserWithCustomFBTokenAndRegister(bool isSwitchedAccount,
+      [String? customFirebaseToken, ChatSignInModel? chatSignInModel]) async {
     try {
-
-      if(isSwitchedAccount){
-
+      if (isSwitchedAccount) {
         print('SECONDARY FB APP');
 
         FirebaseApp secondaryApp = Firebase.app('secondary');
 
-        UserCredential userCredential = await FirebaseAuth.instanceFor(app: secondaryApp)
-            .signInWithCustomToken(customFirebaseToken!);
+        UserCredential userCredential =
+            await FirebaseAuth.instanceFor(app: secondaryApp)
+                .signInWithCustomToken(customFirebaseToken!);
         print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
         print('USER CREDENTIAL: $customFirebaseToken');
         registerUserOnFirestore(userCredential.user!.uid, isSwitchedAccount);
-      }
-      else{
+      } else {
         print('PRIMARY FB APP');
-        if(chatSignInModel != null) this.chatSignInModel = chatSignInModel;
+        if (chatSignInModel != null) this.chatSignInModel = chatSignInModel;
         notifyListeners();
         UserCredential userCredential = await FirebaseAuth.instance
             .signInWithCustomToken(customFirebaseToken!);
@@ -1023,7 +1035,8 @@ class ChatProvider extends ChangeNotifier {
             message,
             selectedChatUser!.id,
           )
-        : */FirebaseChatCore.instance.sendMessage(
+        : */
+    FirebaseChatCore.instance.sendMessage(
       message,
       selectedChatUser!.id,
     );
@@ -1049,8 +1062,7 @@ class ChatProvider extends ChangeNotifier {
       }
 
       await OpenFile.open(localPath);
-    }
-    else if(message is types.VoiceMessage){
+    } else if (message is types.VoiceMessage) {
       Duration? duration = await FlutterSoundHelper().duration(message.uri);
       print('ON TAP DURATION: $duration');
     }
@@ -1062,7 +1074,8 @@ class ChatProvider extends ChangeNotifier {
 
     /*isSwitchedAccount!
         ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).updateMessage(updatedMessage, selectedChatUser!.id)
-        : */FirebaseChatCore.instance
+        : */
+    FirebaseChatCore.instance
         .updateMessage(updatedMessage, selectedChatUser!.id);
   }
 
@@ -1083,9 +1096,10 @@ class ChatProvider extends ChangeNotifier {
 
       try {
         final reference =
-        /*isSwitchedAccount!
+            /*isSwitchedAccount!
             ? FirebaseStorage.instanceFor(app: Firebase.app('secondary')).ref(name)
-            : */FirebaseStorage.instance.ref(name);
+            : */
+            FirebaseStorage.instance.ref(name);
         await reference.putFile(file);
         final uri = await reference.getDownloadURL();
 
@@ -1099,7 +1113,11 @@ class ChatProvider extends ChangeNotifier {
 
         /*isSwitchedAccount!
             ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).sendMessage(message, selectedChatUser!.id)
-            : */FirebaseChatCore.instance.sendMessage(message, selectedChatUser!.id,);
+            : */
+        FirebaseChatCore.instance.sendMessage(
+          message,
+          selectedChatUser!.id,
+        );
         setAttachmentUploading(false);
       } on FirebaseException catch (e) {
         setAttachmentUploading(false);
@@ -1121,9 +1139,10 @@ class ChatProvider extends ChangeNotifier {
 
       try {
         final reference =
-        /*isSwitchedAccount!
+            /*isSwitchedAccount!
             ? FirebaseStorage.instanceFor(app: Firebase.app('secondary')).ref(name)
-            : */FirebaseStorage.instance.ref(name);
+            : */
+            FirebaseStorage.instance.ref(name);
         await reference.putFile(file);
         final uri = await reference.getDownloadURL();
 
@@ -1136,7 +1155,8 @@ class ChatProvider extends ChangeNotifier {
 
         /*isSwitchedAccount!
             ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).sendMessage(message, selectedChatUser!.id)
-            : */FirebaseChatCore.instance.sendMessage(message, selectedChatUser!.id);
+            : */
+        FirebaseChatCore.instance.sendMessage(message, selectedChatUser!.id);
         setAttachmentUploading(false);
       } on FirebaseException catch (e) {
         setAttachmentUploading(false);
@@ -1146,48 +1166,49 @@ class ChatProvider extends ChangeNotifier {
   }
 
   void handleSendVoiceMessagePressed() async {
-    if(voiceMessageFile != null)
-      {
-        setAttachmentUploading(true);
-        final name = voiceMessageFile!.path.split('/').last;
-        print('VOICE MESSAGE FILE NAME: $name');
-        final filePath = voiceMessageFile!.path;
-        print('VOICE MESSAGE FILE PATH: $filePath');
-        final file = File(filePath == null ? '' : filePath);
-        print('VOICE MESSAGE FILE: $file');
-        print('VOICE MESSAGE FILE SIZE: ${voiceMessageFile!.lengthSync()}');
+    if (voiceMessageFile != null) {
+      setAttachmentUploading(true);
+      final name = voiceMessageFile!.path.split('/').last;
+      print('VOICE MESSAGE FILE NAME: $name');
+      final filePath = voiceMessageFile!.path;
+      print('VOICE MESSAGE FILE PATH: $filePath');
+      final file = File(filePath == null ? '' : filePath);
+      print('VOICE MESSAGE FILE: $file');
+      print('VOICE MESSAGE FILE SIZE: ${voiceMessageFile!.lengthSync()}');
 
-        try {
-          final reference = /*isSwitchedAccount!
+      try {
+        final reference = /*isSwitchedAccount!
           ? FirebaseStorage.instanceFor(app: Firebase.app('secondary')).ref(name)
-          : */FirebaseStorage.instance.ref(name);
-          await reference.putFile(file);
-          final uri = await reference.getDownloadURL();
-          print('VOICE MESSAGE FILE FB STORAGE URL: $uri');
-          print('VOICE MESSAGE FILE MIME TYPE: ${lookupMimeType(filePath == null ? '' : filePath)}');
+          : */
+            FirebaseStorage.instance.ref(name);
+        await reference.putFile(file);
+        final uri = await reference.getDownloadURL();
+        print('VOICE MESSAGE FILE FB STORAGE URL: $uri');
+        print(
+            'VOICE MESSAGE FILE MIME TYPE: ${lookupMimeType(filePath == null ? '' : filePath)}');
 
-          final message = types.PartialVoice(
+        final message = types.PartialVoice(
             mimeType: lookupMimeType(filePath == null ? '' : filePath),
             name: name,
             size: voiceMessageFile!.lengthSync(),
             uri: uri,
-            duration: audioMessageDuration!.inSeconds
-          );
+            duration: audioMessageDuration!.inSeconds);
 
-          /*isSwitchedAccount!
+        /*isSwitchedAccount!
               ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).sendMessage(message, selectedChatUser!.id)
-              : */FirebaseChatCore.instance.sendMessage(message, selectedChatUser!.id);
-          isRecordedVoiceMessageFilePlaying = false;
-          voiceMessageFile = null;
-          voiceMessageFilePath = '';
-          setAttachmentUploading(false);
-        } on FirebaseException catch (e) {
-          isRecordedVoiceMessageFilePlaying = false;
-          voiceMessageFile = null;
-          voiceMessageFilePath = '';
-          setAttachmentUploading(false);
-          print(e);
-        }
+              : */
+        FirebaseChatCore.instance.sendMessage(message, selectedChatUser!.id);
+        isRecordedVoiceMessageFilePlaying = false;
+        voiceMessageFile = null;
+        voiceMessageFilePath = '';
+        setAttachmentUploading(false);
+      } on FirebaseException catch (e) {
+        isRecordedVoiceMessageFilePlaying = false;
+        voiceMessageFile = null;
+        voiceMessageFilePath = '';
+        setAttachmentUploading(false);
+        print(e);
       }
+    }
   }
 }

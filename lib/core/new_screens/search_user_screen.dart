@@ -1,25 +1,28 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
-import 'package:provider/provider.dart';
 import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
 import 'package:ttp_chat/core/widgets/triangle_painter.dart';
 import 'package:ttp_chat/features/chat/domain/search_user_model.dart';
-import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/models/base_model.dart';
 import 'package:ttp_chat/network/api_service.dart';
 import 'package:ttp_chat/theme/style.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:ttp_chat/utils/functions.dart';
 
 class SearchUserScreen extends StatefulWidget {
   final String? accessToken;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const SearchUserScreen({Key? key, this.accessToken, this.onViewOrderDetailsClick}) : super(key: key);
+  const SearchUserScreen(
+      {Key? key, this.accessToken, this.onViewOrderDetailsClick})
+      : super(key: key);
 
   @override
   _SearchUserScreenState createState() => _SearchUserScreenState();
@@ -29,9 +32,9 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
   List<Brands> brandsList = [];
   List<Users> usersList = [];
   int selectedTabIndex = 0;
-  bool documentExists = false;
+  List<Map<String, dynamic>> userRooms = [];
   Map<String, dynamic> existedRoom = {};
-  types.User? user;
+  // types.User? user;
 
   @override
   void initState() {
@@ -40,7 +43,6 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xFFFDFBEF).withOpacity(0.2),
@@ -90,8 +92,8 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
   }
 
   void searchUser(String searchValue) async {
-    BaseModel<SearchUserModel> response =
-    await GetIt.I<ApiService>().searchUser(widget.accessToken!, searchValue);
+    BaseModel<SearchUserModel> response = await GetIt.I<ApiService>()
+        .searchUser(widget.accessToken!, searchValue);
 
     if (response.data != null) {
       setState(() {
@@ -203,123 +205,155 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
             itemCount: brandsList.length,
             padding: const EdgeInsets.symmetric(horizontal: 17.0),
             itemBuilder: (context, index) {
-              return Row(
-                children: [
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.grey[200]),
-                  ),
-                  const SizedBox(width: 17),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Brands brand = brandsList[index];
+              return isLoggedInUser(brand.username)
+                  ? const SizedBox.shrink()
+                  : Row(
                       children: [
-                        Flexible(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey[200]),
+                            child: Icon(Icons.fastfood,
+                                color: Theme.of(context)
+                                    .primaryColor
+                                    .withOpacity(0.2))),
+                        const SizedBox(width: 17),
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                brandsList[index].name!,
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
+                              Flexible(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      brand.name ?? "",
+                                      style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      '@${brand.username}',
+                                      style: const TextStyle(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.normal),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '@${brandsList[index].username!}',
-                                style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.normal),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                              IconButton(
+                                onPressed: () async {
+                                  if (brand.username == null) {
+                                    displaySnackBar(
+                                        "Error, This user has no username",
+                                        context);
+                                    return;
+                                  }
+                                  bool exists =
+                                      await checkExist(brand.username!);
+
+                                  if (exists) {
+                                    types.Room selectedRoom = types.Room(
+                                      id: existedRoom['id'],
+                                      type: types.RoomType.direct,
+                                      name: existedRoom['name'],
+                                      imageUrl: existedRoom['imageUrl'],
+                                      userIds: existedRoom['userIds'],
+                                      users: [],
+                                    );
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => ChatPage(
+                                            selectedRoom,
+                                            false,
+                                            widget.onViewOrderDetailsClick),
+                                      ),
+                                    );
+                                  } else {
+                                    types.User? user =
+                                        await getUserFromFireStore(
+                                      brand.username!,
+                                      id: brand.username,
+                                      firstName: brand.name,
+                                    );
+                                    if (user != null) {
+                                      consoleLog(
+                                          "Creating New Room for ${brand.username}");
+                                      final room = await FirebaseChatCore
+                                          .instance
+                                          .createRoom(user);
+                                      consoleLog(
+                                          'Room Name: ${room.name} \nId: ${room.name} \nUsers: ${room.userIds}');
+                                      types.Room selectedRoom = types.Room(
+                                          id: room.id,
+                                          type: types.RoomType.direct,
+                                          name: room.name,
+                                          imageUrl: room.imageUrl,
+                                          userIds: room.userIds,
+                                          users: room.users);
+                                      userRooms.add({
+                                        "userIds": room.userIds,
+                                        "id": room.id,
+                                        "name": room.name,
+                                        "imageUrl": room.imageUrl,
+                                      });
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => ChatPage(
+                                              selectedRoom,
+                                              false,
+                                              widget.onViewOrderDetailsClick),
+                                        ),
+                                      );
+                                    } else {
+                                      displaySnackBar(
+                                          "Error, User Not Found", context);
+                                    }
+                                  }
+                                },
+                                icon: SvgPicture.asset(
+                                  'assets/chat_icons/chat.svg',
+                                  width: 20,
+                                  height: 20,
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        IconButton(
-                          onPressed: () async {
-
-                            bool exists = await checkExist(brandsList[index].username!);
-
-                            if(exists){
-
-                              types.Room selectedRoom = types.Room(
-                                  id: existedRoom['id'],
-                                  type: types.RoomType.direct,
-                                  name: existedRoom['name'],
-                                  imageUrl: existedRoom['imageUrl'],
-                                  userIds: existedRoom['userIds'],
-                                  users: [],
-                              );
-
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => ChatPage(selectedRoom, false, widget.onViewOrderDetailsClick!),
-                                ),
-                              );
-                            }
-                            else{
-                              await getUserFromFireStore(brandsList[index].username!);
-
-                              final room = await FirebaseChatCore.instance.createRoom(user!);
-
-                              print('ROOM NAME: ${room.name}');
-                              print('ROOM ID: ${room.name}');
-                              print('ROOM ID: ${room.userIds}');
-
-                              types.Room selectedRoom = types.Room(
-                                  id: room.id,
-                                  type: types.RoomType.direct,
-                                  name: room.name,
-                                  imageUrl: room.imageUrl,
-                                  userIds: room.userIds,
-                                  users: room.users
-                              );
-
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => ChatPage(selectedRoom, false, widget.onViewOrderDetailsClick!),
-                                ),
-                              );
-                            }
-                          },
-                          icon: SvgPicture.asset(
-                            'assets/chat_icons/chat.svg',
-                            width: 20,
-                            height: 20,
-                          ),
-                        ),
                       ],
-                    ),
-                  ),
-                ],
-              );
+                    );
             },
             separatorBuilder: (context, index) {
-              return const SizedBox(height: 17);
+              return isLoggedInUser(brandsList[index].username)
+                  ? const SizedBox.shrink()
+                  : const SizedBox(height: 17);
             },
           )
         : Container(
-      margin: const EdgeInsets.symmetric(horizontal: 17),
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            'assets/chat_icons/no_chat_user.svg',
-            width: 20,
-            height: 20,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            'No result',
-            style: appBarTitleStyle(context).copyWith(fontSize: 16),
-            softWrap: true,
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
+            margin: const EdgeInsets.symmetric(horizontal: 17),
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  'assets/chat_icons/no_chat_user.svg',
+                  width: 20,
+                  height: 20,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'No result',
+                  style: appBarTitleStyle(context).copyWith(fontSize: 16),
+                  softWrap: true,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          );
   }
 
   Widget usersListWidget() {
@@ -330,109 +364,139 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
             itemCount: usersList.length,
             padding: const EdgeInsets.symmetric(horizontal: 17.0),
             itemBuilder: (context, index) {
-              return Row(
-                children: [
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.grey[200]),
-                  ),
-                  const SizedBox(width: 17),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Users singleUser = usersList[index];
+              return isLoggedInUser(singleUser.phoneNumber)
+                  ? const SizedBox.shrink()
+                  : Row(
                       children: [
-                        Flexible(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle, color: Colors.grey[200]),
+                          child: Icon(Icons.person,
+                              color: Theme.of(context)
+                                  .primaryColor
+                                  .withOpacity(0.2)),
+                        ),
+                        const SizedBox(width: 17),
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                usersList[index].firstName != null &&
-                                        usersList[index].lastName != null
-                                    ? '${usersList[index].firstName!} ${usersList[index].lastName!}'
-                                    : 'Guest',
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
+                              Flexible(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      singleUser.firstName != null &&
+                                              singleUser.lastName != null
+                                          ? '${singleUser.firstName!} ${singleUser.lastName!}'
+                                          : 'Guest',
+                                      style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      singleUser.email != null
+                                          ? singleUser.email!
+                                          : singleUser.phoneNumber!,
+                                      style: const TextStyle(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.normal),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                usersList[index].email != null
-                                    ? usersList[index].email!
-                                    : usersList[index].phoneNumber!,
-                                style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.normal),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                              IconButton(
+                                onPressed: () async {
+                                  if (singleUser.phoneNumber == null) {
+                                    displaySnackBar(
+                                        "Error, This user has no phone number",
+                                        context);
+                                    return;
+                                  }
+
+                                  bool exists = await checkExist(
+                                      singleUser.phoneNumber ?? "");
+                                  consoleLog('EXIST: $existedRoom $exists');
+                                  if (exists) {
+                                    types.Room selectedRoom = types.Room(
+                                      id: existedRoom['id'],
+                                      type: types.RoomType.direct,
+                                      name: existedRoom['name'],
+                                      imageUrl: existedRoom['imageUrl'],
+                                      userIds: existedRoom['userIds'],
+                                      users: [],
+                                    );
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => ChatPage(
+                                            selectedRoom,
+                                            false,
+                                            widget.onViewOrderDetailsClick),
+                                      ),
+                                    );
+                                  } else {
+                                    types.User? user =
+                                        await getUserFromFireStore(
+                                            singleUser.phoneNumber!,
+                                            id: singleUser.phoneNumber,
+                                            firstName: singleUser.firstName,
+                                            lastName: singleUser.lastName);
+                                    if (user != null) {
+                                      consoleLog("Creating New Room");
+                                      final room = await FirebaseChatCore
+                                          .instance
+                                          .createRoom(user);
+                                      consoleLog(
+                                          'Room Name: ${room.name} \nId: ${room.name} \nUsers: ${room.userIds}');
+                                      types.Room selectedRoom = types.Room(
+                                          id: room.id,
+                                          type: types.RoomType.direct,
+                                          name: room.name,
+                                          imageUrl: room.imageUrl,
+                                          userIds: room.userIds,
+                                          users: room.users);
+                                      userRooms.add({
+                                        "userIds": room.userIds,
+                                        "id": room.id,
+                                        "name": room.name,
+                                        "imageUrl": room.imageUrl,
+                                      });
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => ChatPage(
+                                              selectedRoom,
+                                              false,
+                                              widget.onViewOrderDetailsClick),
+                                        ),
+                                      );
+                                    } else {
+                                      displaySnackBar(
+                                          "Error, User Not Found", context);
+                                    }
+                                  }
+                                },
+                                icon: SvgPicture.asset(
+                                  'assets/chat_icons/chat.svg',
+                                  width: 20,
+                                  height: 20,
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        IconButton(
-                          onPressed: () async {
-                            bool exists = await checkExist(usersList[index].phoneNumber!);
-
-                            print('EXISSTTT: $exists');
-                            print('EXISSTTT: $existedRoom');
-
-                            if(exists){
-
-                              types.Room selectedRoom = types.Room(
-                                id: existedRoom['id'],
-                                type: types.RoomType.direct,
-                                name: existedRoom['name'],
-                                imageUrl: existedRoom['imageUrl'],
-                                userIds: existedRoom['userIds'],
-                                users: [],
-                              );
-
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => ChatPage(selectedRoom, false, widget.onViewOrderDetailsClick!),
-                                ),
-                              );
-                            }
-                            else{
-                              await getUserFromFireStore(usersList[index].phoneNumber!);
-
-                              final room = await FirebaseChatCore.instance.createRoom(user!);
-
-                              print('ROOM NAME: ${room.name}');
-                              print('ROOM ID: ${room.name}');
-                              print('ROOM ID: ${room.userIds}');
-
-                              types.Room selectedRoom = types.Room(
-                                  id: room.id,
-                                  type: types.RoomType.direct,
-                                  name: room.name,
-                                  imageUrl: room.imageUrl,
-                                  userIds: room.userIds,
-                                  users: room.users
-                              );
-
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => ChatPage(selectedRoom, false, widget.onViewOrderDetailsClick!),
-                                ),
-                              );
-                            }
-                          },
-                          icon: SvgPicture.asset(
-                            'assets/chat_icons/chat.svg',
-                            width: 20,
-                            height: 20,
-                          ),
-                        ),
                       ],
-                    ),
-                  ),
-                ],
-              );
+                    );
             },
             separatorBuilder: (context, index) {
-              return const SizedBox(height: 17);
+              return isLoggedInUser(usersList[index].phoneNumber)
+                  ? const SizedBox.shrink()
+                  : const SizedBox(height: 17);
             },
           )
         : Container(
@@ -457,51 +521,110 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
   }
 
   Future<bool> checkExist(String docId) async {
-    
-    try{
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('rooms')
-          .where('userIds', arrayContains: FirebaseAuth.instance.currentUser!.uid)
-          .where('userIds', arrayContains: docId)
-          .get();
+    try {
+      if (userRooms.isNotEmpty) {
+        consoleLog("checking from list");
 
-      if(snapshot.docs.isNotEmpty) {
-        return true;
-      } else {
+        //?checking whether user is sending message to himself
+        if (docId == FirebaseAuth.instance.currentUser?.uid) {
+          log("Checking if user has room with himself");
+          for (var room in userRooms) {
+            var userIds = (room['userIds'] ?? []) as List<dynamic>;
+            bool isUser = areItemsEqual(userIds);
+            if (isUser) {
+              consoleLog("User's Personal Room Found");
+              existedRoom = room;
+              existedRoom['id'] = room["id"];
+              return true;
+            }
+          }
+          return false;
+        }
+        for (var room in userRooms) {
+          var userIds = (room['userIds'] ?? []) as List<dynamic>;
+          if (userIds.contains(docId)) {
+            log(userIds.toString());
+            consoleLog('Room Exists $room');
+            existedRoom = room;
+            existedRoom['id'] = room["id"];
+            return true;
+          }
+        }
+        consoleLog("Room Doesn't Exist");
         return false;
+      } else {
+        consoleLog("checking from firestore");
+        QuerySnapshot snapshot = await FirebaseFirestore.instance
+            .collection('rooms')
+            .where('userIds',
+                arrayContains: FirebaseAuth.instance.currentUser!.uid)
+            // .where('userIds', arrayContains: docId)
+            .get();
+        if (snapshot.docs.isNotEmpty) {
+          for (var doc in snapshot.docs) {
+            var data = doc.data() as Map<String, dynamic>;
+            userRooms.add({
+              "userIds": (data['userIds'] ?? []) as List<dynamic>,
+              "id": doc.id,
+              "name": data['name'],
+              "imageUrl": data['imageUrl'],
+            });
+          }
+          consoleLog(userRooms.toString());
+          //Check Room Again
+          consoleLog("Checking room again from List");
+          return checkExist(docId);
+        } else {
+          //No Room Exists
+          consoleLog("No Room Exists");
+          return false;
+        }
       }
-    }
-    catch (e){
+    } catch (e) {
       // If any error
       print('CHECK EXISTS ERROR $e');
       return false;
     }
   }
 
-  getUserFromFireStore(String userId) async{
-
-    try{
+  Future<types.User?> getUserFromFireStore(String userId,
+      {String? firstName,
+      String? id,
+      String? imageUrl = "",
+      String? lastName = ""}) async {
+    try {
       DocumentSnapshot snapshot = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
           .get();
+      if (snapshot.exists) {
+        var data = snapshot.data() as Map<String, dynamic>;
+        types.User result = types.User(
+          id: snapshot.id,
+          firstName: data['firstName'],
+          lastName: data['lastName'],
+          imageUrl: data['imageUrl'],
+        );
+        return result;
+      } else {
+        if (id == null) {
+          return null;
+        }
+        var user = types.User(
+          firstName: firstName ?? "Guest",
+          id: id,
+          imageUrl: imageUrl ?? "",
+          lastName: lastName ?? "",
+        );
+        consoleLog("Creating New User $firstName $lastName $id");
 
-      var data = snapshot.data() as Map<String, dynamic>;
-
-      types.User result = types.User(
-        id: snapshot.id,
-        firstName: data['firstName'],
-        lastName: data['lastName'],
-        imageUrl: data['imageUrl'],
-      );
-
-      user = result;
-    }
-    catch (e){
+        await FirebaseChatCore.instance.createUserInFirestore(user);
+        return user;
+      }
+    } catch (e) {
       // If any error
       print('GET USER ERROR $e');
+      return null;
     }
-
-    return user!;
   }
 }
