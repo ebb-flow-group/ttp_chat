@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -14,10 +15,8 @@ import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
 import 'package:ttp_chat/core/widgets/triangle_painter.dart';
-import 'package:ttp_chat/features/chat/domain/chat_sign_in_model.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/theme/style.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class ChatHomeScreen extends StatelessWidget {
   final bool isSwitchedAccount;
@@ -83,7 +82,6 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -138,28 +136,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
           ],
           centerTitle: false,
         ),
-        body: /*widget.isSwitchedAccount!
-            ? StreamBuilder<List<types.Room>>(
-                stream: stream,
-                initialData: const [],
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.none:
-                    case ConnectionState.waiting:
-                      return const Center(child: CircularProgressIndicator());
-                    default:
-                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return startChatMessageWidget();
-                      }
-
-                      if (snapshot.hasError) {
-                        print('BRAND STREAM B ERROR: ${snapshot.error}');
-                      }
-                      return brandRoomsListWidget(snapshot);
-                  }
-                },
-              )
-            : */chatProvider.isLoading
+        body: chatProvider.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : chatProvider.isRoomListEmpty
                     ? startChatMessageWidget()
@@ -230,7 +207,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         ),
         const SizedBox(height: 17),
         _tabs(),
-        widget.isSwitchedAccount!
+    widget.isSwitchedAccount!
         ? chatProvider.selectedTabIndex == 0
             ? UserRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
             widget.onViewOrderDetailsClick)
@@ -357,7 +334,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
       }
     }
 
-    final hasImage = room.imageUrl != null;
+    final hasImage = room.imageUrl != null && room.imageUrl != '';
     final name = room.name ?? '';
 
     return Container(

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
@@ -17,7 +16,10 @@ class ChatPage extends StatelessWidget {
   final bool isSwitchedAccount;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  ChatPage(this.selectedChatUser, this.isSwitchedAccount, this.onViewOrderDetailsClick);
+  const ChatPage(this.selectedChatUser, this.isSwitchedAccount,
+      this.onViewOrderDetailsClick,
+      {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,7 @@ class _ChatPage extends StatefulWidget {
   final bool isSwitchedAccount;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  _ChatPage(this.isSwitchedAccount, this.onViewOrderDetailsClick);
+  const _ChatPage(this.isSwitchedAccount, this.onViewOrderDetailsClick);
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -66,9 +68,7 @@ class _ChatPageState extends State<_ChatPage>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
-
     chatProvider.disposeAudioMessageTimer();
   }
 
@@ -121,7 +121,8 @@ class _ChatPageState extends State<_ChatPage>
             stream: /*widget.isSwitchedAccount
                 ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary'))
                     .room(chatProvider.selectedChatUser!.id)
-                : */FirebaseChatCore.instance
+                : */
+                FirebaseChatCore.instance
                     .room(chatProvider.selectedChatUser!.id),
             builder: (context, snapshot) {
               return StreamBuilder<List<types.Message>>(
@@ -130,7 +131,8 @@ class _ChatPageState extends State<_ChatPage>
                     ? FirebaseChatCore.instanceFor(
                             app: Firebase.app('secondary'))
                         .messages(snapshot.data!)
-                    : */FirebaseChatCore.instance.messages(snapshot.data!),
+                    : */
+                    FirebaseChatCore.instance.messages(snapshot.data!),
                 builder: (context, snapshot) {
                   return Stack(
                     children: [
@@ -160,16 +162,18 @@ class _ChatPageState extends State<_ChatPage>
                                           app: Firebase.app('secondary'))
                                       .firebaseUser
                                       .uid
-                              : */FirebaseChatCore.instance.firebaseUser.uid,
+                              : */
+                              FirebaseChatCore.instance.firebaseUser.uid,
                         ),
                         buildCustomMessage: (message) {
-                          print('CUSTOM MESSAGE METADATA: ${message.createdAt}');
+                          print(
+                              'CUSTOM MESSAGE METADATA: ${message.createdAt}');
                           return Container(
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.grey[300]!),
                                 borderRadius: BorderRadius.circular(2),
-                              color: ThemeUtils.defaultAppThemeData.scaffoldBackgroundColor
-                            ),
+                                color: ThemeUtils.defaultAppThemeData
+                                    .scaffoldBackgroundColor),
                             child: Padding(
                               padding: const EdgeInsets.all(20.0),
                               child: Column(
@@ -181,7 +185,8 @@ class _ChatPageState extends State<_ChatPage>
                                     decoration: BoxDecoration(
                                         color: Theme.of(context).primaryColor),
                                     child: Text(
-                                      getOrderStatus(message.metadata!['status']),
+                                      getOrderStatus(
+                                          message.metadata!['status']),
                                       style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 12,
@@ -192,17 +197,19 @@ class _ChatPageState extends State<_ChatPage>
                                   Divider(color: Colors.grey[300]!),
                                   const SizedBox(height: 8),
                                   Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-
-                                      Expanded    (
+                                      Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               'Order ${message.metadata!['id']}',
                                               style: TextStyle(
-                                                  color: Theme.of(context).primaryColor,
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
                                                   fontSize: 22,
                                                   fontWeight: FontWeight.w700),
                                             ),
@@ -212,7 +219,8 @@ class _ChatPageState extends State<_ChatPage>
                                             Row(
                                               children: [
                                                 Text(
-                                                  getOrderDate(message.createdAt!),
+                                                  getOrderDate(
+                                                      message.createdAt!),
                                                   style: const TextStyle(
                                                     color: Colors.grey,
                                                     fontSize: 14,
@@ -253,23 +261,29 @@ class _ChatPageState extends State<_ChatPage>
                                               height: 26.0,
                                             ),
                                             GestureDetector(
-                                              onTap: (){
+                                              onTap: () {
                                                 widget.onViewOrderDetailsClick!(
-                                                  message.metadata!['id'],
-                                                  message.metadata!['message_type'],
-                                                  message.metadata!['link'] ?? ''
-                                                );
+                                                    message.metadata!['id'],
+                                                    message.metadata![
+                                                        'message_type'],
+                                                    message.metadata!['link'] ??
+                                                        '');
                                               },
                                               child: Container(
-                                                width: MediaQuery.of(context).size.width,
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
                                                 decoration: BoxDecoration(
                                                     border: Border.all(
-                                                        color: Colors.grey[300]!)),
+                                                        color:
+                                                            Colors.grey[300]!)),
                                                 child: Padding(
-                                                  padding:
-                                                  const EdgeInsets.symmetric(vertical: 12),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 12),
                                                   child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       SvgPicture.asset(
                                                         'assets/icon/order_details.svg',
@@ -282,10 +296,15 @@ class _ChatPageState extends State<_ChatPage>
                                                       Text(
                                                         'View Order Details',
                                                         style: TextStyle(
-                                                            color: Theme.of(context).primaryColor,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor,
                                                             fontSize: 14,
-                                                            fontWeight: FontWeight.w700),
-                                                        textAlign: TextAlign.center,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w700),
+                                                        textAlign:
+                                                            TextAlign.center,
                                                       ),
                                                     ],
                                                   ),
@@ -302,7 +321,7 @@ class _ChatPageState extends State<_ChatPage>
                             ),
                           );
                         },
-                        onMessageLongPress: (message){},
+                        onMessageLongPress: (message) {},
                         showUserAvatars: false,
                         theme: DefaultChatTheme(
                           messageBorderRadius: 0.0,
@@ -521,7 +540,7 @@ class _ChatPageState extends State<_ChatPage>
 
   Widget _buildAvatar(types.Room user, [double radius = 20]) {
     final color = getRoomAvatarNameColor(user);
-    final hasImage = user.imageUrl != null;
+    final hasImage = user.imageUrl != null && user.imageUrl != '';
     final name = getRoomName(user);
 
     return CircleAvatar(
@@ -649,12 +668,12 @@ class _ChatPageState extends State<_ChatPage>
           ),*/
           const SizedBox(height: 14),
           Text(
-            chatProvider.selectedChatUser!.name!,
+            chatProvider.selectedChatUser?.name ?? "",
             style: appBarTitleStyle(context),
           ),
           const SizedBox(height: 4),
           Text(
-            '@${chatProvider.selectedChatUser!.id}',
+            '@${chatProvider.selectedChatUser?.id}',
             style: TextStyle(
                 fontWeight: FontWeight.normal,
                 color: Theme.of(context).primaryColor),
@@ -677,8 +696,8 @@ class _ChatPageState extends State<_ChatPage>
     );
   }
 
-  String getOrderStatus(String status){
-    switch (status){
+  String getOrderStatus(String status) {
+    switch (status) {
       case 'paid':
         return 'PAID';
       case 'checked_out':
@@ -702,8 +721,8 @@ class _ChatPageState extends State<_ChatPage>
     }
   }
 
-  String getOrderType(String orderType){
-    switch (orderType){
+  String getOrderType(String orderType) {
+    switch (orderType) {
       case 'pick_up':
         return 'Take Away';
       case 'take_away':
@@ -717,33 +736,32 @@ class _ChatPageState extends State<_ChatPage>
     }
   }
 
-  String getOrderDate(int orderDate){
+  String getOrderDate(int orderDate) {
     DateTime date = DateTime.fromMillisecondsSinceEpoch(orderDate);
 
-    if(date == DateTime.now()){
+    if (date == DateTime.now()) {
       return 'Today';
-    }
-    else if(date.isBefore(DateTime.now())){
+    } else if (date.isBefore(DateTime.now())) {
       return DateFormat('dd MMM').format(date);
-    }
-    else{
+    } else {
       return '';
     }
   }
 
-  void updateUnreadMessageStatus() async{
-    try{
+  void updateUnreadMessageStatus() async {
+    try {
       final collection = await FirebaseFirestore.instance
           .collection('rooms')
           .doc(chatProvider.selectedChatUser!.id)
           .collection('messages')
-          .where('authorId', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)
+          .where('authorId',
+              isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)
           .get();
 
       // .where('status', isEqualTo: 'sent')
 
-
-      for(QueryDocumentSnapshot<Map<String, dynamic>> singleMessage in collection.docs){
+      for (QueryDocumentSnapshot<Map<String, dynamic>> singleMessage
+          in collection.docs) {
         FirebaseFirestore.instance
             .collection('rooms')
             .doc(chatProvider.selectedChatUser!.id)
@@ -751,8 +769,7 @@ class _ChatPageState extends State<_ChatPage>
             .doc(singleMessage.id)
             .update({'status': 'delivered'});
       }
-    }
-    catch (e, s){
+    } catch (e, s) {
       print('UPDATE UNREAD MESSAGE STATUS ERROR CAUGHT: $e\n$s');
     }
   }
@@ -888,7 +905,7 @@ class VisualComponent extends StatefulWidget {
   final int? duration;
   final Color? color;
 
-  VisualComponent({this.duration, this.color});
+  const VisualComponent({this.duration, this.color});
 
   @override
   _VisualComponentState createState() => _VisualComponentState();
