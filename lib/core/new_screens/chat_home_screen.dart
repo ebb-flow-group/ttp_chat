@@ -19,24 +19,30 @@ import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/theme/style.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
-
 class ChatHomeScreen extends StatelessWidget {
-
   final bool isSwitchedAccount;
   final String? accessToken, refreshToken;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const ChatHomeScreen({Key? key, this.isSwitchedAccount = false, this.accessToken, this.refreshToken, this.onViewOrderDetailsClick}) : super(key: key);
+  const ChatHomeScreen(
+      {Key? key,
+      this.isSwitchedAccount = false,
+      this.accessToken,
+      this.refreshToken,
+      this.onViewOrderDetailsClick})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return
-      ChangeNotifierProvider<ChatProvider>(
-        create: (context) => isSwitchedAccount
-            ? ChatProvider.brandSignIn(isSwitchedAccount, accessToken!, refreshToken!)
-            : ChatProvider.userSignIn(isSwitchedAccount, accessToken!, refreshToken!),
-        child: _ChatHomeScreen(isSwitchedAccount, accessToken, onViewOrderDetailsClick),
-      );
+    return ChangeNotifierProvider<ChatProvider>(
+      create: (context) => isSwitchedAccount
+          ? ChatProvider.brandSignIn(
+              isSwitchedAccount, accessToken!, refreshToken!)
+          : ChatProvider.userSignIn(
+              isSwitchedAccount, accessToken!, refreshToken!),
+      child: _ChatHomeScreen(
+          isSwitchedAccount, accessToken, onViewOrderDetailsClick),
+    );
   }
 }
 
@@ -45,7 +51,8 @@ class _ChatHomeScreen extends StatefulWidget {
   final String? accessToken;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const _ChatHomeScreen(this.isSwitchedAccount, this.accessToken, this.onViewOrderDetailsClick);
+  const _ChatHomeScreen(
+      this.isSwitchedAccount, this.accessToken, this.onViewOrderDetailsClick);
 
   @override
   _ChatHomeScreenState createState() => _ChatHomeScreenState();
@@ -70,17 +77,14 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   void initState() {
     chatProvider = context.read<ChatProvider>();
     initializeFlutterFire();
-    stream = FirebaseChatCore.instance.rooms();
+
     super.initState();
   }
 
-
   @override
-
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-
   }
 
   @override
@@ -94,11 +98,11 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
       return Container();
     }
 
-    if(chatProvider.apiStatus == ApiStatus.called) {
+    if (chatProvider.apiStatus == ApiStatus.called) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    if(chatProvider.apiStatus == ApiStatus.failed){
+    if (chatProvider.apiStatus == ApiStatus.failed) {
       return const ChatErrorScreen();
     }
 
@@ -118,7 +122,10 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SearchUserScreen(accessToken: widget.accessToken, onViewOrderDetailsClick: widget.onViewOrderDetailsClick!)));
+                            builder: (context) => SearchUserScreen(
+                                accessToken: widget.accessToken,
+                                onViewOrderDetailsClick:
+                                    widget.onViewOrderDetailsClick!)));
                   },
                   icon: SvgPicture.asset(
                     'assets/chat_icons/start_new_chat.svg',
@@ -131,34 +138,32 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
           ],
           centerTitle: false,
         ),
-        body: widget.isSwitchedAccount!
+        body: /*widget.isSwitchedAccount!
             ? StreamBuilder<List<types.Room>>(
-          stream: stream,
-          // stream: /*widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : */FirebaseChatCore.instance.rooms(),
-          initialData: const [],
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState){
-              case ConnectionState.none:
-              case ConnectionState.waiting:
-                return const Center(child: CircularProgressIndicator());
-              default:
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return startChatMessageWidget();
-                }
+                stream: stream,
+                initialData: const [],
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.none:
+                    case ConnectionState.waiting:
+                      return const Center(child: CircularProgressIndicator());
+                    default:
+                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return startChatMessageWidget();
+                      }
 
-                if (snapshot.hasError) {
-                  print('BRAND STREAM B ERROR: ${snapshot.error}');
-                }
-                return brandRoomsListWidget(snapshot);
-            }
-
-          },
-        )
-            : chatProvider.isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : chatProvider.isRoomListEmpty
-                ? startChatMessageWidget()
-                : roomsListWidget());
+                      if (snapshot.hasError) {
+                        print('BRAND STREAM B ERROR: ${snapshot.error}');
+                      }
+                      return brandRoomsListWidget(snapshot);
+                  }
+                },
+              )
+            : */chatProvider.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : chatProvider.isRoomListEmpty
+                    ? startChatMessageWidget()
+                    : roomsListWidget());
   }
 
   Widget startChatMessageWidget() {
@@ -203,14 +208,17 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SearchUserScreen(accessToken: widget.accessToken, onViewOrderDetailsClick: widget.onViewOrderDetailsClick!)));
+                        builder: (context) => SearchUserScreen(
+                            accessToken: widget.accessToken,
+                            onViewOrderDetailsClick:
+                                widget.onViewOrderDetailsClick!)));
               })
         ],
       ),
     );
   }
 
-  Widget roomsListWidget(){
+  Widget roomsListWidget() {
     return Column(
       children: [
         const SizedBox(height: 17),
@@ -222,14 +230,22 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         ),
         const SizedBox(height: 17),
         _tabs(),
-        chatProvider.selectedTabIndex == 0
-        ? BrandRoomsScreen(widget.isSwitchedAccount, widget.accessToken!, widget.onViewOrderDetailsClick)
-        : UserRoomsScreen(widget.isSwitchedAccount, widget.accessToken!, widget.onViewOrderDetailsClick),
+        widget.isSwitchedAccount!
+        ? chatProvider.selectedTabIndex == 0
+            ? UserRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
+            widget.onViewOrderDetailsClick)
+            : BrandRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
+            widget.onViewOrderDetailsClick)
+        : chatProvider.selectedTabIndex == 0
+            ? BrandRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
+                widget.onViewOrderDetailsClick)
+            : UserRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
+                widget.onViewOrderDetailsClick),
       ],
     );
   }
 
-  Widget brandRoomsListWidget(AsyncSnapshot<List<types.Room>> snapshot){
+  Widget brandRoomsListWidget(AsyncSnapshot<List<types.Room>> snapshot) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 17),
       padding: const EdgeInsets.only(top: 17),
@@ -240,14 +256,17 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
           var brandList = snapshot.data!;
 
           return GestureDetector(
-            onTap: () async{
+            onTap: () async {
               var result = await Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => ChatPage(brandList[index], widget.isSwitchedAccount!, widget.onViewOrderDetailsClick!),
+                  builder: (context) => ChatPage(
+                      brandList[index],
+                      widget.isSwitchedAccount!,
+                      widget.onViewOrderDetailsClick!),
                 ),
               );
 
-              if(result == null){
+              if (result == null) {
                 setState(() {
                   stream = FirebaseChatCore.instance.rooms();
                 });
@@ -271,7 +290,8 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                               ),
                             ),
                             const SizedBox(height: 4),
-                            getLastMessageWidget(brandList[index].metadata!['last_messages']),
+                            getLastMessageWidget(
+                                brandList[index].metadata!['last_messages']),
                           ],
                         ),
                       ),
@@ -279,30 +299,32 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            getLastMessageDateTime(brandList[index].metadata!['last_messages']),
+                            getLastMessageDateTime(
+                                brandList[index].metadata!['last_messages']),
                             style: const TextStyle(
                                 color: Colors.grey,
                                 fontWeight: FontWeight.w600,
-                                fontSize: 12
-                            ),
+                                fontSize: 12),
                           ),
                           const SizedBox(height: 6),
-                          brandList[index].metadata!['unread_message_count'] != 0
+                          brandList[index].metadata!['unread_message_count'] !=
+                                  0
                               ? Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.all(3),
-                            decoration: const BoxDecoration(
-                              color: Colors.red,
-                            ),
-                            child: Text(
-                              brandList[index].metadata!['unread_message_count'].toString(),
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  height: 1
-                              ),
-                            ),
-                          )
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                  ),
+                                  child: Text(
+                                    brandList[index]
+                                        .metadata!['unread_message_count']
+                                        .toString(),
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        height: 1),
+                                  ),
+                                )
                               : const SizedBox()
                         ],
                       ),
@@ -326,7 +348,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     if (room.type == types.RoomType.direct) {
       try {
         final otherUser = room.users.firstWhere(
-              (u) => u.id != FirebaseAuth.instance.currentUser!.uid,
+          (u) => u.id != FirebaseAuth.instance.currentUser!.uid,
         );
 
         color = getUserAvatarNameColor(otherUser);
@@ -346,9 +368,9 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         radius: 20,
         child: !hasImage
             ? Text(
-          name.isEmpty ? '' : name[0].toUpperCase(),
-          style: const TextStyle(color: Colors.white),
-        )
+                name.isEmpty ? '' : name[0].toUpperCase(),
+                style: const TextStyle(color: Colors.white),
+              )
             : null,
       ),
     );
@@ -359,7 +381,12 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
+          children: widget.isSwitchedAccount!
+          ? [
+              _tab(0, 'People', chatProvider.userListCount),
+              _tab(1, 'Brands', chatProvider.brandListCount),
+            ]
+          : [
             _tab(0, 'Brands', chatProvider.brandListCount),
             _tab(1, 'People', chatProvider.userListCount),
           ],
@@ -396,17 +423,17 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                 count == 0
                     ? const SizedBox()
                     : Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(3),
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                  ),
-                  child: Text(
-                    count.toString(),
-                    style: const TextStyle(
-                        color: Colors.white, fontSize: 12, height: 1),
-                  ),
-                )
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.all(3),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                        ),
+                        child: Text(
+                          count.toString(),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 12, height: 1),
+                        ),
+                      )
               ],
             ),
             const SizedBox(height: 2),
@@ -428,7 +455,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     );
   }
 
-  Widget noRoomWidget(){
+  Widget noRoomWidget() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 17),
       child: Row(
@@ -454,11 +481,13 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     try {
       await Firebase.initializeApp();
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
-        if(mounted)
-        {
+        if (mounted) {
           setState(() {
             _user = user;
           });
+          if (FirebaseAuth.instance.currentUser != null) {
+            stream = FirebaseChatCore.instance.rooms();
+          }
         }
       });
       setState(() {
@@ -471,11 +500,11 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     }
   }
 
-  Widget getLastMessageWidget(Map<String, dynamic> data){
+  Widget getLastMessageWidget(Map<String, dynamic> data) {
     String lastMessage = '';
 
-    if(data.isNotEmpty){
-      if(data['type'] == 'image'){
+    if (data.isNotEmpty) {
+      if (data['type'] == 'image') {
         return Row(
           children: [
             Icon(
@@ -495,8 +524,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
             ),
           ],
         );
-      }
-      else if(data['type'] == 'file'){
+      } else if (data['type'] == 'file') {
         return Row(
           children: [
             Icon(
@@ -516,8 +544,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
             ),
           ],
         );
-      }
-      else if(data['type'] == 'voice'){
+      } else if (data['type'] == 'voice') {
         return Row(
           children: [
             Icon(
@@ -537,8 +564,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
             ),
           ],
         );
-      }
-      else if(data['type'] == 'custom'){
+      } else if (data['type'] == 'custom') {
         return Row(
           children: [
             SvgPicture.asset(
@@ -559,8 +585,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
             ),
           ],
         );
-      }
-      else if(data['type'] == 'text'){
+      } else if (data['type'] == 'text') {
         return Text(
           data['text'],
           style: const TextStyle(
@@ -576,11 +601,10 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     return const SizedBox();
   }
 
-  String getLastMessageDateTime(Map<String, dynamic> lastMessageData){
-
+  String getLastMessageDateTime(Map<String, dynamic> lastMessageData) {
     String formattedDate = '';
 
-    if(lastMessageData.isNotEmpty){
+    if (lastMessageData.isNotEmpty) {
       Timestamp timestamp = lastMessageData['createdAt'] as Timestamp;
       DateTime d = timestamp.toDate();
       formattedDate = DateFormat('hh:mm a').format(d);

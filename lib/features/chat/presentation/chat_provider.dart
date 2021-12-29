@@ -241,9 +241,9 @@ class ChatProvider extends ChangeNotifier {
   }
 
   ChatProvider.brandSignIn(bool isSwitchedAccount, this.accessToken, this.refreshToken){
-    print('FIREBAE CHAT CORE: ${FirebaseChatCore.instance.firebaseUser.uid}');
+    /*print('FIREBAE CHAT CORE: ${FirebaseChatCore.instance.firebaseUser.uid}');
     selectedTab = tabs[0];
-    selectedTabIndex = 0;
+    selectedTabIndex = 0;*/
 
     if(FirebaseAuth.instance.currentUser == null){
       getBrandFirebaseToken(accessToken!);
