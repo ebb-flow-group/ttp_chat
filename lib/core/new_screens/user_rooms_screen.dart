@@ -32,7 +32,9 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
     // TODO: implement initState
     super.initState();
 
-    stream = FirebaseChatCore.instance.rooms();
+    if(FirebaseAuth.instance.currentUser != null) {
+      stream = FirebaseChatCore.instance.rooms();
+    }
   }
 
   @override

@@ -76,7 +76,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   void initState() {
     chatProvider = context.read<ChatProvider>();
     initializeFlutterFire();
-    stream = FirebaseChatCore.instance.rooms();
+
     super.initState();
   }
 
@@ -136,29 +136,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
           ],
           centerTitle: false,
         ),
-        body: widget.isSwitchedAccount!
-            ? StreamBuilder<List<types.Room>>(
-                stream: stream,
-                // stream: /*widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : */FirebaseChatCore.instance.rooms(),
-                initialData: const [],
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.none:
-                    case ConnectionState.waiting:
-                      return const Center(child: CircularProgressIndicator());
-                    default:
-                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return startChatMessageWidget();
-                      }
-
-                      if (snapshot.hasError) {
-                        print('BRAND STREAM B ERROR: ${snapshot.error}');
-                      }
-                      return brandRoomsListWidget(snapshot);
-                  }
-                },
-              )
-            : chatProvider.isLoading
+        body: chatProvider.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : chatProvider.isRoomListEmpty
                     ? startChatMessageWidget()
@@ -229,7 +207,13 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         ),
         const SizedBox(height: 17),
         _tabs(),
-        chatProvider.selectedTabIndex == 0
+    widget.isSwitchedAccount!
+        ? chatProvider.selectedTabIndex == 0
+            ? UserRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
+            widget.onViewOrderDetailsClick)
+            : BrandRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
+            widget.onViewOrderDetailsClick)
+        : chatProvider.selectedTabIndex == 0
             ? BrandRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
                 widget.onViewOrderDetailsClick)
             : UserRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
@@ -374,7 +358,12 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
+          children: widget.isSwitchedAccount!
+          ? [
+              _tab(0, 'People', chatProvider.userListCount),
+              _tab(1, 'Brands', chatProvider.brandListCount),
+            ]
+          : [
             _tab(0, 'Brands', chatProvider.brandListCount),
             _tab(1, 'People', chatProvider.userListCount),
           ],
@@ -473,6 +462,9 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
           setState(() {
             _user = user;
           });
+          if (FirebaseAuth.instance.currentUser != null) {
+            stream = FirebaseChatCore.instance.rooms();
+          }
         }
       });
       setState(() {
