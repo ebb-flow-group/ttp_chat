@@ -374,6 +374,9 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                           onPressed: () async {
                             bool exists = await checkExist(usersList[index].phoneNumber!);
 
+                            print('EXISSTTT: $exists');
+                            print('EXISSTTT: $existedRoom');
+
                             if(exists){
 
                               types.Room selectedRoom = types.Room(
@@ -459,19 +462,14 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
       QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('rooms')
           .where('userIds', arrayContains: FirebaseAuth.instance.currentUser!.uid)
+          .where('userIds', arrayContains: docId)
           .get();
 
-      for (var element in snapshot.docs) {
-        var singleRoom = element.data() as Map<String, dynamic>;
-        List<String> userIdsList  = singleRoom['userIds'].cast<String>();
-        if(userIdsList.contains(docId)){
-          existedRoom = singleRoom;
-          existedRoom['id'] = element.id;
-          documentExists = true;
-          break;
-        }
+      if(snapshot.docs.isNotEmpty) {
+        return true;
+      } else {
+        return false;
       }
-      return documentExists;
     }
     catch (e){
       // If any error
