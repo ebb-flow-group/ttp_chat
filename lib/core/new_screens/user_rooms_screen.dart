@@ -10,6 +10,7 @@ import 'package:ttp_chat/core/new_screens/search_user_screen.dart';
 import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
+import 'package:ttp_chat/custom_loading_screen.dart';
 import 'package:ttp_chat/theme/style.dart';
 
 class UserRoomsScreen extends StatefulWidget {
@@ -49,7 +50,7 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
           switch (snapshot.connectionState){
             case ConnectionState.none:
             case ConnectionState.waiting:
-              return const Center(child: CircularProgressIndicator());
+              return const CustomLoadingScreen();
             default:
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return noRoomWidget();
