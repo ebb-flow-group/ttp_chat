@@ -1,10 +1,10 @@
-// ignore_for_file: unnecessary_new
-
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 Future pushTo(Widget page, BuildContext context) {
   return Navigator.of(context)
@@ -32,6 +32,42 @@ displaySnackBar(String message, BuildContext context) {
 consoleLog(String? string) {
   if (kDebugMode) {
     log(string ?? 'Null string');
+  }
+}
+
+Future<types.Room?> checkIfRoomExists(String userId) async {
+  log(userId);
+  try {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('rooms')
+        .where('userIds', arrayContains: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      for (var roomDoc in snapshot.docs) {
+        var room = roomDoc.data() as Map<String, dynamic>;
+        var userIds = (room['userIds'] ?? []) as List<dynamic>;
+        if (userIds.contains(userId)) {
+          consoleLog('Room Exists $room');
+          return types.Room(
+            id: roomDoc.id,
+            type: types.RoomType.direct,
+            name: room['name'],
+            imageUrl: room['imageUrl'],
+            userIds: room['userIds'] ?? [],
+            users: const [],
+          );
+        }
+      }
+      log("Room Doesn't Exist");
+      return null;
+    } else {
+      log("Room Doesn't Exist");
+      return null;
+    }
+  } catch (e) {
+    consoleLog(e.toString());
+    return null;
   }
 }
 

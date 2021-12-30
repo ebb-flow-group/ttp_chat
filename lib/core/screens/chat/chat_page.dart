@@ -96,7 +96,7 @@ class _ChatPageState extends State<_ChatPage>
               width: 10,
             ),
             Text(
-              chatProvider.selectedChatUser!.name!,
+              chatProvider.selectedChatUser?.name ?? "",
               style: appBarTitleStyle(context),
             ),
           ],

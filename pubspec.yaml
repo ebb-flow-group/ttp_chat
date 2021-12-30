@@ -38,6 +38,7 @@ dependencies:
   flutter_sound: ^8.4.1+1
   file_picker: ^4.1.6
   flutter_svg: ^0.23.0+1
+  loading_animations: ^2.2.0
   flutter_firebase_chat_core: #^0.0.6
     git:
       url: https://github.com/ebb-flow-group/flutter_firebase_chat_core

@@ -279,7 +279,6 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                                     types.User? user =
                                         await getUserFromFireStore(
                                       brand.username!,
-                                      id: brand.username,
                                       firstName: brand.name,
                                     );
                                     if (user != null) {
@@ -444,7 +443,6 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                                     types.User? user =
                                         await getUserFromFireStore(
                                             singleUser.phoneNumber!,
-                                            id: singleUser.phoneNumber,
                                             firstName: singleUser.firstName,
                                             lastName: singleUser.lastName);
                                     if (user != null) {
@@ -586,45 +584,37 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
       return false;
     }
   }
+}
 
-  Future<types.User?> getUserFromFireStore(String userId,
-      {String? firstName,
-      String? id,
-      String? imageUrl = "",
-      String? lastName = ""}) async {
-    try {
-      DocumentSnapshot snapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .get();
-      if (snapshot.exists) {
-        var data = snapshot.data() as Map<String, dynamic>;
-        types.User result = types.User(
-          id: snapshot.id,
-          firstName: data['firstName'],
-          lastName: data['lastName'],
-          imageUrl: data['imageUrl'],
-        );
-        return result;
-      } else {
-        if (id == null) {
-          return null;
-        }
-        var user = types.User(
-          firstName: firstName ?? "Guest",
-          id: id,
-          imageUrl: imageUrl ?? "",
-          lastName: lastName ?? "",
-        );
-        consoleLog("Creating New User $firstName $lastName $id");
+Future<types.User?> getUserFromFireStore(String userId,
+    {String? firstName, String? imageUrl = "", String? lastName = ""}) async {
+  try {
+    DocumentSnapshot snapshot =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    if (snapshot.exists) {
+      var data = snapshot.data() as Map<String, dynamic>;
+      types.User result = types.User(
+        id: snapshot.id,
+        firstName: data['firstName'],
+        lastName: data['lastName'],
+        imageUrl: data['imageUrl'],
+      );
+      return result;
+    } else {
+      var user = types.User(
+        firstName: firstName ?? "Guest",
+        id: userId,
+        imageUrl: imageUrl ?? "",
+        lastName: lastName ?? "",
+      );
+      consoleLog("Creating New User $firstName $lastName $userId");
 
-        await FirebaseChatCore.instance.createUserInFirestore(user);
-        return user;
-      }
-    } catch (e) {
-      // If any error
-      print('GET USER ERROR $e');
-      return null;
+      await FirebaseChatCore.instance.createUserInFirestore(user);
+      return user;
     }
+  } catch (e) {
+    // If any error
+    consoleLog('GET USER ERROR $e');
+    return null;
   }
 }
