@@ -10,6 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
+import 'package:ttp_chat/core/screens/loading_screen.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
 import 'package:ttp_chat/theme/style.dart';
 
@@ -50,7 +51,7 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
           switch (snapshot.connectionState){
             case ConnectionState.none:
             case ConnectionState.waiting:
-              return const Center(child: CircularProgressIndicator());
+              return const LoadingScreen();
             default:
               if (snapshot.hasError) {
                 print('BRAND STREAM B ERROR: ${snapshot.error}');

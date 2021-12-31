@@ -13,6 +13,7 @@ import 'package:ttp_chat/core/new_screens/search_user_screen.dart';
 import 'package:ttp_chat/core/new_screens/user_rooms_screen.dart';
 import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
+import 'package:ttp_chat/core/screens/loading_screen.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
 import 'package:ttp_chat/core/widgets/triangle_painter.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
@@ -137,7 +138,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
           centerTitle: false,
         ),
         body: chatProvider.isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const LoadingScreen()
                 : chatProvider.isRoomListEmpty
                     ? startChatMessageWidget()
                     : roomsListWidget());
@@ -207,17 +208,19 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         ),
         const SizedBox(height: 17),
         _tabs(),
-    widget.isSwitchedAccount!
-        ? chatProvider.selectedTabIndex == 0
-            ? UserRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
-            widget.onViewOrderDetailsClick)
-            : BrandRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
-            widget.onViewOrderDetailsClick)
-        : chatProvider.selectedTabIndex == 0
-            ? BrandRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
-                widget.onViewOrderDetailsClick)
-            : UserRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
-                widget.onViewOrderDetailsClick),
+    Expanded(
+      child: widget.isSwitchedAccount!
+          ? chatProvider.selectedTabIndex == 0
+              ? UserRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
+              widget.onViewOrderDetailsClick)
+              : BrandRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
+              widget.onViewOrderDetailsClick)
+          : chatProvider.selectedTabIndex == 0
+              ? BrandRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
+                  widget.onViewOrderDetailsClick)
+              : UserRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
+                  widget.onViewOrderDetailsClick),
+    ),
       ],
     );
   }
