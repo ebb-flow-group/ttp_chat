@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
@@ -10,7 +9,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
-import 'package:ttp_chat/core/widgets/input_search.dart';
 import 'package:ttp_chat/theme/style.dart';
 
 class BrandRoomsScreen extends StatefulWidget {
@@ -18,14 +16,16 @@ class BrandRoomsScreen extends StatefulWidget {
   final String accessToken;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const BrandRoomsScreen(this.isSwitchedAccount, this.accessToken, this.onViewOrderDetailsClick, {Key? key}) : super(key: key);
+  const BrandRoomsScreen(
+      this.isSwitchedAccount, this.accessToken, this.onViewOrderDetailsClick,
+      {Key? key})
+      : super(key: key);
 
   @override
   _BrandRoomsScreenState createState() => _BrandRoomsScreenState();
 }
 
 class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
-
   late Stream<List<types.Room>> stream;
 
   @override
@@ -33,7 +33,7 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
     // TODO: implement initState
     super.initState();
 
-    if(FirebaseAuth.instance.currentUser != null) {
+    if (FirebaseAuth.instance.currentUser != null) {
       stream = FirebaseChatCore.instance.rooms();
     }
   }
@@ -47,10 +47,10 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
         //stream: /*widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : */FirebaseChatCore.instance.rooms(),
         initialData: const [],
         builder: (context, snapshot) {
-          switch (snapshot.connectionState){
+          switch (snapshot.connectionState) {
             case ConnectionState.none:
             case ConnectionState.waiting:
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: LinearProgressIndicator());
             default:
               if (snapshot.hasError) {
                 print('BRAND STREAM B ERROR: ${snapshot.error}');
@@ -60,7 +60,6 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
               }
               return roomsListWidget(snapshot);
           }
-
         },
       ),
     );
@@ -115,94 +114,105 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
     );
   }
 
-  Widget roomsListWidget(AsyncSnapshot<List<types.Room>> snapshot){
+  Widget roomsListWidget(AsyncSnapshot<List<types.Room>> snapshot) {
+    List<types.Room> rooms = snapshot.data!
+        .where((element) => element.metadata!['other_user_type'] == 'brand')
+        .toList();
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 17),
       padding: const EdgeInsets.only(top: 17),
-      child: ListView.separated(
-        shrinkWrap: true,
-        itemCount: snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'brand').toList().length,
-        itemBuilder: (context, index) {
-          var brandList = snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'brand').toList();
+      child: rooms.isEmpty
+          ? noRoomWidget()
+          : ListView.separated(
+              shrinkWrap: true,
+              itemCount: rooms.length,
+              itemBuilder: (context, index) {
+                var brandList = rooms;
+                return GestureDetector(
+                  onTap: () async {
+                    var result = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ChatPage(
+                            brandList[index],
+                            widget.isSwitchedAccount!,
+                            widget.onViewOrderDetailsClick),
+                      ),
+                    );
 
-          return GestureDetector(
-            onTap: () async {
-              var result = await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => ChatPage(brandList[index], widget.isSwitchedAccount!, widget.onViewOrderDetailsClick),
-                ),
-              );
-
-              if(result == null){
-                setState(() {
-                  stream = FirebaseChatCore.instance.rooms();
-                });
-              }
-            },
-            child: Row(
-              children: [
-                _buildAvatar(brandList[index]),
-                Expanded(
+                    if (result == null) {
+                      setState(() {
+                        stream = FirebaseChatCore.instance.rooms();
+                      });
+                    }
+                  },
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      _buildAvatar(brandList[index]),
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              brandList[index].name!,
-                              style: TextStyle(
-                                color: Theme.of(context).primaryColor,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    brandList[index].name!,
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  getLastMessageWidget(brandList[index]
+                                      .metadata!['last_messages']),
+                                ],
                               ),
                             ),
-                            const SizedBox(height: 4),
-                            getLastMessageWidget(brandList[index].metadata!['last_messages']),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  getLastMessageDateTime(brandList[index]
+                                      .metadata!['last_messages']),
+                                  style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 12),
+                                ),
+                                const SizedBox(height: 6),
+                                brandList[index].metadata![
+                                            'unread_message_count'] !=
+                                        0
+                                    ? Container(
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.all(3),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.red,
+                                        ),
+                                        child: Text(
+                                          brandList[index]
+                                              .metadata!['unread_message_count']
+                                              .toString(),
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              height: 1),
+                                        ),
+                                      )
+                                    : const SizedBox()
+                              ],
+                            ),
                           ],
                         ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            getLastMessageDateTime(brandList[index].metadata!['last_messages']),
-                            style: const TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          brandList[index].metadata!['unread_message_count'] != 0
-                          ? Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.all(3),
-                            decoration: const BoxDecoration(
-                              color: Colors.red,
-                            ),
-                            child: Text(
-                              brandList[index].metadata!['unread_message_count'].toString(),
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  height: 1
-                              ),
-                            ),
-                          )
-                          : const SizedBox()
-                        ],
-                      ),
+                      )
                     ],
                   ),
-                )
-              ],
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(height: 17);
+              },
             ),
-          );
-        },
-        separatorBuilder: (context, index) {
-          return const SizedBox(height: 17);
-        },
-      ),
     );
   }
 
@@ -212,7 +222,7 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
     if (room.type == types.RoomType.direct) {
       try {
         final otherUser = room.users.firstWhere(
-              (u) => u.id != FirebaseAuth.instance.currentUser!.uid,
+          (u) => u.id != FirebaseAuth.instance.currentUser!.uid,
         );
 
         color = getUserAvatarNameColor(otherUser);
@@ -221,7 +231,7 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
       }
     }
 
-    final hasImage = room.imageUrl != null;
+    final hasImage = room.imageUrl != null && room.imageUrl != '';
     final name = room.name ?? '';
 
     return Container(
@@ -232,15 +242,15 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
         radius: 20,
         child: !hasImage
             ? Text(
-          name.isEmpty ? '' : name[0].toUpperCase(),
-          style: const TextStyle(color: Colors.white),
-        )
+                name.isEmpty ? '' : name[0].toUpperCase(),
+                style: const TextStyle(color: Colors.white),
+              )
             : null,
       ),
     );
   }
 
-  Widget noRoomWidget(){
+  Widget noRoomWidget() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 17),
       child: Row(
@@ -262,11 +272,11 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
     );
   }
 
-  Widget getLastMessageWidget(Map<String, dynamic> data){
+  Widget getLastMessageWidget(Map<String, dynamic> data) {
     String lastMessage = '';
 
-    if(data.isNotEmpty){
-      if(data['type'] == 'image'){
+    if (data.isNotEmpty) {
+      if (data['type'] == 'image') {
         return Row(
           children: [
             Icon(
@@ -286,8 +296,7 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
             ),
           ],
         );
-      }
-      else if(data['type'] == 'file'){
+      } else if (data['type'] == 'file') {
         return Row(
           children: [
             Icon(
@@ -307,8 +316,7 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
             ),
           ],
         );
-      }
-      else if(data['type'] == 'voice'){
+      } else if (data['type'] == 'voice') {
         return Row(
           children: [
             Icon(
@@ -328,8 +336,7 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
             ),
           ],
         );
-      }
-      else if(data['type'] == 'custom'){
+      } else if (data['type'] == 'custom') {
         return Row(
           children: [
             SvgPicture.asset(
@@ -350,8 +357,7 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
             ),
           ],
         );
-      }
-      else if(data['type'] == 'text'){
+      } else if (data['type'] == 'text') {
         return Text(
           data['text'],
           style: const TextStyle(
@@ -367,11 +373,10 @@ class _BrandRoomsScreenState extends State<BrandRoomsScreen> {
     return const SizedBox();
   }
 
-  String getLastMessageDateTime(Map<String, dynamic> lastMessageData){
-
+  String getLastMessageDateTime(Map<String, dynamic> lastMessageData) {
     String formattedDate = '';
 
-    if(lastMessageData.isNotEmpty){
+    if (lastMessageData.isNotEmpty) {
       Timestamp timestamp = lastMessageData['createdAt'] as Timestamp;
       DateTime d = timestamp.toDate();
       formattedDate = DateFormat('hh:mm a').format(d);

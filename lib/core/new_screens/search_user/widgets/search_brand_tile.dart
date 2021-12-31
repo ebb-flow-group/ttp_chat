@@ -22,7 +22,9 @@ class SearchBrandTile extends StatelessWidget {
                     width: 60,
                     height: 60,
                     decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.grey[200]),
+                      shape: BoxShape.circle,
+                      color: Colors.grey[200],
+                    ),
                     child: Icon(Icons.fastfood,
                         color:
                             Theme.of(context).primaryColor.withOpacity(0.2))),

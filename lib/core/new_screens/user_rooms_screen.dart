@@ -29,7 +29,6 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     if (FirebaseAuth.instance.currentUser != null) {
@@ -49,9 +48,12 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
             case ConnectionState.waiting:
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: LinearProgressIndicator());
+
             default:
-              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              if (!snapshot.hasData ||
+                  snapshot.data!.isEmpty ||
+                  snapshot.data == null) {
                 return noRoomWidget();
               }
               return roomsListWidget(snapshot);
@@ -114,104 +116,105 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
   }
 
   Widget roomsListWidget(AsyncSnapshot<List<types.Room>> snapshot) {
+    List<types.Room> rooms = snapshot.data!.where((element) {
+      return element.metadata!['other_user_type'] == 'user';
+    }).toList();
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 17),
       padding: const EdgeInsets.only(top: 17),
-      child: ListView.separated(
-        shrinkWrap: true,
-        itemCount: snapshot.data!
-            .where((element) => element.metadata!['other_user_type'] == 'user')
-            .toList()
-            .length,
-        itemBuilder: (context, index) {
-          var userList = snapshot.data!
-              .where(
-                  (element) => element.metadata!['other_user_type'] == 'user')
-              .toList();
+      child: rooms.isEmpty
+          ? noRoomWidget()
+          : ListView.separated(
+              shrinkWrap: true,
+              itemCount: rooms.length,
+              itemBuilder: (context, index) {
+                var userList = rooms;
 
-          return GestureDetector(
-            onTap: () async {
-              var result = await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => ChatPage(
-                      userList[index],
-                      widget.isSwitchedAccount!,
-                      widget.onViewOrderDetailsClick),
-                ),
-              );
+                return GestureDetector(
+                  onTap: () async {
+                    var result = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ChatPage(
+                            userList[index],
+                            widget.isSwitchedAccount!,
+                            widget.onViewOrderDetailsClick),
+                      ),
+                    );
 
-              if (result == null) {
-                setState(() {
-                  stream = FirebaseChatCore.instance.rooms();
-                });
-              }
-            },
-            child: Row(
-              children: [
-                _buildAvatar(userList[index]),
-                Expanded(
+                    if (result == null) {
+                      setState(() {
+                        stream = FirebaseChatCore.instance.rooms();
+                      });
+                    }
+                  },
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      _buildAvatar(userList[index]),
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              userList[index].name!,
-                              style: TextStyle(
-                                color: Theme.of(context).primaryColor,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    userList[index].name!,
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  getLastMessageWidget(userList[index]
+                                      .metadata!['last_messages']),
+                                ],
                               ),
                             ),
-                            const SizedBox(height: 4),
-                            getLastMessageWidget(
-                                userList[index].metadata!['last_messages']),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  getLastMessageDateTime(userList[index]
+                                      .metadata!['last_messages']),
+                                  style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 12),
+                                ),
+                                const SizedBox(height: 6),
+                                userList[index].metadata![
+                                            'unread_message_count'] !=
+                                        0
+                                    ? Container(
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.all(3),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.red,
+                                        ),
+                                        child: Text(
+                                          userList[index]
+                                              .metadata!['unread_message_count']
+                                              .toString(),
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              height: 1),
+                                        ),
+                                      )
+                                    : const SizedBox()
+                              ],
+                            ),
                           ],
                         ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            getLastMessageDateTime(
-                                userList[index].metadata!['last_messages']),
-                            style: const TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12),
-                          ),
-                          const SizedBox(height: 6),
-                          userList[index].metadata!['unread_message_count'] != 0
-                              ? Container(
-                                  alignment: Alignment.center,
-                                  padding: const EdgeInsets.all(3),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.red,
-                                  ),
-                                  child: Text(
-                                    userList[index]
-                                        .metadata!['unread_message_count']
-                                        .toString(),
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        height: 1),
-                                  ),
-                                )
-                              : const SizedBox()
-                        ],
-                      ),
+                      )
                     ],
                   ),
-                )
-              ],
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(height: 17);
+              },
             ),
-          );
-        },
-        separatorBuilder: (context, index) {
-          return const SizedBox(height: 17);
-        },
-      ),
     );
   }
 
@@ -230,7 +233,7 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
       }
     }
 
-    final hasImage = room.imageUrl != null;
+    final hasImage = room.imageUrl != null && room.imageUrl != '';
     final name = room.name ?? '';
 
     return Container(

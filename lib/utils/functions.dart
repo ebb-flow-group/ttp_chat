@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 
 Future pushTo(Widget page, BuildContext context) {
   return Navigator.of(context)
@@ -52,8 +51,17 @@ Future<types.User?> getUserFromFireStore(String userId,
         lastName: lastName ?? "",
       );
       consoleLog("Creating New User $firstName $lastName $userId");
-
-      await FirebaseChatCore.instance.createUserInFirestore(user);
+      await FirebaseFirestore.instance.collection('users').doc(user.id).set({
+        'createdAt': FieldValue.serverTimestamp(),
+        'firstName': user.firstName,
+        'imageUrl': user.imageUrl,
+        'lastName': user.lastName,
+        'lastSeen': user.lastSeen,
+        'metadata': user.metadata,
+        'role': user.role?.toShortString(),
+        'updatedAt': FieldValue.serverTimestamp(),
+        'user_type': "user"
+      });
       return user;
     }
   } catch (e) {
