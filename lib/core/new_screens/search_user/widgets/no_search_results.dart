@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ttp_chat/theme/style.dart';
 
-class NoSearchResults extends StatelessWidget {
-  const NoSearchResults({Key? key}) : super(key: key);
+class NoResults extends StatelessWidget {
+  const NoResults({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
