@@ -1,15 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:ttp_chat/core/new_screens/search_user_screen.dart';
+import 'package:ttp_chat/core/new_screens/search_user/search_user_screen.dart';
 import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
-import 'package:ttp_chat/core/widgets/input_search.dart';
 import 'package:ttp_chat/theme/style.dart';
 
 class UserRoomsScreen extends StatefulWidget {
@@ -17,14 +15,16 @@ class UserRoomsScreen extends StatefulWidget {
   final String accessToken;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const UserRoomsScreen(this.isSwitchedAccount, this.accessToken, this.onViewOrderDetailsClick, {Key? key}) : super(key: key);
+  const UserRoomsScreen(
+      this.isSwitchedAccount, this.accessToken, this.onViewOrderDetailsClick,
+      {Key? key})
+      : super(key: key);
 
   @override
   _UserRoomsScreenState createState() => _UserRoomsScreenState();
 }
 
 class _UserRoomsScreenState extends State<UserRoomsScreen> {
-
   late Stream<List<types.Room>> stream;
 
   @override
@@ -32,7 +32,7 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
     // TODO: implement initState
     super.initState();
 
-    if(FirebaseAuth.instance.currentUser != null) {
+    if (FirebaseAuth.instance.currentUser != null) {
       stream = FirebaseChatCore.instance.rooms();
     }
   }
@@ -46,7 +46,7 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
         // stream: /*widget.isSwitchedAccount! ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary')).rooms() : */FirebaseChatCore.instance.rooms(),
         initialData: const [],
         builder: (context, snapshot) {
-          switch (snapshot.connectionState){
+          switch (snapshot.connectionState) {
             case ConnectionState.none:
             case ConnectionState.waiting:
               return const Center(child: CircularProgressIndicator());
@@ -56,7 +56,6 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
               }
               return roomsListWidget(snapshot);
           }
-
         },
       ),
     );
@@ -104,32 +103,44 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SearchUserScreen(accessToken: widget.accessToken, onViewOrderDetailsClick: widget.onViewOrderDetailsClick!)));
+                        builder: (context) => SearchUserScreen(
+                            accessToken: widget.accessToken,
+                            onViewOrderDetailsClick:
+                                widget.onViewOrderDetailsClick!)));
               })
         ],
       ),
     );
   }
 
-  Widget roomsListWidget(AsyncSnapshot<List<types.Room>> snapshot){
+  Widget roomsListWidget(AsyncSnapshot<List<types.Room>> snapshot) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 17),
       padding: const EdgeInsets.only(top: 17),
       child: ListView.separated(
         shrinkWrap: true,
-        itemCount: snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'user').toList().length,
+        itemCount: snapshot.data!
+            .where((element) => element.metadata!['other_user_type'] == 'user')
+            .toList()
+            .length,
         itemBuilder: (context, index) {
-          var userList = snapshot.data!.where((element) => element.metadata!['other_user_type'] == 'user').toList();
+          var userList = snapshot.data!
+              .where(
+                  (element) => element.metadata!['other_user_type'] == 'user')
+              .toList();
 
           return GestureDetector(
             onTap: () async {
               var result = await Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => ChatPage(userList[index], widget.isSwitchedAccount!, widget.onViewOrderDetailsClick),
+                  builder: (context) => ChatPage(
+                      userList[index],
+                      widget.isSwitchedAccount!,
+                      widget.onViewOrderDetailsClick),
                 ),
               );
 
-              if(result == null){
+              if (result == null) {
                 setState(() {
                   stream = FirebaseChatCore.instance.rooms();
                 });
@@ -153,7 +164,8 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
                               ),
                             ),
                             const SizedBox(height: 4),
-                            getLastMessageWidget(userList[index].metadata!['last_messages']),
+                            getLastMessageWidget(
+                                userList[index].metadata!['last_messages']),
                           ],
                         ),
                       ),
@@ -161,30 +173,31 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            getLastMessageDateTime(userList[index].metadata!['last_messages']),
+                            getLastMessageDateTime(
+                                userList[index].metadata!['last_messages']),
                             style: const TextStyle(
                                 color: Colors.grey,
                                 fontWeight: FontWeight.w600,
-                                fontSize: 12
-                            ),
+                                fontSize: 12),
                           ),
                           const SizedBox(height: 6),
                           userList[index].metadata!['unread_message_count'] != 0
                               ? Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.all(3),
-                            decoration: const BoxDecoration(
-                              color: Colors.red,
-                            ),
-                            child: Text(
-                              userList[index].metadata!['unread_message_count'].toString(),
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  height: 1
-                              ),
-                            ),
-                          )
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                  ),
+                                  child: Text(
+                                    userList[index]
+                                        .metadata!['unread_message_count']
+                                        .toString(),
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        height: 1),
+                                  ),
+                                )
                               : const SizedBox()
                         ],
                       ),
@@ -208,7 +221,7 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
     if (room.type == types.RoomType.direct) {
       try {
         final otherUser = room.users.firstWhere(
-              (u) => u.id != FirebaseAuth.instance.currentUser!.uid,
+          (u) => u.id != FirebaseAuth.instance.currentUser!.uid,
         );
 
         color = getUserAvatarNameColor(otherUser);
@@ -228,15 +241,15 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
         radius: 20,
         child: !hasImage
             ? Text(
-          name.isEmpty ? '' : name[0].toUpperCase(),
-          style: const TextStyle(color: Colors.white),
-        )
+                name.isEmpty ? '' : name[0].toUpperCase(),
+                style: const TextStyle(color: Colors.white),
+              )
             : null,
       ),
     );
   }
 
-  Widget noRoomWidget(){
+  Widget noRoomWidget() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 17),
       child: Row(
@@ -258,11 +271,11 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
     );
   }
 
-  Widget getLastMessageWidget(Map<String, dynamic> data){
+  Widget getLastMessageWidget(Map<String, dynamic> data) {
     String lastMessage = '';
 
-    if(data.isNotEmpty){
-      if(data['type'] == 'image'){
+    if (data.isNotEmpty) {
+      if (data['type'] == 'image') {
         return Row(
           children: [
             Icon(
@@ -282,8 +295,7 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
             ),
           ],
         );
-      }
-      else if(data['type'] == 'file'){
+      } else if (data['type'] == 'file') {
         return Row(
           children: [
             Icon(
@@ -303,8 +315,7 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
             ),
           ],
         );
-      }
-      else if(data['type'] == 'voice'){
+      } else if (data['type'] == 'voice') {
         return Row(
           children: [
             Icon(
@@ -324,8 +335,7 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
             ),
           ],
         );
-      }
-      else if(data['type'] == 'custom'){
+      } else if (data['type'] == 'custom') {
         return Row(
           children: [
             SvgPicture.asset(
@@ -346,8 +356,7 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
             ),
           ],
         );
-      }
-      else if(data['type'] == 'text'){
+      } else if (data['type'] == 'text') {
         return Text(
           data['text'],
           style: const TextStyle(
@@ -363,11 +372,10 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
     return const SizedBox();
   }
 
-  String getLastMessageDateTime(Map<String, dynamic> lastMessageData){
-
+  String getLastMessageDateTime(Map<String, dynamic> lastMessageData) {
     String formattedDate = '';
 
-    if(lastMessageData.isNotEmpty){
+    if (lastMessageData.isNotEmpty) {
       Timestamp timestamp = lastMessageData['createdAt'] as Timestamp;
       DateTime d = timestamp.toDate();
       formattedDate = DateFormat('hh:mm a').format(d);

@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ttp_chat/core/new_screens/brand_rooms_screen.dart';
 import 'package:ttp_chat/core/new_screens/chat_error_screen.dart';
-import 'package:ttp_chat/core/new_screens/search_user_screen.dart';
+import 'package:ttp_chat/core/new_screens/search_user/search_user_screen.dart';
 import 'package:ttp_chat/core/new_screens/user_rooms_screen.dart';
 import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
@@ -137,10 +137,10 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
           centerTitle: false,
         ),
         body: chatProvider.isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : chatProvider.isRoomListEmpty
-                    ? startChatMessageWidget()
-                    : roomsListWidget());
+            ? const Center(child: CircularProgressIndicator())
+            : chatProvider.isRoomListEmpty
+                ? startChatMessageWidget()
+                : roomsListWidget());
   }
 
   Widget startChatMessageWidget() {
@@ -207,17 +207,17 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         ),
         const SizedBox(height: 17),
         _tabs(),
-    widget.isSwitchedAccount!
-        ? chatProvider.selectedTabIndex == 0
-            ? UserRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
-            widget.onViewOrderDetailsClick)
-            : BrandRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
-            widget.onViewOrderDetailsClick)
-        : chatProvider.selectedTabIndex == 0
-            ? BrandRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
-                widget.onViewOrderDetailsClick)
-            : UserRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
-                widget.onViewOrderDetailsClick),
+        widget.isSwitchedAccount!
+            ? chatProvider.selectedTabIndex == 0
+                ? UserRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
+                    widget.onViewOrderDetailsClick)
+                : BrandRoomsScreen(widget.isSwitchedAccount,
+                    widget.accessToken!, widget.onViewOrderDetailsClick)
+            : chatProvider.selectedTabIndex == 0
+                ? BrandRoomsScreen(widget.isSwitchedAccount,
+                    widget.accessToken!, widget.onViewOrderDetailsClick)
+                : UserRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
+                    widget.onViewOrderDetailsClick),
       ],
     );
   }
@@ -359,14 +359,14 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: widget.isSwitchedAccount!
-          ? [
-              _tab(0, 'People', chatProvider.userListCount),
-              _tab(1, 'Brands', chatProvider.brandListCount),
-            ]
-          : [
-            _tab(0, 'Brands', chatProvider.brandListCount),
-            _tab(1, 'People', chatProvider.userListCount),
-          ],
+              ? [
+                  _tab(0, 'People', chatProvider.userListCount),
+                  _tab(1, 'Brands', chatProvider.brandListCount),
+                ]
+              : [
+                  _tab(0, 'Brands', chatProvider.brandListCount),
+                  _tab(1, 'People', chatProvider.userListCount),
+                ],
         ),
         Container(
           height: 3,

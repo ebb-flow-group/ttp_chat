@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 
 Future pushTo(Widget page, BuildContext context) {
   return Navigator.of(context)
@@ -27,6 +28,39 @@ displaySnackBar(String message, BuildContext context) {
   );
 
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+}
+
+Future<types.User?> getUserFromFireStore(String userId,
+    {String? firstName, String? imageUrl = "", String? lastName = ""}) async {
+  try {
+    DocumentSnapshot snapshot =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    if (snapshot.exists) {
+      var data = snapshot.data() as Map<String, dynamic>;
+      types.User result = types.User(
+        id: snapshot.id,
+        firstName: data['firstName'],
+        lastName: data['lastName'],
+        imageUrl: data['imageUrl'],
+      );
+      return result;
+    } else {
+      var user = types.User(
+        firstName: firstName ?? "Guest",
+        id: userId,
+        imageUrl: imageUrl ?? "",
+        lastName: lastName ?? "",
+      );
+      consoleLog("Creating New User $firstName $lastName $userId");
+
+      await FirebaseChatCore.instance.createUserInFirestore(user);
+      return user;
+    }
+  } catch (e) {
+    // If any error
+    consoleLog('GET USER ERROR $e');
+    return null;
+  }
 }
 
 consoleLog(String? string) {
