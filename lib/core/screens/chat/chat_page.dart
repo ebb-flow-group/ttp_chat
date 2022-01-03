@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -5,8 +7,10 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:route_parser/route_parser.dart';
 import 'package:ttp_chat/core/screens/chat/util.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/theme/style.dart';
@@ -262,6 +266,13 @@ class _ChatPageState extends State<_ChatPage>
                                             ),
                                             GestureDetector(
                                               onTap: () {
+                                                context.push(RouteParser(
+                                                        '/orders/detail/:id')
+                                                    .reverse({
+                                                  'id':
+                                                      "${message.metadata!['id']}"
+                                                }));
+
                                                 widget.onViewOrderDetailsClick!(
                                                     message.metadata!['id'],
                                                     message.metadata![

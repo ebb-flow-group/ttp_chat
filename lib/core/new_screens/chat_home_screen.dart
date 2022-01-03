@@ -16,6 +16,9 @@ import 'package:ttp_chat/core/widgets/input_search.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/utils/functions.dart';
 
+import 'rooms_list.dart';
+import 'search_user/search_user_screen.dart';
+
 class ChatHomeScreen extends StatelessWidget {
   final bool isSwitchedAccount;
   final String? accessToken, refreshToken;
