@@ -29,6 +29,48 @@ displaySnackBar(String message, BuildContext context) {
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
 
+Future<types.User?> getUserFromFireStore(String userId,
+    {String? firstName, String? imageUrl = "", String? lastName = ""}) async {
+  try {
+    DocumentSnapshot snapshot =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    if (snapshot.exists) {
+      var data = snapshot.data() as Map<String, dynamic>;
+      types.User result = types.User(
+        id: snapshot.id,
+        firstName: data['firstName'],
+        lastName: data['lastName'],
+        imageUrl: data['imageUrl'],
+      );
+      return result;
+    } else {
+      var user = types.User(
+        firstName: firstName ?? "Guest",
+        id: userId,
+        imageUrl: imageUrl ?? "",
+        lastName: lastName ?? "",
+      );
+      consoleLog("Creating New User $firstName $lastName $userId");
+      await FirebaseFirestore.instance.collection('users').doc(user.id).set({
+        'createdAt': FieldValue.serverTimestamp(),
+        'firstName': user.firstName,
+        'imageUrl': user.imageUrl,
+        'lastName': user.lastName,
+        'lastSeen': user.lastSeen,
+        'metadata': user.metadata,
+        'role': user.role?.toShortString(),
+        'updatedAt': FieldValue.serverTimestamp(),
+        'user_type': "user"
+      });
+      return user;
+    }
+  } catch (e) {
+    // If any error
+    consoleLog('GET USER ERROR $e');
+    return null;
+  }
+}
+
 consoleLog(String? string) {
   if (kDebugMode) {
     log(string ?? 'Null string');

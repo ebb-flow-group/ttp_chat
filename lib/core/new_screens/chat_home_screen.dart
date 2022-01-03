@@ -1,23 +1,20 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:ttp_chat/core/new_screens/brand_rooms_screen.dart';
 import 'package:ttp_chat/core/new_screens/chat_error_screen.dart';
-import 'package:ttp_chat/core/new_screens/search_user_screen.dart';
-import 'package:ttp_chat/core/new_screens/user_rooms_screen.dart';
-import 'package:ttp_chat/core/screens/chat/chat_page.dart';
-import 'package:ttp_chat/core/screens/chat/util.dart';
+import 'package:ttp_chat/core/new_screens/rooms_list.dart';
+import 'package:ttp_chat/core/new_screens/search_user/search_user_screen.dart';
+import 'package:ttp_chat/core/new_screens/search_user/widgets/search_tab_bar.dart';
+import 'package:ttp_chat/core/new_screens/widgets/appbar.dart';
+import 'package:ttp_chat/core/new_screens/widgets/helpers.dart';
+import 'package:ttp_chat/core/new_screens/widgets/start_chat_message.dart';
 import 'package:ttp_chat/core/screens/loading_screen.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
-import 'package:ttp_chat/core/widgets/triangle_painter.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
-import 'package:ttp_chat/theme/style.dart';
+import 'package:ttp_chat/utils/functions.dart';
 
 class ChatHomeScreen extends StatelessWidget {
   final bool isSwitchedAccount;
@@ -65,7 +62,6 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   bool _initialized = false;
   bool isRoomListEmpty = false;
   bool isLoading = false;
-  User? _user;
 
   late ChatProvider chatProvider;
 
@@ -77,7 +73,6 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   void initState() {
     chatProvider = context.read<ChatProvider>();
     initializeFlutterFire();
-
     super.initState();
   }
 
@@ -98,7 +93,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     }
 
     if (chatProvider.apiStatus == ApiStatus.called) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(body: LoadingScreen());
     }
 
     if (chatProvider.apiStatus == ApiStatus.failed) {
@@ -106,94 +101,24 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     }
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color(0xFFFDFBEF).withOpacity(0.2),
-          title: Text('Chat',
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6!
-                  .copyWith(fontSize: 24)),
-          actions: [
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SearchUserScreen(
-                                accessToken: widget.accessToken,
-                                onViewOrderDetailsClick:
-                                    widget.onViewOrderDetailsClick!)));
-                  },
-                  icon: SvgPicture.asset(
-                    'assets/chat_icons/start_new_chat.svg',
-                    width: 20,
-                    height: 20,
-                  ),
-                ),
-              ],
-            ),
-          ],
-          centerTitle: false,
-        ),
+        appBar: chatAppBar(context,
+            goToSearch: () => pushTo(
+                SearchUserScreen(
+                    accessToken: widget.accessToken,
+                    onViewOrderDetailsClick: widget.onViewOrderDetailsClick!),
+                context)),
         body: chatProvider.isLoading
-                ? const LoadingScreen()
-                : chatProvider.isRoomListEmpty
-                    ? startChatMessageWidget()
-                    : roomsListWidget());
-  }
-
-  Widget startChatMessageWidget() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 17),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            'assets/chat_icons/start_chat.svg',
-            width: 34,
-            height: 34,
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'Connect with the community',
-            style: appBarTitleStyle(context).copyWith(fontSize: 22),
-          ),
-          const SizedBox(height: 12),
-          const Text(
-            'Thriving communities are made up of vibrant connections. Chat makes it personal, putting you in direct contact with your fans and customers.',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
-            softWrap: true,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          OutlinedButton.icon(
-              icon: Icon(
-                Icons.add_rounded,
-                color: Theme.of(context).primaryColor,
-                size: 20,
-              ),
-              label: Text(
-                'Start Your First Chat',
-                style: appBarTitleStyle(context).copyWith(fontSize: 14),
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SearchUserScreen(
+            ? const Center(child: LoadingScreen())
+            : chatProvider.isRoomListEmpty
+                ? StartChatMessage(
+                    goToSearch: () => pushTo(
+                        SearchUserScreen(
                             accessToken: widget.accessToken,
                             onViewOrderDetailsClick:
-                                widget.onViewOrderDetailsClick!)));
-              })
-        ],
-      ),
-    );
+                                widget.onViewOrderDetailsClick!),
+                        context),
+                  )
+                : roomsListWidget());
   }
 
   Widget roomsListWidget() {
@@ -208,151 +133,22 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         ),
         const SizedBox(height: 17),
         _tabs(),
-    Expanded(
-      child: widget.isSwitchedAccount!
-          ? chatProvider.selectedTabIndex == 0
-              ? UserRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
-              widget.onViewOrderDetailsClick)
-              : BrandRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
-              widget.onViewOrderDetailsClick)
-          : chatProvider.selectedTabIndex == 0
-              ? BrandRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
-                  widget.onViewOrderDetailsClick)
-              : UserRoomsScreen(widget.isSwitchedAccount, widget.accessToken!,
-                  widget.onViewOrderDetailsClick),
-    ),
-      ],
-    );
-  }
-
-  Widget brandRoomsListWidget(AsyncSnapshot<List<types.Room>> snapshot) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 17),
-      padding: const EdgeInsets.only(top: 17),
-      child: ListView.separated(
-        shrinkWrap: true,
-        itemCount: snapshot.data!.length,
-        itemBuilder: (context, index) {
-          var brandList = snapshot.data!;
-
-          return GestureDetector(
-            onTap: () async {
-              var result = await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => ChatPage(
-                      brandList[index],
-                      widget.isSwitchedAccount!,
-                      widget.onViewOrderDetailsClick!),
-                ),
-              );
-
-              if (result == null) {
-                setState(() {
-                  stream = FirebaseChatCore.instance.rooms();
-                });
-              }
-            },
-            child: Row(
-              children: [
-                _buildAvatar(brandList[index]),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              brandList[index].name!,
-                              style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            getLastMessageWidget(
-                                brandList[index].metadata!['last_messages']),
-                          ],
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            getLastMessageDateTime(
-                                brandList[index].metadata!['last_messages']),
-                            style: const TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12),
-                          ),
-                          const SizedBox(height: 6),
-                          brandList[index].metadata!['unread_message_count'] !=
-                                  0
-                              ? Container(
-                                  alignment: Alignment.center,
-                                  padding: const EdgeInsets.all(3),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.red,
-                                  ),
-                                  child: Text(
-                                    brandList[index]
-                                        .metadata!['unread_message_count']
-                                        .toString(),
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        height: 1),
-                                  ),
-                                )
-                              : const SizedBox()
-                        ],
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          );
-        },
-        separatorBuilder: (context, index) {
-          return const SizedBox(height: 17);
-        },
-      ),
-    );
-  }
-
-  Widget _buildAvatar(types.Room room) {
-    var color = Colors.white;
-
-    if (room.type == types.RoomType.direct) {
-      try {
-        final otherUser = room.users.firstWhere(
-          (u) => u.id != FirebaseAuth.instance.currentUser!.uid,
-        );
-
-        color = getUserAvatarNameColor(otherUser);
-      } catch (e) {
-        // Do nothing if other user is not found
-      }
-    }
-
-    final hasImage = room.imageUrl != null && room.imageUrl != '';
-    final name = room.name ?? '';
-
-    return Container(
-      margin: const EdgeInsets.only(right: 16),
-      child: CircleAvatar(
-        backgroundColor: color,
-        backgroundImage: hasImage ? NetworkImage(room.imageUrl!) : null,
-        radius: 20,
-        child: !hasImage
-            ? Text(
-                name.isEmpty ? '' : name[0].toUpperCase(),
-                style: const TextStyle(color: Colors.white),
+        widget.isSwitchedAccount!
+            ? Expanded(
+                child: RoomsList(widget.isSwitchedAccount, widget.accessToken!,
+                    widget.onViewOrderDetailsClick,
+                    list: chatProvider.selectedTabIndex == 0
+                        ? view.users
+                        : view.brands),
               )
-            : null,
-      ),
+            : Expanded(
+                child: RoomsList(widget.isSwitchedAccount, widget.accessToken!,
+                    widget.onViewOrderDetailsClick,
+                    list: chatProvider.selectedTabIndex == 0
+                        ? view.brands
+                        : view.users),
+              )
+      ],
     );
   }
 
@@ -362,14 +158,14 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: widget.isSwitchedAccount!
-          ? [
-              _tab(0, 'People', chatProvider.userListCount),
-              _tab(1, 'Brands', chatProvider.brandListCount),
-            ]
-          : [
-            _tab(0, 'Brands', chatProvider.brandListCount),
-            _tab(1, 'People', chatProvider.userListCount),
-          ],
+              ? [
+                  _tab(0, 'People', chatProvider.userListCount),
+                  _tab(1, 'Brands', chatProvider.brandListCount),
+                ]
+              : [
+                  _tab(0, 'Brands', chatProvider.brandListCount),
+                  _tab(1, 'People', chatProvider.userListCount),
+                ],
         ),
         Container(
           height: 3,
@@ -380,80 +176,17 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   }
 
   Widget _tab(int index, String title, int count) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return SearchTabBar(
+      index: index,
+      count: count,
+      title: title,
+      selectedTabIndex: selectedTabIndex,
       onTap: () {
+        setState(() {
+          selectedTabIndex = index;
+        });
         chatProvider.updateTabIndex(index);
       },
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                      color: chatProvider.selectedTabIndex == index
-                          ? Theme.of(context).primaryColor
-                          : Colors.grey[400]),
-                ),
-                const SizedBox(width: 6),
-                count == 0
-                    ? const SizedBox()
-                    : Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(3),
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                        ),
-                        child: Text(
-                          count.toString(),
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 12, height: 1),
-                        ),
-                      )
-              ],
-            ),
-            const SizedBox(height: 2),
-            chatProvider.selectedTabIndex == index
-                ? CustomPaint(
-                    painter: TrianglePainter(
-                      strokeColor: Theme.of(context).primaryColor,
-                      paintingStyle: PaintingStyle.fill,
-                    ),
-                    child: const SizedBox(
-                      height: 6,
-                      width: 12,
-                    ),
-                  )
-                : const SizedBox(height: 6),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget noRoomWidget() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 17),
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            'assets/chat_icons/no_chat_user.svg',
-            width: 20,
-            height: 20,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            'No result',
-            style: appBarTitleStyle(context).copyWith(fontSize: 16),
-            softWrap: true,
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
     );
   }
 
@@ -462,9 +195,6 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
       await Firebase.initializeApp();
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if (mounted) {
-          setState(() {
-            _user = user;
-          });
           if (FirebaseAuth.instance.currentUser != null) {
             stream = FirebaseChatCore.instance.rooms();
           }
@@ -478,117 +208,5 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         _error = true;
       });
     }
-  }
-
-  Widget getLastMessageWidget(Map<String, dynamic> data) {
-    String lastMessage = '';
-
-    if (data.isNotEmpty) {
-      if (data['type'] == 'image') {
-        return Row(
-          children: [
-            Icon(
-              Icons.image,
-              color: Theme.of(context).primaryColor,
-              size: 18,
-            ),
-            const SizedBox(width: 6),
-            const Text(
-              'Image',
-              style: TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.normal,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        );
-      } else if (data['type'] == 'file') {
-        return Row(
-          children: [
-            Icon(
-              Icons.file_present,
-              color: Theme.of(context).primaryColor,
-              size: 18,
-            ),
-            const SizedBox(width: 6),
-            const Text(
-              'File',
-              style: TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.normal,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        );
-      } else if (data['type'] == 'voice') {
-        return Row(
-          children: [
-            Icon(
-              Icons.mic,
-              color: Theme.of(context).primaryColor,
-              size: 18,
-            ),
-            const SizedBox(width: 10),
-            const Text(
-              'Voice message',
-              style: TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.normal,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        );
-      } else if (data['type'] == 'custom') {
-        return Row(
-          children: [
-            SvgPicture.asset(
-              'assets/chat_icons/order_history.svg',
-              width: 14,
-              height: 14,
-              color: Theme.of(context).primaryColor,
-            ),
-            const SizedBox(width: 6),
-            const Text(
-              'Order',
-              style: TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.normal,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        );
-      } else if (data['type'] == 'text') {
-        return Text(
-          data['text'],
-          style: const TextStyle(
-            color: Colors.grey,
-            fontWeight: FontWeight.normal,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        );
-      }
-    }
-
-    return const SizedBox();
-  }
-
-  String getLastMessageDateTime(Map<String, dynamic> lastMessageData) {
-    String formattedDate = '';
-
-    if (lastMessageData.isNotEmpty) {
-      Timestamp timestamp = lastMessageData['createdAt'] as Timestamp;
-      DateTime d = timestamp.toDate();
-      formattedDate = DateFormat('hh:mm a').format(d);
-    }
-    return formattedDate;
   }
 }

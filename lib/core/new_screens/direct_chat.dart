@@ -6,7 +6,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-import 'package:ttp_chat/core/new_screens/search_user_screen.dart';
 import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/screens/loading_screen.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
