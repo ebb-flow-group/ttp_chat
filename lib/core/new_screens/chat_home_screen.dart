@@ -93,7 +93,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     }
 
     if (chatProvider.apiStatus == ApiStatus.called) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(body: LoadingScreen());
     }
 
     if (chatProvider.apiStatus == ApiStatus.failed) {
