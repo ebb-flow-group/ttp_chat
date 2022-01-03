@@ -54,7 +54,10 @@ class _RoomsListState extends State<RoomsList> {
                 consoleLog('BRAND STREAM B ERROR: ${snapshot.error}');
               }
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const NoResults();
+                return const Padding(
+                  padding: EdgeInsets.only(top: 17.0),
+                  child: NoResults(),
+                );
               }
               return roomsListWidget(snapshot);
           }
