@@ -9,6 +9,7 @@ import 'package:ttp_chat/core/new_screens/widgets/chat_tile.dart';
 import 'package:ttp_chat/core/new_screens/widgets/helpers.dart';
 import 'package:ttp_chat/core/screens/chat/chat_page.dart';
 import 'package:ttp_chat/core/screens/loading_screen.dart';
+import 'package:ttp_chat/core/widgets/rive_anim.dart';
 import 'package:ttp_chat/utils/functions.dart';
 
 class RoomsList extends StatefulWidget {
@@ -48,7 +49,11 @@ class _RoomsListState extends State<RoomsList> {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
             case ConnectionState.waiting:
-              return const LoadingScreen();
+              return Center(
+                child: RiveAnim(
+                  riveFileName: 'assets/chat_icons/loading_anim.riv',
+                ),
+              );
             default:
               if (snapshot.hasError) {
                 consoleLog('BRAND STREAM B ERROR: ${snapshot.error}');
