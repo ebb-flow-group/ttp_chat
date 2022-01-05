@@ -77,6 +77,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     chatProvider = context.read<ChatProvider>();
     initializeFlutterFire();
     super.initState();
+    chatProvider.getLocalRoomList();
   }
 
   @override
@@ -110,9 +111,11 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                     accessToken: widget.accessToken,
                     onViewOrderDetailsClick: widget.onViewOrderDetailsClick!),
                 context)),
-        body: chatProvider.isLoading
-            ? const Center(child: LoadingScreen())
-            : chatProvider.isRoomListEmpty
+        body:
+            //  !chatProvider.isLoading
+            //     ? const Center(child: LoadingScreen())
+            //     :
+            chatProvider.isRoomListEmpty
                 ? StartChatMessage(
                     goToSearch: () => pushTo(
                         SearchUserScreen(
@@ -138,15 +141,15 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         _tabs(),
         widget.isSwitchedAccount!
             ? Expanded(
-                child: RoomsList(widget.isSwitchedAccount, widget.accessToken!,
-                    widget.onViewOrderDetailsClick,
+                child: RoomsList(stream, widget.isSwitchedAccount,
+                    widget.accessToken!, widget.onViewOrderDetailsClick,
                     list: chatProvider.selectedTabIndex == 0
                         ? view.users
                         : view.brands),
               )
             : Expanded(
-                child: RoomsList(widget.isSwitchedAccount, widget.accessToken!,
-                    widget.onViewOrderDetailsClick,
+                child: RoomsList(stream, widget.isSwitchedAccount,
+                    widget.accessToken!, widget.onViewOrderDetailsClick,
                     list: chatProvider.selectedTabIndex == 0
                         ? view.brands
                         : view.users),

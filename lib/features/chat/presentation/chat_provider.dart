@@ -19,11 +19,13 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ttp_chat/features/chat/domain/brand_firebase_token_model.dart';
 import 'package:ttp_chat/features/chat/domain/chat_sign_in_model.dart';
 import 'package:ttp_chat/features/chat/domain/chat_users_model.dart';
@@ -32,6 +34,7 @@ import 'package:ttp_chat/features/chat/domain/user_firebase_token_model.dart';
 import 'package:ttp_chat/features/chat/domain/users_model.dart';
 import 'package:ttp_chat/models/base_model.dart';
 import 'package:ttp_chat/network/api_service.dart';
+import 'package:ttp_chat/utils/functions.dart';
 import 'package:uuid/uuid.dart';
 
 enum ApiStatus { called, success, failed }
@@ -224,6 +227,63 @@ class ChatProvider extends ChangeNotifier {
   bool isBrand = false, isLoading = false, isRoomListEmpty = false;
   String? accessToken, refreshToken;
 
+  List<types.Room> roomList = [];
+  updateRoomList(List<types.Room> roomList) {
+    this.roomList = roomList;
+    // consoleLog(this.roomList.map((e) => e.name).toList().toString());
+    notifyListeners();
+  }
+
+  getLocalRoomList() {
+    SharedPreferences.getInstance().then((prefs) {
+      var data = prefs.getString("roomList");
+      if (data != null) {
+        List roomList = json.decode(data);
+        updateRoomList(
+          roomList.map((e) => types.Room.fromJson(e)).toList(),
+        );
+      }
+    });
+  }
+
+  saveRoomList(List<types.Room> roomList) {
+    SharedPreferences.getInstance().then((prefs) {
+      try {
+        List rooms = roomList.map((room) {
+          var createdAt = room.metadata?['last_messages']['createdAt'];
+          DateTime d =
+              createdAt is Timestamp ? createdAt.toDate() : DateTime.now();
+          var formattedDate = DateFormat('hh:mm a').format(d);
+          room.metadata?['last_messages']["createdAt"] = formattedDate;
+          room.metadata?['last_messages']["updatedAt"] = formattedDate;
+          // types.Room roomData = types.Room(
+          //   users: room.users,
+          //   name: room.name,
+          //   id: room.id,
+          //   createdAt: room.createdAt,
+          //   updatedAt: room.updatedAt,
+          //   metadata: {
+          //     "other_user_type": room.metadata?['other_user_type'] ?? '',
+          //     "unread_message_count":
+          //         room.metadata?['unread_message_count'] ?? '',
+          //     "last_messages": room.metadata?['last_messages'] ?? {},
+          //   },
+          //   type: room.type,
+          //   userIds: room.userIds,
+          // );
+
+          return room.toJson();
+        }).toList();
+        // consoleLog(rooms.toString());
+        // consoleLog("Saved");
+        prefs.setString("roomList", json.encode(rooms));
+      } catch (e) {
+        consoleLog("Error");
+        consoleLog(e.toString());
+      }
+    });
+  }
+
   ChatProvider.userSignIn(
       bool isSwitchedAccount, this.accessToken, this.refreshToken) {
     selectedTab = tabs[0];
@@ -241,8 +301,8 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-
-  ChatProvider.brandSignIn(bool isSwitchedAccount, this.accessToken, this.refreshToken){
+  ChatProvider.brandSignIn(
+      bool isSwitchedAccount, this.accessToken, this.refreshToken) {
     selectedTabIndex = 0;
 
     if (FirebaseAuth.instance.currentUser == null) {
