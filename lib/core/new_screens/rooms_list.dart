@@ -45,19 +45,22 @@ class _RoomsListState extends State<RoomsList> {
         stream: stream,
         initialData: const [],
         builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-            case ConnectionState.waiting:
-              return const LoadingScreen();
-            default:
-              if (snapshot.hasError) {
-                consoleLog('BRAND STREAM B ERROR: ${snapshot.error}');
-              }
-              if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const NoResults();
-              }
-              return roomsListWidget(snapshot);
+          if (snapshot.hasError) {
+            consoleLog('BRAND STREAM B ERROR: ${snapshot.error}');
           }
+
+          if (snapshot.hasData &&
+              snapshot.data != null &&
+              snapshot.data!.isNotEmpty) {
+            return roomsListWidget(snapshot);
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const LoadingScreen();
+          }
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const NoResults();
+          }
+          return Container();
         },
       ),
     );
