@@ -100,8 +100,10 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     }
 
     if (chatProvider.apiStatus == ApiStatus.called) {
-      return Scaffold(body: RiveAnim(
-        riveFileName: 'assets/chat_icons/loading_anim.riv',
+      return Scaffold(body: Center(
+        child: RiveAnim(
+          riveFileName: 'assets/chat_icons/loading_anim.riv',
+        ),
       ));
     }
 
