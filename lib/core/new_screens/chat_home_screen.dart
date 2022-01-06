@@ -16,6 +16,9 @@ import 'package:ttp_chat/core/widgets/rive_anim.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/utils/functions.dart';
 
+import 'rooms_list.dart';
+import 'search_user/search_user_screen.dart';
+
 class ChatHomeScreen extends StatelessWidget {
   final bool isSwitchedAccount;
   final String? accessToken, refreshToken;
@@ -77,6 +80,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     initializeFlutterFire();
 
     super.initState();
+    chatProvider.getLocalRoomList();
   }
 
   @override
@@ -96,8 +100,10 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     }
 
     if (chatProvider.apiStatus == ApiStatus.called) {
-      return Scaffold(body: RiveAnim(
-        riveFileName: 'assets/chat_icons/loading_anim.riv',
+      return Scaffold(body: Center(
+        child: RiveAnim(
+          riveFileName: 'assets/chat_icons/loading_anim.riv',
+        ),
       ));
     }
 
@@ -145,15 +151,15 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
         _tabs(),
         widget.isSwitchedAccount!
             ? Expanded(
-                child: RoomsList(widget.isSwitchedAccount, widget.accessToken!,
-                    widget.onViewOrderDetailsClick,
+                child: RoomsList(stream, widget.isSwitchedAccount,
+                    widget.accessToken!, widget.onViewOrderDetailsClick,
                     list: chatProvider.selectedTabIndex == 0
                         ? view.users
                         : view.brands),
               )
             : Expanded(
-                child: RoomsList(widget.isSwitchedAccount, widget.accessToken!,
-                    widget.onViewOrderDetailsClick,
+                child: RoomsList(stream, widget.isSwitchedAccount,
+                    widget.accessToken!, widget.onViewOrderDetailsClick,
                     list: chatProvider.selectedTabIndex == 0
                         ? view.brands
                         : view.users),
