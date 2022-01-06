@@ -1,5 +1,3 @@
-import 'package:cupertino_back_gesture/cupertino_back_gesture.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ThemeUtils {
@@ -33,12 +31,6 @@ class ThemeUtils {
           color: Color(0xFF234958),
         ),
       ),
-      pageTransitionsTheme: const PageTransitionsTheme(builders: {
-        TargetPlatform.android:
-            CupertinoPageTransitionsBuilderCustomBackGestureWidth(),
-        TargetPlatform.iOS:
-            CupertinoPageTransitionsBuilderCustomBackGestureWidth()
-      }),
       textTheme: const TextTheme(
         headline4: TextStyle(fontWeight: FontWeight.w900),
         headline5: TextStyle(fontWeight: FontWeight.w900, fontSize: 25),
@@ -61,7 +53,8 @@ class ThemeUtils {
         caption: TextStyle(fontSize: 13, color: Color(0xFF234958)),
         button: TextStyle(fontWeight: FontWeight.bold),
       ),
-      colorScheme: ColorScheme.fromSwatch().copyWith(secondary: const Color(0xFFE28777)),
+      colorScheme:
+          ColorScheme.fromSwatch().copyWith(secondary: const Color(0xFFE28777)),
     );
   }
 }
