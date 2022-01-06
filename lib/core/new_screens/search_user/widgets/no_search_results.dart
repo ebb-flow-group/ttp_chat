@@ -10,6 +10,7 @@ class NoResults extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 17),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SvgPicture.asset(
             'assets/chat_icons/no_chat_user.svg',

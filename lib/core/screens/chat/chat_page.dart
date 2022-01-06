@@ -108,7 +108,7 @@ class _ChatPageState extends State<_ChatPage>
         actions: [
           IconButton(
               icon: SvgPicture.asset(
-                'assets/icons/settings_two.svg',
+                'assets/chat_icons/settings_two.svg',
                 color: Theme.of(context).primaryColor,
                 height: 18,
                 width: 18,

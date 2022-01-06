@@ -11,8 +11,8 @@ import 'package:ttp_chat/core/new_screens/search_user/widgets/search_tab_bar.dar
 import 'package:ttp_chat/core/new_screens/widgets/appbar.dart';
 import 'package:ttp_chat/core/new_screens/widgets/helpers.dart';
 import 'package:ttp_chat/core/new_screens/widgets/start_chat_message.dart';
-import 'package:ttp_chat/core/screens/loading_screen.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
+import 'package:ttp_chat/core/widgets/rive_anim.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/utils/functions.dart';
 
@@ -72,10 +72,13 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
 
   late Stream<List<types.Room>> stream;
 
+  String stateChangeMessage = '';
+
   @override
   void initState() {
     chatProvider = context.read<ChatProvider>();
     initializeFlutterFire();
+
     super.initState();
   }
 
@@ -96,7 +99,9 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     }
 
     if (chatProvider.apiStatus == ApiStatus.called) {
-      return const Scaffold(body: LoadingScreen());
+      return Scaffold(body: RiveAnim(
+        riveFileName: 'assets/chat_icons/loading_anim.riv',
+      ));
     }
 
     if (chatProvider.apiStatus == ApiStatus.failed) {
@@ -111,7 +116,12 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                     onViewOrderDetailsClick: widget.onViewOrderDetailsClick!),
                 context)),
         body: chatProvider.isLoading
-            ? const Center(child: LoadingScreen())
+            ? Center(
+              child: RiveAnim(
+                  riveFileName: 'assets/chat_icons/loading_anim.riv',
+                ),
+            )
+            // ? const Center(child: LoadingScreen())
             : chatProvider.isRoomListEmpty
                 ? StartChatMessage(
                     goToSearch: () => pushTo(
