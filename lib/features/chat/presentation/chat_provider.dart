@@ -234,6 +234,12 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  clearRoomList() {
+    SharedPreferences.getInstance().then((prefs) async {
+      await prefs.remove("roomList");
+    });
+  }
+
   getLocalRoomList() {
     SharedPreferences.getInstance().then((prefs) {
       var data = prefs.getString("roomList");
@@ -256,26 +262,20 @@ class ChatProvider extends ChangeNotifier {
           var formattedDate = DateFormat('hh:mm a').format(d);
           room.metadata?['last_messages']["createdAt"] = formattedDate;
           room.metadata?['last_messages']["updatedAt"] = formattedDate;
-          // types.Room roomData = types.Room(
-          //   users: room.users,
-          //   name: room.name,
-          //   id: room.id,
-          //   createdAt: room.createdAt,
-          //   updatedAt: room.updatedAt,
-          //   metadata: {
-          //     "other_user_type": room.metadata?['other_user_type'] ?? '',
-          //     "unread_message_count":
-          //         room.metadata?['unread_message_count'] ?? '',
-          //     "last_messages": room.metadata?['last_messages'] ?? {},
-          //   },
-          //   type: room.type,
-          //   userIds: room.userIds,
-          // );
-
+          try {
+            json.encode(room.toJson());
+          } catch (e) {
+            room.metadata?['last_messages']["metadata"] = {};
+            try {
+              json.encode(room.toJson());
+            } catch (e) {
+              room.metadata?['last_messages'] = {};
+            }
+          }
           return room.toJson();
         }).toList();
         // consoleLog(rooms.toString());
-        // consoleLog("Saved");
+        //consoleLog("Saved");
         prefs.setString("roomList", json.encode(rooms));
       } catch (e) {
         consoleLog("Error");

@@ -3,10 +3,12 @@ import 'package:intl/intl.dart';
 
 enum view { users, brands }
 
-String getLastMessageDateTime(Map<String, dynamic> lastMessageData) {
+String getLastMessageDateTime(Object? lastMessageData) {
   String formattedDate = '';
 
-  if (lastMessageData.isNotEmpty && lastMessageData['createdAt'] != null) {
+  if (lastMessageData is Map<String, dynamic> &&
+      lastMessageData.isNotEmpty &&
+      lastMessageData['createdAt'] != null) {
     if (lastMessageData['createdAt'] is Timestamp) {
       Timestamp timestamp = lastMessageData['createdAt'] as Timestamp;
       DateTime d = timestamp.toDate();

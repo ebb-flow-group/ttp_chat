@@ -78,9 +78,12 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   void initState() {
     chatProvider = context.read<ChatProvider>();
     initializeFlutterFire();
-
     super.initState();
-    chatProvider.getLocalRoomList();
+    if (FirebaseAuth.instance.currentUser == null) {
+      chatProvider.clearRoomList();
+    } else {
+      chatProvider.getLocalRoomList();
+    }
   }
 
   @override
@@ -100,7 +103,8 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     }
 
     if (chatProvider.apiStatus == ApiStatus.called) {
-      return Scaffold(body: Center(
+      return Scaffold(
+          body: Center(
         child: RiveAnim(
           riveFileName: 'assets/chat_icons/loading_anim.riv',
         ),
@@ -118,14 +122,16 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                     accessToken: widget.accessToken,
                     onViewOrderDetailsClick: widget.onViewOrderDetailsClick!),
                 context)),
-        body: chatProvider.isLoading
-            ? Center(
-              child: RiveAnim(
-                  riveFileName: 'assets/chat_icons/loading_anim.riv',
-                ),
-            )
-            // ? const Center(child: LoadingScreen())
-            : chatProvider.isRoomListEmpty
+        body:
+            //  chatProvider.isLoading
+            //     ? Center(
+            //         child: RiveAnim(
+            //           riveFileName: 'assets/chat_icons/loading_anim.riv',
+            //         ),
+            //       )
+            //     // ? const Center(child: LoadingScreen())
+            //     :
+            chatProvider.isRoomListEmpty
                 ? StartChatMessage(
                     goToSearch: () => pushTo(
                         SearchUserScreen(
