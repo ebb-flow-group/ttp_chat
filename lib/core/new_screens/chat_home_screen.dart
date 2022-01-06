@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:provider/provider.dart';
@@ -12,10 +11,8 @@ import 'package:ttp_chat/core/new_screens/search_user/widgets/search_tab_bar.dar
 import 'package:ttp_chat/core/new_screens/widgets/appbar.dart';
 import 'package:ttp_chat/core/new_screens/widgets/helpers.dart';
 import 'package:ttp_chat/core/new_screens/widgets/start_chat_message.dart';
-import 'package:ttp_chat/core/screens/loading_screen.dart';
 import 'package:ttp_chat/core/widgets/input_search.dart';
 import 'package:ttp_chat/core/widgets/rive_anim.dart';
-import 'package:ttp_chat/core/widgets/rive_anim_controller.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/utils/functions.dart';
 
