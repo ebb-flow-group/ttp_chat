@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart';
 
-import '../util.dart';
+import '../../../features/chat/util.dart';
 
 class ChatAvatar extends StatelessWidget {
   final Room room;

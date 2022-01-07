@@ -11,7 +11,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
@@ -291,14 +290,14 @@ class ChatProvider extends ChangeNotifier {
     selectedTabIndex = 0;
 
     if (FirebaseAuth.instance.currentUser == null) {
-      print('CURRENT USER IS NULL');
+      consoleLog('CURRENT USER IS NULL');
       getUserFirebaseToken(accessToken!);
     } else {
       // FirebaseAuth.instance.currentUser!.reload();
       getCountData();
       apiStatus = ApiStatus.success;
       notifyListeners();
-      print('CURRENT USER IS NOT NULL');
+      consoleLog('CURRENT USER IS NOT NULL');
     }
   }
 
@@ -308,46 +307,46 @@ class ChatProvider extends ChangeNotifier {
 
     if (FirebaseAuth.instance.currentUser == null) {
       getBrandFirebaseToken(accessToken!);
-      print('CURRENT BRAND IS NULL');
+      consoleLog('CURRENT BRAND IS NULL');
     } else {
       // FirebaseAuth.instance.currentUser!.reload();
       getCountData();
       apiStatus = ApiStatus.success;
       notifyListeners();
-      print('CURRENT BRAND IS NOT NULL');
+      consoleLog('CURRENT BRAND IS NOT NULL');
     }
   }
 
   void userCustomFirebaseTokenSignIn(String firebaseToken) async {
-    print('USER FIREBASE TOKEN 1: $firebaseToken');
+    consoleLog('USER FIREBASE TOKEN 1: $firebaseToken');
     try {
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
-      print('UIDDDDD: ${userCredential.user!.uid}');
+      consoleLog('UIDDDDD: ${userCredential.user!.uid}');
       checkIfUserIsBrandOrUser(userCredential.user!.uid);
       getCountData();
       // createUserOnFirestore(chatSignInModel, userCredential.user!.uid);
       apiStatus = ApiStatus.success;
       notifyListeners();
     } catch (e, s) {
-      print('USER CUSTOM FIREBASE TOKEN SIGN IN ERROR: $e\n$s');
+      consoleLog('USER CUSTOM FIREBASE TOKEN SIGN IN ERROR: $e\n$s');
     }
   }
 
   void brandCustomFirebaseTokenSignIn(
       List<BrandFirebaseTokenData> brandsList) async {
-    print('SECONDARY FB APP');
+    consoleLog('SECONDARY FB APP');
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithCustomToken(brandsList[0].firebaseToken!);
-      print('UIDDDDD: ${userCredential.user!.uid}');
+      consoleLog('UIDDDDD: ${userCredential.user!.uid}');
       checkIfUserIsBrandOrUser(userCredential.user!.uid);
       getCountData();
       // createBrandOnFirestore(selectedBrand, userCredential.user!.uid);
       apiStatus = ApiStatus.success;
       notifyListeners();
     } catch (e, s) {
-      print('BRAND CUSTOM FIREBASE TOKEN SIGN IN ERROR: $e\n$s');
+      consoleLog('BRAND CUSTOM FIREBASE TOKEN SIGN IN ERROR: $e\n$s');
     }
   }
 
@@ -367,7 +366,7 @@ class ChatProvider extends ChangeNotifier {
         ),
       );
     } catch (e) {
-      print('USER SIGN UP ERROR: $e');
+      consoleLog('USER SIGN UP ERROR: $e');
     }
   }
 
@@ -383,7 +382,7 @@ class ChatProvider extends ChangeNotifier {
         ),
       );
     } catch (e) {
-      print('BRAND SIGN UP ERROR: $e');
+      consoleLog('BRAND SIGN UP ERROR: $e');
     }
   }
 
@@ -397,7 +396,7 @@ class ChatProvider extends ChangeNotifier {
         await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
     final data = snapshot.data();
-    print('USER TYPE: ${data!['user_type']}');
+    consoleLog('USER TYPE: ${data!['user_type']}');
     if (data['user_type'] == 'brand') {
       isBrand = true;
     } else if (data['user_type'] == 'user') {
@@ -407,28 +406,29 @@ class ChatProvider extends ChangeNotifier {
   }
 
   void getUserFirebaseToken(String accessToken) async {
-    print('ACCESS TOKEN 1: $accessToken');
+    consoleLog('ACCESS TOKEN 1: $accessToken');
     BaseModel<UserFirebaseTokenModel> response =
         await GetIt.I<ApiService>().getUserFirebaseToken(accessToken);
 
     if (response.data != null) {
-      print('USER FIREBASE TOKEN 1: ${response.data!.firebaseToken!}');
+      consoleLog('USER FIREBASE TOKEN 1: ${response.data!.firebaseToken!}');
       userCustomFirebaseTokenSignIn(response.data!.firebaseToken!);
     } else {
       apiStatus = ApiStatus.failed;
       notifyListeners();
 
-      print('CUSTOM SIGN IN ERROR: ${response.getException.getErrorMessage()}');
+      consoleLog(
+          'CUSTOM SIGN IN ERROR: ${response.getException.getErrorMessage()}');
     }
   }
 
   void getBrandFirebaseToken(String accessToken) async {
-    print('ACCESS TOKEN 1: $accessToken');
+    consoleLog('ACCESS TOKEN 1: $accessToken');
     BaseModel<BrandFirebaseTokenModel> response =
         await GetIt.I<ApiService>().getBrandFirebaseToken(accessToken);
 
     if (response.data != null) {
-      print('BRAND FIREBASE TOKEN 1: ${response.data!.toJson()}');
+      consoleLog('BRAND FIREBASE TOKEN 1: ${response.data!.toJson()}');
 
       if (response.data!.brandFirebaseTokenList!.isEmpty ||
           response.data!.brandFirebaseTokenList!.length > 1) {
@@ -441,7 +441,8 @@ class ChatProvider extends ChangeNotifier {
       apiStatus = ApiStatus.failed;
       notifyListeners();
 
-      print('CUSTOM SIGN IN ERROR: ${response.getException.getErrorMessage()}');
+      consoleLog(
+          'CUSTOM SIGN IN ERROR: ${response.getException.getErrorMessage()}');
     }
   }
 
@@ -474,36 +475,38 @@ class ChatProvider extends ChangeNotifier {
       bool isSwitchedAccount, String firebaseToken) async {
     try {
       if (isSwitchedAccount) {
-        print('SECONDARY FB APP');
+        consoleLog('SECONDARY FB APP');
 
         FirebaseApp secondaryApp = Firebase.app('secondary');
 
         UserCredential userCredential =
             await FirebaseAuth.instanceFor(app: secondaryApp)
                 .signInWithCustomToken(firebaseToken);
-        print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
-        print('USER CREDENTIAL: $firebaseToken');
+        consoleLog(
+            'USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
+        consoleLog('USER CREDENTIAL: $firebaseToken');
         registerUserOnFirestore(userCredential.user!.uid, isSwitchedAccount);
       } else {
-        print('PRIMARY FB APP');
+        consoleLog('PRIMARY FB APP');
         if (chatSignInModel != null) {
           UserCredential userCredential =
               await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
-          print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
-          print('USER CREDENTIAL: $firebaseToken');
+          consoleLog(
+              'USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
+          consoleLog('USER CREDENTIAL: $firebaseToken');
           registerUserOnFirestore(userCredential.user!.uid, isSwitchedAccount);
         }
       }
       apiStatus = ApiStatus.success;
       notifyListeners();
     } catch (e, s) {
-      print('CUSTOM SIGN IN ERROR: $e\n$s');
+      consoleLog('CUSTOM SIGN IN ERROR: $e\n$s');
     }
   }
 
   void registerUserOnFirestore(String uid, bool isSwitchedAccount) async {
-    print('INSIDE REGISTER');
-    print('UID: $uid');
+    consoleLog('INSIDE REGISTER');
+    consoleLog('UID: $uid');
 
     try {
       await FirebaseChatCore.instance.createUserInFirestore(
@@ -520,7 +523,7 @@ class ChatProvider extends ChangeNotifier {
           ));*/
 
     } catch (e) {
-      print('CUSTOM SIGN UP ERROR: $e');
+      consoleLog('CUSTOM SIGN UP ERROR: $e');
     }
   }
 
@@ -552,7 +555,8 @@ class ChatProvider extends ChangeNotifier {
         "Error",
         response.getException.getErrorMessage(),
       );*/
-      print('CUSTOM SIGN IN ERROR: ${response.getException.getErrorMessage()}');
+      consoleLog(
+          'CUSTOM SIGN IN ERROR: ${response.getException.getErrorMessage()}');
     }
   }
 
@@ -580,13 +584,13 @@ class ChatProvider extends ChangeNotifier {
       Directory voiceMessageDirectory =
           await getApplicationDocumentsDirectory();
 
-      print('APP APPLE DOCS DIRE: ${voiceMessageDirectory.path}');
+      consoleLog('APP APPLE DOCS DIRE: ${voiceMessageDirectory.path}');
 
       voiceMessageFilePath = '';
       voiceMessageFilePath =
           '${voiceMessageDirectory.path}/${DateTime.now().millisecondsSinceEpoch.toString()}.mp4';
 
-      print('APP APPLE DOCS DIRE: $voiceMessageFilePath');
+      consoleLog('APP APPLE DOCS DIRE: $voiceMessageFilePath');
 
       await Record().start(
         path: voiceMessageFilePath, // required
@@ -610,14 +614,14 @@ class ChatProvider extends ChangeNotifier {
 
   void stopRecording() async {
     isRecording = false;
-    print('VOICE MESSAGE FILE PATH: $voiceMessageFilePath');
+    consoleLog('VOICE MESSAGE FILE PATH: $voiceMessageFilePath');
     await Record().stop();
 
     voiceMessageFile = File(voiceMessageFilePath);
     audioMessageDuration =
         await FlutterSoundHelper().duration(voiceMessageFilePath);
 
-    print('DURATION FOR METADATA: ${audioMessageDuration!.inSeconds}');
+    consoleLog('DURATION FOR METADATA: ${audioMessageDuration!.inSeconds}');
 
     recordedVoiceMessageFileDuration = audioMessageDuration!.inSeconds;
 
@@ -627,14 +631,13 @@ class ChatProvider extends ChangeNotifier {
         author: user!,
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: const Uuid().v4(),
-        mimeType: lookupMimeType(
-            voiceMessageFilePath == null ? '' : voiceMessageFilePath),
+        mimeType: lookupMimeType(voiceMessageFilePath),
         name: voiceMessageFilePath.split('/').last,
         size: File(voiceMessageFilePath).lengthSync(),
-        uri: voiceMessageFilePath == null ? '' : voiceMessageFilePath,
+        uri: voiceMessageFilePath,
         duration: Duration.zero.inSeconds);
 
-    print('METADATA: ${recordedVoiceMessage!.metadata}');
+    consoleLog('METADATA: ${recordedVoiceMessage!.metadata}');
 
     handleSendVoiceMessagePressed();
 
@@ -649,16 +652,16 @@ class ChatProvider extends ChangeNotifier {
       bool isConverted = await FlutterSoundHelper().convertFile(_mPath, Codec.aacMP4, DateTime.now().millisecondsSinceEpoch.toString(), Codec.mp3);
 
       if(isConverted) {
-        print('MP3 File PATH: $_mPathMp3');
+        consoleLog('MP3 File PATH: $_mPathMp3');
 
         if (_mPathMp3 != null) {
 
           Directory voiceMessageDir = await getTemporaryDirectory();
           String mp3FilePath = '${voiceMessageDir.path}/$_mPathMp3.mp3';
           File mp3File = File(mp3FilePath);
-          print('FILE PATH: $mp3FilePath');
-          print('FILE: $mp3File');
-          print('FILE: ${lookupMimeType(mp3FilePath ?? '')}');
+          consoleLog('FILE PATH: $mp3FilePath');
+          consoleLog('FILE: $mp3File');
+          consoleLog('FILE: ${lookupMimeType(mp3FilePath ?? '')}');
 
           final message = types.VoiceMessage(
             author: user,
@@ -680,7 +683,7 @@ class ChatProvider extends ChangeNotifier {
     /*if(isRecording)
       {
         const oneSec = Duration(milliseconds: 200);
-        waveFormTimer = Timer.periodic(oneSec, (Timer t) => print('hi!'));
+        waveFormTimer = Timer.periodic(oneSec, (Timer t) => consoleLog('hi!'));
       }*/
 
     waveFormListKey = GlobalKey();
@@ -769,7 +772,7 @@ class ChatProvider extends ChangeNotifier {
   }
 
   void handleImageSelection() async {
-    final result = await ImagePicker().getImage(
+    final result = await ImagePicker().pickImage(
       imageQuality: 70,
       maxWidth: 1440,
       source: ImageSource.gallery,
@@ -783,7 +786,7 @@ class ChatProvider extends ChangeNotifier {
         author: user!,
         createdAt: DateTime.now().millisecondsSinceEpoch,
         height: image.height.toDouble(),
-        id: Uuid().v4(),
+        id: const Uuid().v4(),
         name: result.path.split('/').last,
         size: bytes.length,
         uri: result.path,
@@ -803,7 +806,7 @@ class ChatProvider extends ChangeNotifier {
       final message = types.FileMessage(
         author: user!,
         createdAt: DateTime.now().millisecondsSinceEpoch,
-        id: Uuid().v4(),
+        id: const Uuid().v4(),
         mimeType: lookupMimeType(result.files.single.path ?? ''),
         name: result.files.single.name,
         size: result.files.single.size,
@@ -824,7 +827,7 @@ class ChatProvider extends ChangeNotifier {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.0)),
               //this right here
-              child: Container(
+              child: SizedBox(
                 height: 300.0,
                 width: 300.0,
                 child: Column(
@@ -851,7 +854,9 @@ class ChatProvider extends ChangeNotifier {
                                 color: Colors.white,
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                    color: Theme.of(context).accentColor),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey[200]!,
@@ -885,7 +890,9 @@ class ChatProvider extends ChangeNotifier {
                                 },
                                 child: Icon(Icons.multitrack_audio,
                                     size: 60.0,
-                                    color: Theme.of(context).accentColor),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
                               )),
                         ],
                       ),
@@ -902,7 +909,7 @@ class ChatProvider extends ChangeNotifier {
   }
 
   void handleMessageTap(types.Message message) async {
-    print('MESSAGE TYPE: ${message.type}');
+    consoleLog('MESSAGE TYPE: ${message.type}');
     if (message is types.FileMessage) {
       await OpenFile.open(message.uri);
       // notifyListeners();
@@ -924,7 +931,7 @@ class ChatProvider extends ChangeNotifier {
     final textMessage = types.TextMessage(
       author: user!,
       createdAt: DateTime.now().millisecondsSinceEpoch,
-      id: Uuid().v4(),
+      id: const Uuid().v4(),
       text: message.text,
     );
 
@@ -933,7 +940,7 @@ class ChatProvider extends ChangeNotifier {
 
   void addMessage([types.Message? message]) {
     messagesList.insert(0, message!);
-    print('MESSAGE LIST LENGTH: ${messagesList.length}');
+    consoleLog('MESSAGE LIST LENGTH: ${messagesList.length}');
     notifyListeners();
   }
 
@@ -968,11 +975,11 @@ class ChatProvider extends ChangeNotifier {
     AudioPlayer audioPlayer = AudioPlayer();
     audioPlayer.onPlayerStateChanged.listen((s) {
           if (s == AudioPlayerState.PLAYING) {
-            print('PLAYINGGGG');
+            consoleLog('PLAYINGGGG');
           } else if (s == AudioPlayerState.PAUSED) {
-            print('PAUSEDDDDD');
+            consoleLog('PAUSEDDDDD');
           }else if (s == AudioPlayerState.STOPPED) {
-            print('STOPPEDDDDDD');
+            consoleLog('STOPPEDDDDDD');
             // onComplete();
 
             audioPlayer.stop();
@@ -981,7 +988,7 @@ class ChatProvider extends ChangeNotifier {
             notifyListeners();
           }
         }, onError: (msg) {
-          print('ERORRRRRRR: $msg');
+          consoleLog('ERORRRRRRR: $msg');
           // onStop();
 
           audioPlayer.stop();
@@ -990,21 +997,20 @@ class ChatProvider extends ChangeNotifier {
           notifyListeners();
         });
 
-    await audioPlayer.play(uri, isLocal: true).onError((error, stackTrace) => print('PLAY ERROR: $stackTrace'));
+    await audioPlayer.play(uri, isLocal: true).onError((error, stackTrace) => consoleLog('PLAY ERROR: $stackTrace'));
   }*/
 
   void plays(String uri) async {
     // if (audioPlayer != null) audioPlayer.dispose();
-
     audioPlayer =
         ap.AudioPlayer(playerId: voiceMessageFilePath.split('/').last);
     audioPlayer!.onPlayerStateChanged.listen((s) {
       if (s == ap.PlayerState.PLAYING) {
-        print('PLAYINGGGG');
+        consoleLog('Playing');
       } else if (s == ap.PlayerState.PAUSED) {
-        print('PAUSEDDDDD');
+        consoleLog('Paused');
       } else if (s == ap.PlayerState.COMPLETED) {
-        print('COMPLETEDDDDD');
+        consoleLog('Completed');
         // onComplete();
 
         audioPlayer!.dispose();
@@ -1012,7 +1018,7 @@ class ChatProvider extends ChangeNotifier {
         notifyListeners();
       }
     }, onError: (msg) {
-      print('ERORRRRRRR: $msg');
+      consoleLog('Error: $msg');
       // onStop();
 
       audioPlayer!.dispose();
@@ -1054,24 +1060,26 @@ class ChatProvider extends ChangeNotifier {
       [String? customFirebaseToken, ChatSignInModel? chatSignInModel]) async {
     try {
       if (isSwitchedAccount) {
-        print('SECONDARY FB APP');
+        consoleLog('SECONDARY FB APP');
 
         FirebaseApp secondaryApp = Firebase.app('secondary');
 
         UserCredential userCredential =
             await FirebaseAuth.instanceFor(app: secondaryApp)
                 .signInWithCustomToken(customFirebaseToken!);
-        print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
-        print('USER CREDENTIAL: $customFirebaseToken');
+        consoleLog(
+            'USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
+        consoleLog('USER CREDENTIAL: $customFirebaseToken');
         registerUserOnFirestore(userCredential.user!.uid, isSwitchedAccount);
       } else {
-        print('PRIMARY FB APP');
+        consoleLog('PRIMARY FB APP');
         if (chatSignInModel != null) this.chatSignInModel = chatSignInModel;
         notifyListeners();
         UserCredential userCredential = await FirebaseAuth.instance
             .signInWithCustomToken(customFirebaseToken!);
-        print('USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
-        print('USER CREDENTIAL: $customFirebaseToken');
+        consoleLog(
+            'USER CREDENTIAL: ${await userCredential.user!.getIdToken()}');
+        consoleLog('USER CREDENTIAL: $customFirebaseToken');
         registerUserOnFirestore(userCredential.user!.uid, isSwitchedAccount);
       }
 
@@ -1079,12 +1087,12 @@ class ChatProvider extends ChangeNotifier {
       notifyListeners();
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithCustomToken(customFirebaseToken);
-      print('USER CREDENTIAL: ${await userCredential.user.getIdToken()}');
-      print('USER CREDENTIAL: $customFirebaseToken');
+      consoleLog('USER CREDENTIAL: ${await userCredential.user.getIdToken()}');
+      consoleLog('USER CREDENTIAL: $customFirebaseToken');
       registerUserOnFirestore(userCredential.user.uid);*/
 
     } catch (e) {
-      print('CUSTOM SIGN IN ERROR: $e');
+      consoleLog('CUSTOM SIGN IN ERROR: $e');
     }
   }
 
@@ -1105,7 +1113,7 @@ class ChatProvider extends ChangeNotifier {
     if (message is types.FileMessage) {
       var localPath = message.uri;
 
-      print('LOCAL PATH: $localPath');
+      consoleLog('LOCAL PATH: $localPath');
 
       if (message.uri.startsWith('https')) {
         final client = http.Client();
@@ -1123,7 +1131,7 @@ class ChatProvider extends ChangeNotifier {
       await OpenFile.open(localPath);
     } else if (message is types.VoiceMessage) {
       Duration? duration = await FlutterSoundHelper().duration(message.uri);
-      print('ON TAP DURATION: $duration');
+      consoleLog('ON TAP DURATION: $duration');
     }
   }
 
@@ -1180,7 +1188,7 @@ class ChatProvider extends ChangeNotifier {
         setAttachmentUploading(false);
       } on FirebaseException catch (e) {
         setAttachmentUploading(false);
-        print(e);
+        consoleLog(e.toString());
       }
     }
   }
@@ -1219,7 +1227,7 @@ class ChatProvider extends ChangeNotifier {
         setAttachmentUploading(false);
       } on FirebaseException catch (e) {
         setAttachmentUploading(false);
-        print(e);
+        consoleLog(e.toString());
       }
     }
   }
@@ -1228,12 +1236,12 @@ class ChatProvider extends ChangeNotifier {
     if (voiceMessageFile != null) {
       setAttachmentUploading(true);
       final name = voiceMessageFile!.path.split('/').last;
-      print('VOICE MESSAGE FILE NAME: $name');
-      final filePath = voiceMessageFile!.path;
-      print('VOICE MESSAGE FILE PATH: $filePath');
-      final file = File(filePath == null ? '' : filePath);
-      print('VOICE MESSAGE FILE: $file');
-      print('VOICE MESSAGE FILE SIZE: ${voiceMessageFile!.lengthSync()}');
+      consoleLog('VOICE MESSAGE FILE NAME: $name');
+      final filePath = voiceMessageFile?.path;
+      consoleLog('VOICE MESSAGE FILE PATH: $filePath');
+      final file = File(filePath ?? '');
+      consoleLog('VOICE MESSAGE FILE: $file');
+      consoleLog('VOICE MESSAGE FILE SIZE: ${voiceMessageFile!.lengthSync()}');
 
       try {
         final reference = /*isSwitchedAccount!
@@ -1242,12 +1250,12 @@ class ChatProvider extends ChangeNotifier {
             FirebaseStorage.instance.ref(name);
         await reference.putFile(file);
         final uri = await reference.getDownloadURL();
-        print('VOICE MESSAGE FILE FB STORAGE URL: $uri');
-        print(
-            'VOICE MESSAGE FILE MIME TYPE: ${lookupMimeType(filePath == null ? '' : filePath)}');
+        consoleLog('VOICE MESSAGE FILE FB STORAGE URL: $uri');
+        consoleLog(
+            'VOICE MESSAGE FILE MIME TYPE: ${lookupMimeType(filePath ?? '')}');
 
         final message = types.PartialVoice(
-            mimeType: lookupMimeType(filePath == null ? '' : filePath),
+            mimeType: lookupMimeType(filePath ?? ''),
             name: name,
             size: voiceMessageFile!.lengthSync(),
             uri: uri,
@@ -1266,7 +1274,7 @@ class ChatProvider extends ChangeNotifier {
         voiceMessageFile = null;
         voiceMessageFilePath = '';
         setAttachmentUploading(false);
-        print(e);
+        consoleLog(e.toString());
       }
     }
   }

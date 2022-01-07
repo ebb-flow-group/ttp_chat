@@ -34,7 +34,6 @@ class Config {
   static const Color liteTunaColor = Color(0XFFF9F2EE);
   static const Color altBlueColor = Color(0XFF0D3B54);
 
-  // Alerts
   static const Color warning600Color = Color(0XFF775E0D);
   static const Color warning400Color = Color(0XFFE7B820);
   static const Color warning200Color = Color(0XFFF3DB90);
@@ -49,24 +48,4 @@ class Config {
   static const Color positive400Color = Color(0XFF34C369);
   static const Color positive200Color = Color(0XFF97E3B3);
   static const Color positive100Color = Color(0XFFCBF1D9);
-
-  static const apiUrl = 'https://dev-v2.tabletop-cloud.com';
-
-  static const sentryDSN = '';
-
-  static const apiAuthPhoneUrl = '/auth/phone';
-  static const apiAuthOtpUrl = '/auth/otp';
-
-  static const apiLogoutUrl = '';
-  static const apiProfileUrl = '';
-
-  static const bool isDebug = true;
-
-  static const androidAppId = 'co.tabletop.app';
-  static const appleAppId = '1541981454';
-
-  static const String applicationFormLink = 'https://airtable.com/shrQXEo7DEbpTJNdg';
-
-  static const String brandDetailsAbout =
-      'And just like that, Suguru Home Dining was born. The premise is simple yet undeniably appealing. Desmond imports premium ingredients such as a fully vegan and classic American style menu is now available to water mouths all across Singapore.\n\n\nWith the return of dine-in, it’s not just restaurants that have geared up to welcome foodies to their doors. Private home kitchens are also back in the game to embrace diners, many of whom have made reservations months in advance.\n\n\nIf the idea of visiting a home chef’s abode to savour a scrumptious meal appeals to you, here are two picks you can consider for a private restaurant experience for up to five persons.';
 }

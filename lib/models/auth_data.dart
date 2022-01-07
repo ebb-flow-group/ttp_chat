@@ -26,11 +26,11 @@ class AuthData {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['refresh'] = this.refresh;
-    data['access'] = this.access;
-    data['firebase_token'] = this.firebaseToken;
-    data['access_token_expiry'] = this.accessTokenExpiry;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['refresh'] = refresh;
+    data['access'] = access;
+    data['firebase_token'] = firebaseToken;
+    data['access_token_expiry'] = accessTokenExpiry;
     data['brand_firebase_tokens'] = brandFirebaseTokenList == null
         ? []
         : List<dynamic>.from(brandFirebaseTokenList!.map((x) => x.toJson()));

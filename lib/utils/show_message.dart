@@ -10,11 +10,12 @@ showSnackBar(
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
 
-void showMessage(BuildContext context,
-    String title,
-    String message, {
-      NotificationPosition position = NotificationPosition.top,
-    }) {
+void showMessage(
+  BuildContext context,
+  String title,
+  String message, {
+  NotificationPosition position = NotificationPosition.top,
+}) {
   OverlaySupportEntry? entry;
   entry = showSimpleNotification(
     GestureDetector(

@@ -21,8 +21,8 @@ class ErrorMessage {
   List<String>? email;
 
   factory ErrorMessage.fromJson(Map<String, dynamic> json) => ErrorMessage(
-        detail: json["detail"] ?? null,
-        code: json["code"] ?? null,
+        detail: json["detail"],
+        code: json["code"],
         messages: json["messages"] == null
             ? null
             : List<Message>.from(
@@ -35,17 +35,17 @@ class ErrorMessage {
             : List<String>.from(json["email"].map((x) => x)),
       );
 
-  Map<String, dynamic> toJson() =>
-      {
-        "detail": detail ?? null,
-        "code": code ?? null,
+  Map<String, dynamic> toJson() => {
+        "detail": detail,
+        "code": code,
         "messages": messages == null
             ? null
             : List<dynamic>.from(messages!.map((x) => x.toJson())),
         "username": username == null
             ? null
             : List<dynamic>.from(username!.map((x) => x)),
-        "email": email == null ? null : List<dynamic>.from(email!.map((x) => x)),
+        "email":
+            email == null ? null : List<dynamic>.from(email!.map((x) => x)),
       };
 }
 
@@ -61,14 +61,14 @@ class Message {
   String? message;
 
   factory Message.fromJson(Map<String, dynamic> json) => Message(
-        tokenClass: json["token_class"] ?? null,
-        tokenType: json["token_type"] ?? null,
-        message: json["message"] ?? null,
+        tokenClass: json["token_class"],
+        tokenType: json["token_type"],
+        message: json["message"],
       );
 
   Map<String, dynamic> toJson() => {
-        "token_class": tokenClass ?? null,
-        "token_type": tokenType ?? null,
-        "message": message ?? null,
+        "token_class": tokenClass,
+        "token_type": tokenType,
+        "message": message,
       };
 }

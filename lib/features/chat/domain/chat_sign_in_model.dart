@@ -1,20 +1,19 @@
 import 'dart:convert';
 
-
 ChatSignInModel chatSignInModelFromJson(String str) =>
     ChatSignInModel.fromJson(json.decode(str));
 
-String chatSignInModelToJson(ChatSignInModel data) => json.encode(data.toJson());
+String chatSignInModelToJson(ChatSignInModel data) =>
+    json.encode(data.toJson());
 
 class ChatSignInModel {
-  ChatSignInModel({
-    this.refresh,
-    this.access,
-    this.firebaseToken,
-    this.accessTokenExpiry,
-    this.userData,
-    this.brandFirebaseTokenList
-  });
+  ChatSignInModel(
+      {this.refresh,
+      this.access,
+      this.firebaseToken,
+      this.accessTokenExpiry,
+      this.userData,
+      this.brandFirebaseTokenList});
 
   String? refresh;
   String? access;
@@ -23,37 +22,42 @@ class ChatSignInModel {
   UserData? userData;
   List<BrandChatFirebaseTokenResponse>? brandFirebaseTokenList;
 
-  factory ChatSignInModel.fromJson(Map<String, dynamic> json) => ChatSignInModel(
-    refresh: json["refresh"] ?? null,
-    access: json["access"] ?? null,
-    firebaseToken: json["firebase_token"] ?? null,
-    accessTokenExpiry: json["access_token_expiry"] ?? null,
-    userData: json["user_data"] == null
-        ? null
-        : UserData.fromJson(json["user_data"]),
-    brandFirebaseTokenList: json["brand_firebase_tokens"] == null
-        ? []
-        : List<BrandChatFirebaseTokenResponse>.from(
-        json["brand_firebase_tokens"].map((x) => BrandChatFirebaseTokenResponse.fromJson(x))),
-  );
+  factory ChatSignInModel.fromJson(Map<String, dynamic> json) =>
+      ChatSignInModel(
+        refresh: json["refresh"],
+        access: json["access"],
+        firebaseToken: json["firebase_token"],
+        accessTokenExpiry: json["access_token_expiry"],
+        userData: json["user_data"] == null
+            ? null
+            : UserData.fromJson(json["user_data"]),
+        brandFirebaseTokenList: json["brand_firebase_tokens"] == null
+            ? []
+            : List<BrandChatFirebaseTokenResponse>.from(
+                json["brand_firebase_tokens"]
+                    .map((x) => BrandChatFirebaseTokenResponse.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "refresh": refresh ?? null,
-    "access": access ?? null,
-    "firebase_token": firebaseToken ?? null,
-    "access_token_expiry": accessTokenExpiry ?? null,
-    "user_data": userData == null ? null : userData!.toJson(),
-    "brand_firebase_tokens": brandFirebaseTokenList == null
-        ? []
-        : List<dynamic>.from(brandFirebaseTokenList!.map((x) => x.toJson())),
-  };
+        "refresh": refresh,
+        "access": access,
+        "firebase_token": firebaseToken,
+        "access_token_expiry": accessTokenExpiry,
+        "user_data": userData == null ? null : userData!.toJson(),
+        "brand_firebase_tokens": brandFirebaseTokenList == null
+            ? []
+            : List<dynamic>.from(
+                brandFirebaseTokenList!.map((x) => x.toJson())),
+      };
 }
 
-
-BrandChatFirebaseTokenResponse brandChatFirebaseTokenResponseFromJson(String str) =>
+BrandChatFirebaseTokenResponse brandChatFirebaseTokenResponseFromJson(
+        String str) =>
     BrandChatFirebaseTokenResponse.fromJson(json.decode(str));
 
-String brandChatFirebaseTokenResponseToJson(BrandChatFirebaseTokenResponse data) => json.encode(data.toJson());
+String brandChatFirebaseTokenResponseToJson(
+        BrandChatFirebaseTokenResponse data) =>
+    json.encode(data.toJson());
 
 class BrandChatFirebaseTokenResponse {
   BrandChatFirebaseTokenResponse({
@@ -64,15 +68,16 @@ class BrandChatFirebaseTokenResponse {
   String? brandName;
   String? firebaseToken;
 
-  factory BrandChatFirebaseTokenResponse.fromJson(Map<String, dynamic> json) => BrandChatFirebaseTokenResponse(
-    brandName: json["brand_name"] ?? null,
-    firebaseToken: json["firebase_token"] ?? null,
-  );
+  factory BrandChatFirebaseTokenResponse.fromJson(Map<String, dynamic> json) =>
+      BrandChatFirebaseTokenResponse(
+        brandName: json["brand_name"],
+        firebaseToken: json["firebase_token"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "brand_name": brandName ?? null,
-    "firebase_token": firebaseToken ?? null,
-  };
+        "brand_name": brandName,
+        "firebase_token": firebaseToken,
+      };
 }
 
 class UserData {
@@ -119,27 +124,24 @@ class UserData {
   }
 
   factory UserData.fromJson(Map<String, dynamic> json) => UserData(
-    id: json["id"] ?? null,
-    phoneNumber: json["phone_number"] ?? null,
-    username: json["username"] ?? null,
-    firstName: json["first_name"] ?? null,
-    lastName: json["last_name"] ?? null,
-    email: json["email"] ?? null,
-    usernameSet: json["username_set"] ?? null,
-    passwordSet: json["password_set"] ?? null,
-  );
+        id: json["id"],
+        phoneNumber: json["phone_number"],
+        username: json["username"],
+        firstName: json["first_name"],
+        lastName: json["last_name"],
+        email: json["email"],
+        usernameSet: json["username_set"],
+        passwordSet: json["password_set"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id ?? null,
-    "phone_number": phoneNumber ?? null,
-    "username": username ?? null,
-    "first_name": firstName ?? null,
-    "last_name": lastName ?? null,
-    "email": email ?? null,
-    "username_set": usernameSet ?? null,
-    "password_set": passwordSet ?? null,
-  };
+        "id": id,
+        "phone_number": phoneNumber,
+        "username": username,
+        "first_name": firstName,
+        "last_name": lastName,
+        "email": email,
+        "username_set": usernameSet,
+        "password_set": passwordSet,
+      };
 }
-
-
-

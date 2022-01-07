@@ -1,6 +1,8 @@
 import 'dart:ui';
 
-/*const COLORS = [
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+
+const colors = [
   Color(0xffff6767),
   Color(0xff66e0da),
   Color(0xfff5a2d9),
@@ -14,18 +16,16 @@ import 'dart:ui';
 ];
 
 Color getUserAvatarNameColor(types.User user) {
-  final index = user.id.hashCode % COLORS.length;
-  return COLORS[index];
+  final index = user.id.hashCode % colors.length;
+  return colors[index];
 }
 
 String getUserName(types.User user) =>
-    '${user.firstName ?? ''} ${user.lastName ?? ''} / ${user.id ?? ''}'.trim();
+    '${user.firstName ?? ''} ${user.lastName ?? ''} / ${user.id}'.trim();
 
 Color getRoomAvatarNameColor(types.Room user) {
-  final index = user.id.hashCode % COLORS.length;
-  return COLORS[index];
+  final index = user.id.hashCode % colors.length;
+  return colors[index];
 }
 
-String getRoomName(types.Room user) =>
-    '${user.name ?? ''}'.trim();
-}*/
+String getRoomName(types.Room user) => (user.name ?? '').trim();

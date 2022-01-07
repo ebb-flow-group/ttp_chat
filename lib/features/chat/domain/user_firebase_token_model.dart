@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-
 UserFirebaseTokenModel userFirebaseTokenModelFromJson(String str) =>
     UserFirebaseTokenModel.fromJson(json.decode(str));
 
-String userFirebaseTokenModelToJson(UserFirebaseTokenModel data) => json.encode(data.toJson());
+String userFirebaseTokenModelToJson(UserFirebaseTokenModel data) =>
+    json.encode(data.toJson());
 
 class UserFirebaseTokenModel {
   UserFirebaseTokenModel({
@@ -13,11 +13,12 @@ class UserFirebaseTokenModel {
 
   String? firebaseToken;
 
-  factory UserFirebaseTokenModel.fromJson(Map<String, dynamic> json) => UserFirebaseTokenModel(
-      firebaseToken: json["firebase_token"] ?? null,
-  );
+  factory UserFirebaseTokenModel.fromJson(Map<String, dynamic> json) =>
+      UserFirebaseTokenModel(
+        firebaseToken: json["firebase_token"],
+      );
 
   Map<String, dynamic> toJson() => {
-  "firebase_token": firebaseToken ?? null,
-};
+        "firebase_token": firebaseToken,
+      };
 }

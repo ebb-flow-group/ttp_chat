@@ -44,15 +44,23 @@ class _ChatErrorScreenState extends State<ChatErrorScreen> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 20),
-          FlatButton.icon(
-            icon: SvgPicture.asset(
-              'assets/chat_icons/contact_support.svg',
-              height: 15,
-              width: 20,
-              color: Theme.of(context).scaffoldBackgroundColor,
+          MaterialButton(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/chat_icons/contact_support.svg',
+                  height: 15,
+                  width: 20,
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                const Text('Contact Support'),
+              ],
             ),
-            label: const Text('Contact Support'),
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).colorScheme.secondary,
             textColor: Theme.of(context).scaffoldBackgroundColor,
             onPressed: () {},
             minWidth: MediaQuery.of(context).size.width,

@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:provider/provider.dart';
+import 'package:ttp_chat/core/screens/loading_screen.dart';
 
-import '../../features/chat/presentation/chat_provider.dart';
-import '../../utils/functions.dart';
-import '../widgets/input_search.dart';
-import '../widgets/rive_anim.dart';
-import 'chat_error_screen.dart';
-import 'room_list/rooms_list.dart';
-import 'search_page/search_page_screen.dart';
-import 'search_page/search_widgets/search_tab_bar.dart';
-import 'widgets/appbar.dart';
-import 'widgets/helpers.dart';
-import 'widgets/start_chat_message.dart';
+import '../../../features/chat/presentation/chat_provider.dart';
+import '../../../utils/functions.dart';
+import '../../widgets/input_search.dart';
+import '../chat_error_screen.dart';
+import '../room_list/rooms_list.dart';
+import '../search_page/search_page_screen.dart';
+import '../widgets/appbar.dart';
+import '../widgets/helpers.dart';
+import '../widgets/start_chat_message.dart';
+import 'home_widgets/home_tab.dart';
 
 class ChatHomeScreen extends StatelessWidget {
   final bool isSwitchedAccount;
@@ -101,12 +101,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     }
 
     if (chatProvider.apiStatus == ApiStatus.called) {
-      return Scaffold(
-          body: Center(
-        child: RiveAnim(
-          riveFileName: 'assets/chat_icons/loading_anim.riv',
-        ),
-      ));
+      return const Scaffold(body: LoadingScreen());
     }
 
     if (chatProvider.apiStatus == ApiStatus.failed) {
@@ -120,25 +115,16 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                     accessToken: widget.accessToken,
                     onViewOrderDetailsClick: widget.onViewOrderDetailsClick!),
                 context)),
-        body:
-            //  chatProvider.isLoading
-            //     ? Center(
-            //         child: RiveAnim(
-            //           riveFileName: 'assets/chat_icons/loading_anim.riv',
-            //         ),
-            //       )
-            //     // ? const Center(child: LoadingScreen())
-            //     :
-            chatProvider.isRoomListEmpty
-                ? StartChatMessage(
-                    goToSearch: () => pushTo(
-                        SearchPage(
-                            accessToken: widget.accessToken,
-                            onViewOrderDetailsClick:
-                                widget.onViewOrderDetailsClick!),
-                        context),
-                  )
-                : roomsListWidget());
+        body: chatProvider.isRoomListEmpty
+            ? StartChatMessage(
+                goToSearch: () => pushTo(
+                    SearchPage(
+                        accessToken: widget.accessToken,
+                        onViewOrderDetailsClick:
+                            widget.onViewOrderDetailsClick!),
+                    context),
+              )
+            : roomsListWidget());
   }
 
   Widget roomsListWidget() {
@@ -172,6 +158,13 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     );
   }
 
+  onTabTapped(int index) {
+    setState(() {
+      selectedTabIndex = index;
+    });
+    chatProvider.updateTabIndex(index);
+  }
+
   Widget _tabs() {
     return Column(
       children: [
@@ -179,12 +172,32 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: widget.isSwitchedAccount!
               ? [
-                  _tab(0, 'People', chatProvider.userListCount),
-                  _tab(1, 'Brands', chatProvider.brandListCount),
+                  HomeTab(
+                      onTap: () => onTabTapped(0),
+                      selectedTabIndex: selectedTabIndex,
+                      index: 0,
+                      title: 'People',
+                      count: chatProvider.userListCount),
+                  HomeTab(
+                      onTap: () => onTabTapped(1),
+                      selectedTabIndex: selectedTabIndex,
+                      index: 1,
+                      title: 'Brands',
+                      count: chatProvider.brandListCount),
                 ]
               : [
-                  _tab(0, 'Brands', chatProvider.brandListCount),
-                  _tab(1, 'People', chatProvider.userListCount),
+                  HomeTab(
+                      onTap: () => onTabTapped(0),
+                      selectedTabIndex: selectedTabIndex,
+                      index: 0,
+                      title: 'Brands',
+                      count: chatProvider.brandListCount),
+                  HomeTab(
+                      onTap: () => onTabTapped(1),
+                      selectedTabIndex: selectedTabIndex,
+                      index: 1,
+                      title: 'People',
+                      count: chatProvider.userListCount),
                 ],
         ),
         Container(
@@ -192,21 +205,6 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
           color: Theme.of(context).primaryColor,
         )
       ],
-    );
-  }
-
-  Widget _tab(int index, String title, int count) {
-    return SearchTabBar(
-      index: index,
-      count: count,
-      title: title,
-      selectedTabIndex: selectedTabIndex,
-      onTap: () {
-        setState(() {
-          selectedTabIndex = index;
-        });
-        chatProvider.updateTabIndex(index);
-      },
     );
   }
 

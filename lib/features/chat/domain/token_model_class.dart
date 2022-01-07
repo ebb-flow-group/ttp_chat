@@ -1,4 +1,4 @@
-class TokenModelClass{
+class TokenModelClass {
   String? kind, idToken, refreshToken, expiresIn;
   bool? isNewUser;
 
@@ -11,7 +11,7 @@ class TokenModelClass{
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['kind'] = kind;
     data['idToken'] = idToken;
     data['refreshToken'] = refreshToken;

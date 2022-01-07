@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rive/rive.dart';
 
-import '../../global.dart';
+import '../../utils/functions.dart';
 
 class RiveAnim extends StatefulWidget {
   final String? riveFileName;
@@ -34,7 +34,7 @@ class _RiveAnimState extends State<RiveAnim> {
         // widget.animationController!.isActive = true;
       });
     } catch (e, s) {
-      logger.e('Error loading Rive animation', e, s);
+      consoleLog('Error loading Rive animation');
     }
   }
 

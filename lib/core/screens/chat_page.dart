@@ -11,8 +11,8 @@ import 'package:provider/provider.dart';
 import 'package:route_parser/route_parser.dart';
 
 import '../../features/chat/presentation/chat_provider.dart';
+import '../../features/chat/util.dart';
 import '../../theme/style.dart';
-import 'util.dart';
 
 class ChatPage extends StatelessWidget {
   final types.Room selectedChatUser;

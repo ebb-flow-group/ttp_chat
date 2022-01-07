@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_collection_literals
+
 class SearchUserModel {
   List<Brands>? brands;
   List<Users>? users;
@@ -8,24 +10,24 @@ class SearchUserModel {
     if (json['brands'] != null) {
       brands = [];
       json['brands'].forEach((v) {
-        brands!.add(new Brands.fromJson(v));
+        brands!.add(Brands.fromJson(v));
       });
     }
     if (json['users'] != null) {
       users = [];
       json['users'].forEach((v) {
-        users!.add(new Users.fromJson(v));
+        users!.add(Users.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.brands != null) {
-      data['brands'] = this.brands!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    if (brands != null) {
+      data['brands'] = brands!.map((v) => v.toJson()).toList();
     }
-    if (this.users != null) {
-      data['users'] = this.users!.map((v) => v.toJson()).toList();
+    if (users != null) {
+      data['users'] = users!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -45,10 +47,10 @@ class Brands {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['username'] = this.username;
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['id'] = id;
+    data['name'] = name;
+    data['username'] = username;
     return data;
   }
 }
@@ -71,12 +73,12 @@ class Users {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['first_name'] = this.firstName;
-    data['last_name'] = this.lastName;
-    data['email'] = this.email;
-    data['phone_number'] = this.phoneNumber;
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['id'] = id;
+    data['first_name'] = firstName;
+    data['last_name'] = lastName;
+    data['email'] = email;
+    data['phone_number'] = phoneNumber;
     return data;
   }
 }

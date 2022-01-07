@@ -4,11 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:provider/provider.dart';
+import 'package:ttp_chat/core/screens/loading_screen.dart';
 
 import '../../../features/chat/presentation/chat_provider.dart';
 import '../../../utils/functions.dart';
 import '../../widgets/no_search_results.dart';
-import '../../widgets/rive_anim.dart';
 import '../widgets/chat_tile.dart';
 import '../widgets/helpers.dart';
 
@@ -64,11 +64,7 @@ class _RoomsListState extends State<RoomsList> {
             return RoomList(widget: widget, snapshot: snapshot);
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: RiveAnim(
-                riveFileName: 'assets/chat_icons/loading_anim.riv',
-              ),
-            );
+            return const LoadingScreen();
           }
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const NoResults();
