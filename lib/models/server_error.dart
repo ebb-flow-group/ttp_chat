@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart' hide Headers;
-import 'package:ttp_chat/models/error_message.dart';
+
+import 'error_message.dart';
 
 class ServerError implements Exception {
   int? _errorCode;

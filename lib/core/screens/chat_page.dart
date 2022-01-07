@@ -9,9 +9,10 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:route_parser/route_parser.dart';
-import 'package:ttp_chat/core/screens/chat/util.dart';
-import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
-import 'package:ttp_chat/theme/style.dart';
+
+import '../../features/chat/presentation/chat_provider.dart';
+import '../../theme/style.dart';
+import 'util.dart';
 
 class ChatPage extends StatelessWidget {
   final types.Room selectedChatUser;
@@ -927,7 +928,6 @@ class _VisualComponentState extends State<VisualComponent>
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     animationController = AnimationController(

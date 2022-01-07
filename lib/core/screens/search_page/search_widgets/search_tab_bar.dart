@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ttp_chat/core/widgets/triangle_painter.dart';
+
+import '../../../widgets/triangle_painter.dart';
 
 class SearchTabBar extends StatelessWidget {
   const SearchTabBar(

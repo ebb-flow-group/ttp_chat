@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:ttp_chat/features/chat/domain/brand_firebase_token_model.dart';
-import 'package:ttp_chat/features/chat/domain/chat_sign_in_model.dart';
-import 'package:ttp_chat/features/chat/domain/search_user_model.dart';
-import 'package:ttp_chat/features/chat/domain/user_firebase_token_model.dart';
 
+import '../features/chat/domain/brand_firebase_token_model.dart';
+import '../features/chat/domain/chat_sign_in_model.dart';
+import '../features/chat/domain/search_user_model.dart';
+import '../features/chat/domain/user_firebase_token_model.dart';
 import '../global.dart';
 
 part 'api_client.g.dart';
@@ -28,8 +28,7 @@ abstract class ApiClient {
   @GET('/api/chat-users/')
   Future<SearchUserModel> searchChatUser(
       @Header("Authorization") String authorization,
-      @Query("search") String searchValue
-      );
+      @Query("search") String searchValue);
 
   /*@GET("/api/app-config/")
   Future<AppConfig> getAppConfig();
@@ -144,9 +143,7 @@ abstract class ApiClient {
 
   @POST('/api/auth/')
   Future<ChatSignInModel> signInMVP(
-      @Field('username') String username,
-      @Field('password') String password
-      );
+      @Field('username') String username, @Field('password') String password);
 
   /*@PUT("/auth/users")
   Future<UserData> updateUser(

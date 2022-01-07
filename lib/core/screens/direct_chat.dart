@@ -6,12 +6,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-import 'package:ttp_chat/core/screens/chat/chat_page.dart';
-import 'package:ttp_chat/core/screens/loading_screen.dart';
-import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
-import 'package:ttp_chat/utils/functions.dart';
 
 import '../../config.dart';
+import '../../features/chat/presentation/chat_provider.dart';
+import '../../utils/functions.dart';
+import 'chat_page.dart';
+import 'loading_screen.dart';
 
 class DirectChat extends StatefulWidget {
   final bool isBrandUser;

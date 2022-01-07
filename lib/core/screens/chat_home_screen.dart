@@ -4,20 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:provider/provider.dart';
-import 'package:ttp_chat/core/new_screens/chat_error_screen.dart';
-import 'package:ttp_chat/core/new_screens/rooms_list.dart';
-import 'package:ttp_chat/core/new_screens/search_user/search_user_screen.dart';
-import 'package:ttp_chat/core/new_screens/search_user/widgets/search_tab_bar.dart';
-import 'package:ttp_chat/core/new_screens/widgets/appbar.dart';
-import 'package:ttp_chat/core/new_screens/widgets/helpers.dart';
-import 'package:ttp_chat/core/new_screens/widgets/start_chat_message.dart';
-import 'package:ttp_chat/core/widgets/input_search.dart';
-import 'package:ttp_chat/core/widgets/rive_anim.dart';
-import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
-import 'package:ttp_chat/utils/functions.dart';
 
-import 'rooms_list.dart';
-import 'search_user/search_user_screen.dart';
+import '../../features/chat/presentation/chat_provider.dart';
+import '../../utils/functions.dart';
+import '../widgets/input_search.dart';
+import '../widgets/rive_anim.dart';
+import 'chat_error_screen.dart';
+import 'room_list/rooms_list.dart';
+import 'search_page/search_page_screen.dart';
+import 'search_page/search_widgets/search_tab_bar.dart';
+import 'widgets/appbar.dart';
+import 'widgets/helpers.dart';
+import 'widgets/start_chat_message.dart';
 
 class ChatHomeScreen extends StatelessWidget {
   final bool isSwitchedAccount;
@@ -118,7 +116,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     return Scaffold(
         appBar: chatAppBar(context,
             goToSearch: () => pushTo(
-                SearchUserScreen(
+                SearchPage(
                     accessToken: widget.accessToken,
                     onViewOrderDetailsClick: widget.onViewOrderDetailsClick!),
                 context)),
@@ -134,7 +132,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
             chatProvider.isRoomListEmpty
                 ? StartChatMessage(
                     goToSearch: () => pushTo(
-                        SearchUserScreen(
+                        SearchPage(
                             accessToken: widget.accessToken,
                             onViewOrderDetailsClick:
                                 widget.onViewOrderDetailsClick!),

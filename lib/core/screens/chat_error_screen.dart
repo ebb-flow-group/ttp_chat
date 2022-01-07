@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:ttp_chat/theme/style.dart';
+
+import '../../theme/style.dart';
 
 class ChatErrorScreen extends StatefulWidget {
   const ChatErrorScreen({Key? key}) : super(key: key);
@@ -12,8 +13,7 @@ class ChatErrorScreen extends StatefulWidget {
 class _ChatErrorScreenState extends State<ChatErrorScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: startChatMessageWidget());
+    return Scaffold(body: startChatMessageWidget());
   }
 
   Widget startChatMessageWidget() {

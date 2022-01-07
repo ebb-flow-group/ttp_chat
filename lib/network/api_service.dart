@@ -1,15 +1,14 @@
-
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
-import 'package:ttp_chat/features/chat/domain/brand_firebase_token_model.dart';
-import 'package:ttp_chat/features/chat/domain/chat_sign_in_model.dart';
-import 'package:ttp_chat/features/chat/domain/search_user_model.dart';
-import 'package:ttp_chat/features/chat/domain/user_firebase_token_model.dart';
-import 'package:ttp_chat/global.dart';
-import 'package:ttp_chat/models/base_model.dart';
-import 'package:ttp_chat/models/server_error.dart';
-import 'package:ttp_chat/network/api_client.dart';
-import 'package:ttp_chat/utils/access_token_interceptor.dart';
+
+import '../features/chat/domain/brand_firebase_token_model.dart';
+import '../features/chat/domain/chat_sign_in_model.dart';
+import '../features/chat/domain/search_user_model.dart';
+import '../features/chat/domain/user_firebase_token_model.dart';
+import '../global.dart';
+import '../models/base_model.dart';
+import '../models/server_error.dart';
+import 'api_client.dart';
 
 class ApiService {
   late Dio dio;
@@ -24,7 +23,8 @@ class ApiService {
     apiClient = ApiClient(dio, url);
   }
 
-  Future<BaseModel<ChatSignInModel>> signInMVP(String username, String password) async {
+  Future<BaseModel<ChatSignInModel>> signInMVP(
+      String username, String password) async {
     ChatSignInModel response;
     try {
       dio = Dio();
@@ -32,41 +32,48 @@ class ApiService {
       response = await apiClient.signInMVP(username, password);
     } catch (error) {
       print('ERRPRRRR: $error');
-      return BaseModel()..setException(ServerError.withError(error: error as DioError));
+      return BaseModel()
+        ..setException(ServerError.withError(error: error as DioError));
     }
     return BaseModel()..data = response;
   }
 
-  Future<BaseModel<UserFirebaseTokenModel>> getUserFirebaseToken(String accessToken) async {
+  Future<BaseModel<UserFirebaseTokenModel>> getUserFirebaseToken(
+      String accessToken) async {
     UserFirebaseTokenModel response;
     try {
       response = await apiClient.getUserFirebaseToken('Bearer $accessToken');
     } catch (error) {
       print('USERR ERRPRRRR: $error');
-      return BaseModel()..setException(ServerError.withError(error: error as DioError));
+      return BaseModel()
+        ..setException(ServerError.withError(error: error as DioError));
     }
     return BaseModel()..data = response;
   }
 
-  Future<BaseModel<BrandFirebaseTokenModel>> getBrandFirebaseToken(String accessToken) async {
+  Future<BaseModel<BrandFirebaseTokenModel>> getBrandFirebaseToken(
+      String accessToken) async {
     BrandFirebaseTokenModel response;
     try {
       response = await apiClient.getBrandFirebaseToken('Bearer $accessToken');
     } catch (error) {
       print('BRANDD ERRPRRRR: $error');
-      return BaseModel()..setException(ServerError.withError(error: error as DioError));
+      return BaseModel()
+        ..setException(ServerError.withError(error: error as DioError));
     }
     return BaseModel()..data = response;
   }
 
-  Future<BaseModel<SearchUserModel>> searchUser(String token, String searchValue) async {
+  Future<BaseModel<SearchUserModel>> searchUser(
+      String token, String searchValue) async {
     SearchUserModel response;
     try {
       response = await apiClient.searchChatUser('Bearer $token', searchValue);
       print('SEARCH USER RESP: ${response.toJson()}');
     } catch (error) {
       print('ERRPRRRR: $error');
-      return BaseModel()..setException(ServerError.withError(error: error as DioError));
+      return BaseModel()
+        ..setException(ServerError.withError(error: error as DioError));
     }
     return BaseModel()..data = response;
   }

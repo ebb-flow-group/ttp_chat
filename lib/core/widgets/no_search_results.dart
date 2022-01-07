@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:ttp_chat/theme/style.dart';
+
+import '../../theme/style.dart';
 
 class NoResults extends StatelessWidget {
   const NoResults({Key? key}) : super(key: key);

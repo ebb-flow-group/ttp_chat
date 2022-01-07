@@ -1,5 +1,4 @@
-
-import 'package:ttp_chat/features/chat/domain/brand_firebase_token_model.dart';
+import '../features/chat/domain/brand_firebase_token_model.dart';
 
 class AuthData {
   String? refresh;
@@ -8,13 +7,12 @@ class AuthData {
   int? accessTokenExpiry;
   List<BrandFirebaseTokenModel>? brandFirebaseTokenList;
 
-  AuthData({
-    this.refresh,
-    this.access,
-    this.firebaseToken,
-    this.accessTokenExpiry,
-    this.brandFirebaseTokenList
-  });
+  AuthData(
+      {this.refresh,
+      this.access,
+      this.firebaseToken,
+      this.accessTokenExpiry,
+      this.brandFirebaseTokenList});
 
   AuthData.fromJson(Map<String, dynamic> json) {
     refresh = json['refresh'];
@@ -23,8 +21,8 @@ class AuthData {
     accessTokenExpiry = json['access_token_expiry'];
     brandFirebaseTokenList = json["brand_firebase_tokens"] == null
         ? []
-        : List<BrandFirebaseTokenModel>.from(
-        json["brand_firebase_tokens"].map((x) => BrandFirebaseTokenModel.fromJson(x)));
+        : List<BrandFirebaseTokenModel>.from(json["brand_firebase_tokens"]
+            .map((x) => BrandFirebaseTokenModel.fromJson(x)));
   }
 
   Map<String, dynamic> toJson() {
@@ -34,7 +32,7 @@ class AuthData {
     data['firebase_token'] = this.firebaseToken;
     data['access_token_expiry'] = this.accessTokenExpiry;
     data['brand_firebase_tokens'] = brandFirebaseTokenList == null
-    ? []
+        ? []
         : List<dynamic>.from(brandFirebaseTokenList!.map((x) => x.toJson()));
     return data;
   }

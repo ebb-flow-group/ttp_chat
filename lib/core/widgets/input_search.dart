@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:ttp_chat/config.dart';
-import 'package:ttp_chat/core/constants/constants.dart';
-import 'package:ttp_chat/core/services/l.dart';
-import 'package:ttp_chat/core/services/ts.dart';
-import 'package:ttp_chat/core/widgets/empty.dart';
+
+import '../../config.dart';
+import '../constants/constants.dart';
+import '../services/l.dart';
+import '../services/ts.dart';
+import 'empty.dart';
 
 class InputSearch extends StatefulWidget {
   final ValueChanged<String> onChanged;

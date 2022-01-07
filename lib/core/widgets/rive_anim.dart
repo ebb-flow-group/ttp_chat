@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rive/rive.dart';
-import 'package:ttp_chat/global.dart';
+
+import '../../global.dart';
 
 class RiveAnim extends StatefulWidget {
   final String? riveFileName;
@@ -29,8 +30,7 @@ class _RiveAnimState extends State<RiveAnim> {
       final file = RiveFile.import(bytes);
 
       setState(() {
-        _artBoard = file.mainArtboard
-          ..addController(SimpleAnimation('Main'));
+        _artBoard = file.mainArtboard..addController(SimpleAnimation('Main'));
         // widget.animationController!.isActive = true;
       });
     } catch (e, s) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'no_search_results.dart';
+import '../../../widgets/no_search_results.dart';
 
 class SearchListView extends StatelessWidget {
   final List list;

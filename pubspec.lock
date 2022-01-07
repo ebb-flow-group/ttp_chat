@@ -341,7 +341,7 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: updated_dependencies
+      ref: voice_message
       resolved-ref: "3f1c6637f664b32b627211efc1f1751557bf5a39"
       url: "https://github.com/ebb-flow-group/flutter_chat_ui"
     source: git

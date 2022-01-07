@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 const COLORS = [
@@ -21,12 +21,12 @@ Color getUserAvatarNameColor(types.User user) {
 }
 
 String getUserName(types.User user) =>
-    '${user.firstName == null ? '' : user.firstName} ${user.lastName == null ? '' : user.lastName} / ${user.id == null ? '' : user.id}'.trim();
+    '${user.firstName == null ? '' : user.firstName} ${user.lastName == null ? '' : user.lastName} / ${user.id == null ? '' : user.id}'
+        .trim();
 
 Color getRoomAvatarNameColor(types.Room user) {
   final index = user.id.hashCode % COLORS.length;
   return COLORS[index];
 }
 
-String getRoomName(types.Room user) =>
-    (user.name ?? '').trim();
+String getRoomName(types.Room user) => (user.name ?? '').trim();

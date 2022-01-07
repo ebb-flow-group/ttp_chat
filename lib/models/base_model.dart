@@ -1,4 +1,4 @@
-import 'package:ttp_chat/models/server_error.dart';
+import 'server_error.dart';
 
 class BaseModel<T> {
   ServerError? _error;

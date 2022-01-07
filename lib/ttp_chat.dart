@@ -1,7 +1,6 @@
 library ttp_chat;
 
-export 'core/new_screens/chat_home_screen.dart';
-export 'core/screens/chat/chat_design.dart';
+export 'core/screens/chat_home_screen.dart';
 
 /// A Calculator.
 class Calculator {

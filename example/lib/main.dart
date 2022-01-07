@@ -1,26 +1,27 @@
 import 'package:example/theme/style.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:ttp_chat/config.dart';
 import 'package:ttp_chat/core/constants/constants.dart';
-import 'package:ttp_chat/core/screens/chat/chat_design.dart';
-import 'package:ttp_chat/core/screens/chat/new_chat_screen.dart';
 import 'package:ttp_chat/global.dart';
 import 'package:ttp_chat/network/api_service.dart' as ttpchat;
-import 'package:get_it/get_it.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await Firebase.initializeApp(name: 'secondary', options: const FirebaseOptions(
-    appId: '1:296779630744:android:f1a4d0e68a2b37e71ea8ed',
-    projectId: 'django-firebase-mvp-bd51b',
-    apiKey: 'AIzaSyD3CRZFDNhtnm4O33myoNG1FptCZd2p894',
-    messagingSenderId: '296779630744',
-    storageBucket: 'django-firebase-mvp-bd51b.appspot.com',
-  ));
-  GetIt.I.registerSingleton<ttpchat.ApiService>(ttpchat.ApiService(url: BASE_URL));
+  await Firebase.initializeApp(
+      name: 'secondary',
+      options: const FirebaseOptions(
+        appId: '1:296779630744:android:f1a4d0e68a2b37e71ea8ed',
+        projectId: 'django-firebase-mvp-bd51b',
+        apiKey: 'AIzaSyD3CRZFDNhtnm4O33myoNG1FptCZd2p894',
+        messagingSenderId: '296779630744',
+        storageBucket: 'django-firebase-mvp-bd51b.appspot.com',
+      ));
+  GetIt.I
+      .registerSingleton<ttpchat.ApiService>(ttpchat.ApiService(url: BASE_URL));
   runApp(const MyApp());
 }
 
@@ -101,16 +102,16 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headline4,
             ),
             FloatingActionButton(
-              onPressed: (){
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ChatDesigns(
-                      authData: const {
-                        "refresh": ""
-                      },
-                    ),
-                  ),
-                );
+              onPressed: () {
+                // Navigator.of(context).push(
+                //   MaterialPageRoute(
+                //     builder: (context) => ChatDesigns(
+                //       authData: const {
+                //         "refresh": ""
+                //       },
+                //     ),
+                //   ),
+                // );
               },
               tooltip: 'Increment',
               child: SvgPicture.asset(
@@ -124,9 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-
-        },
+        onPressed: () {},
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart';
-import 'package:ttp_chat/core/new_screens/widgets/chat_avatar.dart';
 
+import 'chat_avatar.dart';
 import 'helpers.dart';
 import 'last_message_widget.dart';
 

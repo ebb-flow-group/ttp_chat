@@ -3,15 +3,14 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:provider/provider.dart';
-import 'package:ttp_chat/core/new_screens/search_user/widgets/no_search_results.dart';
-import 'package:ttp_chat/core/new_screens/widgets/chat_tile.dart';
-import 'package:ttp_chat/core/new_screens/widgets/helpers.dart';
-import 'package:ttp_chat/core/screens/chat/chat_page.dart';
-import 'package:ttp_chat/core/widgets/rive_anim.dart';
-import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
-import 'package:ttp_chat/utils/functions.dart';
+
+import '../../../features/chat/presentation/chat_provider.dart';
+import '../../../utils/functions.dart';
+import '../../widgets/no_search_results.dart';
+import '../../widgets/rive_anim.dart';
+import '../widgets/chat_tile.dart';
+import '../widgets/helpers.dart';
 
 class RoomsList extends StatefulWidget {
   final Stream<List<types.Room>> stream;
@@ -62,7 +61,7 @@ class _RoomsListState extends State<RoomsList> {
                   snapshot.data != null &&
                   snapshot.data!.isNotEmpty) ||
               chatProvider.roomList.isNotEmpty) {
-            return roomsListWidget(snapshot);
+            return RoomList(widget: widget, snapshot: snapshot);
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -79,14 +78,25 @@ class _RoomsListState extends State<RoomsList> {
       ),
     );
   }
+}
 
-  Widget roomsListWidget(AsyncSnapshot<List<types.Room>> snapshot) {
+class RoomList extends StatelessWidget {
+  const RoomList({
+    Key? key,
+    required this.widget,
+    required this.snapshot,
+  }) : super(key: key);
+
+  final RoomsList widget;
+  final AsyncSnapshot<List<types.Room>> snapshot;
+
+  @override
+  Widget build(BuildContext context) {
     List<types.Room> rooms = snapshot.data!
         .where((element) =>
             element.metadata!['other_user_type'] ==
             (widget.list == view.brands ? 'brand' : 'user'))
         .toList();
-
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 17),
       padding: const EdgeInsets.only(top: 17),
@@ -101,17 +111,17 @@ class _RoomsListState extends State<RoomsList> {
                 return ChatTile(
                   room,
                   onTap: () async {
-                    var result = await pushTo(
-                        ChatPage(room, widget.isSwitchedAccount!,
-                            widget.onViewOrderDetailsClick),
-                        context);
-                    if (result == null) {
-                      setState(() {
-                        stream = FirebaseChatCore.instance.rooms();
-                        stream.listen(
-                            (event) => chatProvider.saveRoomList(event));
-                      });
-                    }
+                    // var result = await pushTo(
+                    //     ChatPage(room, widget.isSwitchedAccount!,
+                    //         widget.onViewOrderDetailsClick),
+                    //     context);
+                    // if (result == null) {
+                    //   setState(() {
+                    //     stream = FirebaseChatCore.instance.rooms();
+                    //     stream.listen(
+                    //         (event) => chatProvider.saveRoomList(event));
+                    //   });
+                    // }
                   },
                 );
               },

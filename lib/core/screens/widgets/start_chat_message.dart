@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:ttp_chat/theme/style.dart';
+
+import '../../../theme/style.dart';
 
 class StartChatMessage extends StatelessWidget {
   final void Function()? goToSearch;

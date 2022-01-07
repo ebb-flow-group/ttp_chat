@@ -26,16 +26,17 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ttp_chat/features/chat/domain/brand_firebase_token_model.dart';
-import 'package:ttp_chat/features/chat/domain/chat_sign_in_model.dart';
-import 'package:ttp_chat/features/chat/domain/chat_users_model.dart';
-import 'package:ttp_chat/features/chat/domain/tabs_model.dart';
-import 'package:ttp_chat/features/chat/domain/user_firebase_token_model.dart';
-import 'package:ttp_chat/features/chat/domain/users_model.dart';
-import 'package:ttp_chat/models/base_model.dart';
-import 'package:ttp_chat/network/api_service.dart';
-import 'package:ttp_chat/utils/functions.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../../models/base_model.dart';
+import '../../../network/api_service.dart';
+import '../../../utils/functions.dart';
+import '../domain/brand_firebase_token_model.dart';
+import '../domain/chat_sign_in_model.dart';
+import '../domain/chat_users_model.dart';
+import '../domain/tabs_model.dart';
+import '../domain/user_firebase_token_model.dart';
+import '../domain/users_model.dart';
 
 enum ApiStatus { called, success, failed }
 

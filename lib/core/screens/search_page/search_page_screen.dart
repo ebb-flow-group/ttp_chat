@@ -6,31 +6,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:get_it/get_it.dart';
-import 'package:ttp_chat/core/new_screens/search_user/widgets/search_brand_tile.dart';
-import 'package:ttp_chat/core/new_screens/search_user/widgets/search_list_view.dart';
-import 'package:ttp_chat/core/new_screens/search_user/widgets/search_user_tile.dart';
-import 'package:ttp_chat/core/screens/chat/chat_page.dart';
-import 'package:ttp_chat/core/widgets/input_search.dart';
-import 'package:ttp_chat/features/chat/domain/search_user_model.dart';
-import 'package:ttp_chat/models/base_model.dart';
-import 'package:ttp_chat/network/api_service.dart';
-import 'package:ttp_chat/utils/functions.dart';
 
-import 'widgets/search_tab_bar.dart';
+import '../../../features/chat/domain/search_user_model.dart';
+import '../../../models/base_model.dart';
+import '../../../network/api_service.dart';
+import '../../../utils/functions.dart';
+import '../../widgets/input_search.dart';
+import '../chat_page.dart';
+import '../search_user/search_widgets/search_brand_tile.dart';
+import 'search_widgets/search_list_view.dart';
+import 'search_widgets/search_tab_bar.dart';
+import 'search_widgets/search_user_tile.dart';
 
-class SearchUserScreen extends StatefulWidget {
+class SearchPage extends StatefulWidget {
   final String? accessToken;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const SearchUserScreen(
-      {Key? key, this.accessToken, this.onViewOrderDetailsClick})
+  const SearchPage({Key? key, this.accessToken, this.onViewOrderDetailsClick})
       : super(key: key);
 
   @override
-  _SearchUserScreenState createState() => _SearchUserScreenState();
+  _SearchPageState createState() => _SearchPageState();
 }
 
-class _SearchUserScreenState extends State<SearchUserScreen> {
+class _SearchPageState extends State<SearchPage> {
   List<Brands> brandsList = [];
   List<Users> usersList = [];
   int selectedTabIndex = 0;

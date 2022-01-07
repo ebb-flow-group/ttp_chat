@@ -1,5 +1,4 @@
-class ChatUsersModel
-{
+class ChatUsersModel {
   String? avatar, fullName, userName, lastMessage;
   int? lastMessageTimeStamp, unreadMessagesCount;
 
