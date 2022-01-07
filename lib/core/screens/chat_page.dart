@@ -573,6 +573,7 @@ class _ChatPageState extends State<_ChatPage>
     setState(() {
       isOk = true;
     });
+
     controller.forward();
     chatProvider.startRecording();
     chatProvider.startWaveFormAnimation();

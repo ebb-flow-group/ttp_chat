@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ttp_chat/core/screens/search_page/search_widgets/search_tab_bar.dart';
-import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
+
+import '../../../../features/chat/presentation/chat_provider.dart';
+import '../../search_page/search_widgets/search_tab_bar.dart';
 
 class HomeTabs extends StatelessWidget {
   const HomeTabs({

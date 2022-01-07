@@ -13,7 +13,7 @@ import '../../../network/api_service.dart';
 import '../../../utils/functions.dart';
 import '../../widgets/input_search.dart';
 import '../chat_page.dart';
-import '../search_user/search_widgets/search_brand_tile.dart';
+import 'search_widgets/search_brand_tile.dart';
 import 'search_widgets/search_list_view.dart';
 import 'search_widgets/search_tab_bar.dart';
 import 'search_widgets/search_user_tile.dart';

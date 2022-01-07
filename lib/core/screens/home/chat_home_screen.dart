@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:provider/provider.dart';
-import 'package:ttp_chat/core/screens/loading_screen.dart';
 
 import '../../../features/chat/presentation/chat_provider.dart';
 import '../../../utils/functions.dart';
 import '../chat_error_screen.dart';
+import '../loading_screen.dart';
 import '../search_page/search_page_screen.dart';
 import '../widgets/appbar.dart';
 import '../widgets/start_chat_message.dart';

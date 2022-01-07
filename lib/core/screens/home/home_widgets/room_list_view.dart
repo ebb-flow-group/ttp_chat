@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:ttp_chat/core/screens/home/home_widgets/rooms_list.dart';
-import 'package:ttp_chat/core/screens/widgets/helpers.dart';
-import 'package:ttp_chat/core/widgets/input_search.dart';
-import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 
+import '../../../../features/chat/presentation/chat_provider.dart';
+import '../../../widgets/input_search.dart';
+import '../../widgets/helpers.dart';
 import 'home_tabs.dart';
+import 'rooms_list.dart';
 
 class RoomListView extends StatelessWidget {
   const RoomListView(

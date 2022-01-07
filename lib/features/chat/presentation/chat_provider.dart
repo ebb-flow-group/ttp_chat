@@ -598,6 +598,9 @@ class ChatProvider extends ChangeNotifier {
         bitRate: 128000, // by default
         samplingRate: 44100, // by default
       );
+    } else {
+      //get permission
+
     }
 
     isRecording = true;
@@ -628,7 +631,10 @@ class ChatProvider extends ChangeNotifier {
     recordedVoiceMessage = null;
 
     recordedVoiceMessage = types.VoiceMessage(
-        author: user!,
+        author: user ??
+            types.User(
+              id: FirebaseAuth.instance.currentUser!.uid,
+            ),
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: const Uuid().v4(),
         mimeType: lookupMimeType(voiceMessageFilePath),

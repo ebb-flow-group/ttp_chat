@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:provider/provider.dart';
-import 'package:ttp_chat/core/screens/loading_screen.dart';
-import 'package:ttp_chat/core/screens/widgets/chat_tile.dart';
-import 'package:ttp_chat/core/screens/widgets/helpers.dart';
-import 'package:ttp_chat/core/widgets/no_search_results.dart';
-import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
-import 'package:ttp_chat/utils/functions.dart';
 
+import '../../../../features/chat/presentation/chat_provider.dart';
+import '../../../../utils/functions.dart';
+import '../../../widgets/no_search_results.dart';
 import '../../chat_page.dart';
+import '../../loading_screen.dart';
+import '../../widgets/chat_tile.dart';
+import '../../widgets/helpers.dart';
 
 class RoomsList extends StatefulWidget {
   final Stream<List<types.Room>> stream;
