@@ -7,13 +7,13 @@ import 'last_message_widget.dart';
 
 class ChatTile extends StatelessWidget {
   final Room room;
-  final Function()? onTap;
+  final void Function()? onTap;
 
   const ChatTile(this.room, {this.onTap, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
       child: Row(
         children: [
@@ -27,7 +27,7 @@ class ChatTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        room.name!,
+                        room.name ?? "",
                         style: TextStyle(
                           color: Theme.of(context).primaryColor,
                         ),

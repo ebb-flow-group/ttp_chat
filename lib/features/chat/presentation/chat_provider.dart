@@ -322,7 +322,7 @@ class ChatProvider extends ChangeNotifier {
     try {
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
-      consoleLog('UIDDDDD: ${userCredential.user!.uid}');
+      consoleLog('UserId: ${userCredential.user!.uid}');
       checkIfUserIsBrandOrUser(userCredential.user!.uid);
       getCountData();
       // createUserOnFirestore(chatSignInModel, userCredential.user!.uid);
@@ -339,7 +339,7 @@ class ChatProvider extends ChangeNotifier {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithCustomToken(brandsList[0].firebaseToken!);
-      consoleLog('UIDDDDD: ${userCredential.user!.uid}');
+      consoleLog('UserId: ${userCredential.user!.uid}');
       checkIfUserIsBrandOrUser(userCredential.user!.uid);
       getCountData();
       // createBrandOnFirestore(selectedBrand, userCredential.user!.uid);

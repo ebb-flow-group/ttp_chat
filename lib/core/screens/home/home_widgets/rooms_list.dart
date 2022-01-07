@@ -3,24 +3,26 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:provider/provider.dart';
 import 'package:ttp_chat/core/screens/loading_screen.dart';
+import 'package:ttp_chat/core/screens/widgets/chat_tile.dart';
+import 'package:ttp_chat/core/screens/widgets/helpers.dart';
+import 'package:ttp_chat/core/widgets/no_search_results.dart';
+import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
+import 'package:ttp_chat/utils/functions.dart';
 
-import '../../../features/chat/presentation/chat_provider.dart';
-import '../../../utils/functions.dart';
-import '../../widgets/no_search_results.dart';
-import '../widgets/chat_tile.dart';
-import '../widgets/helpers.dart';
+import '../../chat_page.dart';
 
 class RoomsList extends StatefulWidget {
   final Stream<List<types.Room>> stream;
   final bool? isSwitchedAccount;
-  final String accessToken;
+
   final view list;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const RoomsList(this.stream, this.isSwitchedAccount, this.accessToken,
-      this.onViewOrderDetailsClick,
+  const RoomsList(
+      this.stream, this.isSwitchedAccount, this.onViewOrderDetailsClick,
       {this.list = view.brands, Key? key})
       : super(key: key);
 
@@ -61,7 +63,22 @@ class _RoomsListState extends State<RoomsList> {
                   snapshot.data != null &&
                   snapshot.data!.isNotEmpty) ||
               chatProvider.roomList.isNotEmpty) {
-            return RoomList(widget: widget, snapshot: snapshot);
+            return RoomListView(
+              snapshot: snapshot,
+              list: widget.list,
+              onTap: (room) async {
+                var result = await pushTo(
+                    ChatPage(room, widget.isSwitchedAccount!,
+                        widget.onViewOrderDetailsClick),
+                    context);
+                if (result == null) {
+                  setState(() {
+                    stream = FirebaseChatCore.instance.rooms();
+                    stream.listen((event) => chatProvider.saveRoomList(event));
+                  });
+                }
+              },
+            );
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const LoadingScreen();
@@ -76,14 +93,16 @@ class _RoomsListState extends State<RoomsList> {
   }
 }
 
-class RoomList extends StatelessWidget {
-  const RoomList({
+class RoomListView extends StatelessWidget {
+  const RoomListView({
     Key? key,
-    required this.widget,
+    required this.list,
+    required this.onTap,
     required this.snapshot,
   }) : super(key: key);
 
-  final RoomsList widget;
+  final view list;
+  final ValueChanged<types.Room> onTap;
   final AsyncSnapshot<List<types.Room>> snapshot;
 
   @override
@@ -91,7 +110,7 @@ class RoomList extends StatelessWidget {
     List<types.Room> rooms = snapshot.data!
         .where((element) =>
             element.metadata!['other_user_type'] ==
-            (widget.list == view.brands ? 'brand' : 'user'))
+            (list == view.brands ? 'brand' : 'user'))
         .toList();
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 17),
@@ -104,20 +123,11 @@ class RoomList extends StatelessWidget {
               itemCount: rooms.length,
               itemBuilder: (context, index) {
                 var room = rooms[index];
+
                 return ChatTile(
                   room,
-                  onTap: () async {
-                    // var result = await pushTo(
-                    //     ChatPage(room, widget.isSwitchedAccount!,
-                    //         widget.onViewOrderDetailsClick),
-                    //     context);
-                    // if (result == null) {
-                    //   setState(() {
-                    //     stream = FirebaseChatCore.instance.rooms();
-                    //     stream.listen(
-                    //         (event) => chatProvider.saveRoomList(event));
-                    //   });
-                    // }
+                  onTap: () {
+                    onTap(room);
                   },
                 );
               },

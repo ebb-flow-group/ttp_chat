@@ -8,14 +8,11 @@ import 'package:ttp_chat/core/screens/loading_screen.dart';
 
 import '../../../features/chat/presentation/chat_provider.dart';
 import '../../../utils/functions.dart';
-import '../../widgets/input_search.dart';
 import '../chat_error_screen.dart';
-import '../room_list/rooms_list.dart';
 import '../search_page/search_page_screen.dart';
 import '../widgets/appbar.dart';
-import '../widgets/helpers.dart';
 import '../widgets/start_chat_message.dart';
-import 'home_widgets/home_tab.dart';
+import 'home_widgets/room_list_view.dart';
 
 class ChatHomeScreen extends StatelessWidget {
   final bool isSwitchedAccount;
@@ -96,11 +93,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
       return Container();
     }
 
-    if (!_initialized) {
-      return Container();
-    }
-
-    if (chatProvider.apiStatus == ApiStatus.called) {
+    if (!_initialized || chatProvider.apiStatus == ApiStatus.called) {
       return const Scaffold(body: LoadingScreen());
     }
 
@@ -124,88 +117,18 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                             widget.onViewOrderDetailsClick!),
                     context),
               )
-            : roomsListWidget());
-  }
-
-  Widget roomsListWidget() {
-    return Column(
-      children: [
-        const SizedBox(height: 17),
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 17.0),
-          child: InputSearch(
-              hintText: 'Search a brand, user or mobile',
-              onChanged: (String value) {}),
-        ),
-        const SizedBox(height: 17),
-        _tabs(),
-        widget.isSwitchedAccount!
-            ? Expanded(
-                child: RoomsList(stream, widget.isSwitchedAccount,
-                    widget.accessToken!, widget.onViewOrderDetailsClick,
-                    list: chatProvider.selectedTabIndex == 0
-                        ? view.users
-                        : view.brands),
-              )
-            : Expanded(
-                child: RoomsList(stream, widget.isSwitchedAccount,
-                    widget.accessToken!, widget.onViewOrderDetailsClick,
-                    list: chatProvider.selectedTabIndex == 0
-                        ? view.brands
-                        : view.users),
-              )
-      ],
-    );
+            : RoomListView(
+                onTap: onTabTapped,
+                onViewOrderDetailsClick: widget.onViewOrderDetailsClick,
+                isSwitchedAccount: widget.isSwitchedAccount ?? false,
+                selectedTabIndex: selectedTabIndex,
+                chatProvider: chatProvider,
+                stream: stream));
   }
 
   onTabTapped(int index) {
-    setState(() {
-      selectedTabIndex = index;
-    });
+    setState(() => selectedTabIndex = index);
     chatProvider.updateTabIndex(index);
-  }
-
-  Widget _tabs() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: widget.isSwitchedAccount!
-              ? [
-                  HomeTab(
-                      onTap: () => onTabTapped(0),
-                      selectedTabIndex: selectedTabIndex,
-                      index: 0,
-                      title: 'People',
-                      count: chatProvider.userListCount),
-                  HomeTab(
-                      onTap: () => onTabTapped(1),
-                      selectedTabIndex: selectedTabIndex,
-                      index: 1,
-                      title: 'Brands',
-                      count: chatProvider.brandListCount),
-                ]
-              : [
-                  HomeTab(
-                      onTap: () => onTabTapped(0),
-                      selectedTabIndex: selectedTabIndex,
-                      index: 0,
-                      title: 'Brands',
-                      count: chatProvider.brandListCount),
-                  HomeTab(
-                      onTap: () => onTabTapped(1),
-                      selectedTabIndex: selectedTabIndex,
-                      index: 1,
-                      title: 'People',
-                      count: chatProvider.userListCount),
-                ],
-        ),
-        Container(
-          height: 3,
-          color: Theme.of(context).primaryColor,
-        )
-      ],
-    );
   }
 
   void initializeFlutterFire() async {
