@@ -11,12 +11,10 @@ packages:
   audioplayers:
     dependency: transitive
     description:
-      path: "packages/audioplayers"
-      ref: HEAD
-      resolved-ref: bee41e79c2c0e5d6b250c6fb2d95fc90348f4f88
-      url: "https://github.com/ebb-flow-group/audioplayers"
-    source: git
-    version: "0.19.1"
+      name: audioplayers
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.20.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -107,7 +105,7 @@ packages:
       name: diffutil_dart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0+1"
+    version: "3.0.0"
   dio:
     dependency: transitive
     description:
@@ -231,8 +229,8 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: voice_message
-      resolved-ref: "2bd5c2421b02ee91bfde3439e7b8d5d5a522d552"
+      ref: updated_dependencies
+      resolved-ref: "3f1c6637f664b32b627211efc1f1751557bf5a39"
       url: "https://github.com/ebb-flow-group/flutter_chat_ui"
     source: git
     version: "1.1.9"
@@ -302,7 +300,7 @@ packages:
       name: flutter_svg
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.23.0+1"
+    version: "1.0.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -480,14 +478,14 @@ packages:
       name: path_drawing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.1+1"
+    version: "1.0.0"
   path_parsing:
     dependency: transitive
     description:
       name: path_parsing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.1"
+    version: "1.0.0"
   path_provider:
     dependency: transitive
     description:
