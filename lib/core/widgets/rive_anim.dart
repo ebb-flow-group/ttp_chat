@@ -10,12 +10,13 @@ class RiveAnim extends StatefulWidget {
   final double height;
   final double width;
 
-  RiveAnim({
+  const RiveAnim({
+    Key? key,
     this.riveFileName,
     this.animationController,
     this.height = 100,
     this.width = 100,
-  });
+  }) : super(key: key);
 
   @override
   _RiveAnimState createState() => _RiveAnimState();
