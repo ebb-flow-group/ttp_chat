@@ -35,10 +35,10 @@ dependencies:
   file_picker: ^4.1.6
   flutter_svg: ^1.0.0
   loading_animations: ^2.2.0
-  flutter_firebase_chat_core: 
-    git:
-      url: https://github.com/ebb-flow-group/flutter_firebase_chat_core
-      ref: voice_message
+  # flutter_firebase_chat_core: 
+  #   git:
+  #     url: https://github.com/ebb-flow-group/flutter_firebase_chat_core
+  #     ref: voice_message
   flutter_chat_ui:
     git:
       url: https://github.com/ebb-flow-group/flutter_chat_ui

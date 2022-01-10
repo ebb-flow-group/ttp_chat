@@ -13,7 +13,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
@@ -25,6 +24,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ttp_chat/packages/chat_core/ttp_chat_core.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../models/base_model.dart';
