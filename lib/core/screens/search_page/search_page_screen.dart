@@ -3,13 +3,13 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:get_it/get_it.dart';
-import 'package:ttp_chat/packages/chat_core/src/firebase_chat_core.dart';
+import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../../../features/chat/domain/search_user_model.dart';
 import '../../../models/base_model.dart';
 import '../../../network/api_service.dart';
+import '../../../packages/chat_core/src/firebase_chat_core.dart';
 import '../../../utils/functions.dart';
 import '../../widgets/input_search.dart';
 import '../chat_page.dart';

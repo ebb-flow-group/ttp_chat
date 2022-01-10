@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../../../../features/chat/presentation/chat_provider.dart';
 import '../../../widgets/input_search.dart';

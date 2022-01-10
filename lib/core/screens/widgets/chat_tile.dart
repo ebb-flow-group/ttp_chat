@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart';
+import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart';
 
 import 'chat_avatar.dart';
 import 'helpers.dart';

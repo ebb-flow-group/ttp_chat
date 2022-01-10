@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:provider/provider.dart';
-import 'package:ttp_chat/packages/chat_core/src/firebase_chat_core.dart';
+import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../../../../features/chat/presentation/chat_provider.dart';
+import '../../../../packages/chat_core/src/firebase_chat_core.dart';
 import '../../../../utils/functions.dart';
 import '../../../widgets/no_search_results.dart';
 import '../../chat_page.dart';

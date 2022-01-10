@@ -216,33 +216,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_chat_types:
-    dependency: transitive
-    description:
-      path: "."
-      ref: voice_message
-      resolved-ref: "02f45645b1bf4cb798f3416e4d98d472b9de2e70"
-      url: "https://github.com/ebb-flow-group/flutter_chat_types"
-    source: git
-    version: "2.4.1"
-  flutter_chat_ui:
-    dependency: transitive
-    description:
-      path: "."
-      ref: voice_message
-      resolved-ref: "3f1c6637f664b32b627211efc1f1751557bf5a39"
-      url: "https://github.com/ebb-flow-group/flutter_chat_ui"
-    source: git
-    version: "1.1.9"
-  flutter_link_previewer:
-    dependency: transitive
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "2606bf0692580d699c0c1c758d090cc048c50cb5"
-      url: "https://github.com/ebb-flow-group/flutter_link_previewer"
-    source: git
-    version: "2.2.3"
   flutter_linkify:
     dependency: transitive
     description:
@@ -393,13 +366,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
-  loading_animations:
-    dependency: transitive
-    description:
-      name: loading_animations
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.2.0"
   logger:
     dependency: transitive
     description:
@@ -817,7 +783,7 @@ packages:
       name: url_launcher_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   url_launcher_web:
     dependency: transitive
     description:

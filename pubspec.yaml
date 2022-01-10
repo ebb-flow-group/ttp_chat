@@ -34,20 +34,16 @@ dependencies:
   flutter_sound: ^8.4.1+1
   file_picker: ^4.1.6
   flutter_svg: ^1.0.0
-  loading_animations: ^2.2.0
-  # flutter_firebase_chat_core: 
-  #   git:
-  #     url: https://github.com/ebb-flow-group/flutter_firebase_chat_core
-  #     ref: voice_message
-  flutter_chat_ui:
-    git:
-      url: https://github.com/ebb-flow-group/flutter_chat_ui
-      ref: voice_message
   audioplayers: ^0.20.1
   mime: ^1.0.1
   go_router: ^2.5.7
   route_parser: ^0.0.2
   rive: ^0.7.28
+  url_launcher: ^6.0.12
+  flutter_linkify: ^5.0.2
+  linkify: ^4.1.0
+  html: ^0.15.0
+  http: ^0.13.1
 
 
   #Unused Packages
@@ -76,6 +72,28 @@ flutter:
     - assets/icons/search.svg
     - assets/images/
     - assets/welcome/
+    - packages/ttp_chat/assets/icon-attachment.png
+    - packages/ttp_chat/assets/icon-delivered.png
+    - packages/ttp_chat/assets/icon-document.png
+    - packages/ttp_chat/assets/icon-error.png
+    - packages/ttp_chat/assets/icon-seen.png
+    - packages/ttp_chat/assets/icon-send.png
+    - packages/ttp_chat/assets/2.0x/icon-attachment.png
+    - packages/ttp_chat/assets/2.0x/icon-delivered.png
+    - packages/ttp_chat/assets/2.0x/icon-document.png
+    - packages/ttp_chat/assets/2.0x/icon-error.png
+    - packages/ttp_chat/assets/2.0x/icon-seen.png
+    - packages/ttp_chat/assets/2.0x/icon-send.png
+    - packages/ttp_chat/assets/3.0x/icon-attachment.png
+    - packages/ttp_chat/assets/3.0x/icon-delivered.png
+    - packages/ttp_chat/assets/3.0x/icon-document.png
+    - packages/ttp_chat/assets/3.0x/icon-error.png
+    - packages/ttp_chat/assets/3.0x/icon-seen.png
+    - packages/ttp_chat/assets/3.0x/icon-send.png
+    - packages/ttp_chat/assets/icon/add.svg
+    - packages/ttp_chat/assets/icon/mic.svg
+    - packages/ttp_chat/assets/icon/send.svg
+
   fonts:
     - family: AvenirNextLTPro
       fonts:
@@ -83,4 +101,6 @@ flutter:
           weight: 500
         - asset: assets/fonts/AvenirNextLTPro-Bold.otf
           weight: 800
+
+
   

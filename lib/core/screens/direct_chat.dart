@@ -4,11 +4,11 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:ttp_chat/packages/chat_core/src/firebase_chat_core.dart';
+import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../../config.dart';
 import '../../features/chat/presentation/chat_provider.dart';
+import '../../packages/chat_core/src/firebase_chat_core.dart';
 import '../../utils/functions.dart';
 import 'chat_page.dart';
 import 'loading_screen.dart';
