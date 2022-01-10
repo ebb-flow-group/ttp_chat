@@ -35,7 +35,6 @@ import '../domain/chat_sign_in_model.dart';
 import '../domain/chat_users_model.dart';
 import '../domain/tabs_model.dart';
 import '../domain/user_firebase_token_model.dart';
-import '../domain/users_model.dart';
 
 enum ApiStatus { called, success, failed }
 
@@ -81,131 +80,7 @@ class ChatProvider extends ChangeNotifier {
   ];
   TabsModel? selectedTab;
 
-  List<UsersModel> usersList = [
-    UsersModel('https://picsum.photos/id/1074/200/300', 'Dani David Chan',
-        'daniquixote', false),
-    UsersModel('https://picsum.photos/id/1074/200/300', 'Sleep Party People',
-        'jondavis', true),
-    UsersModel('https://picsum.photos/id/1074/200/300', 'Flash Jordon',
-        'pewpew', false),
-    UsersModel('https://picsum.photos/id/1074/200/300', 'Gordon Mates',
-        'saikokeeler', false),
-  ];
-
-  List<ChatUsersModel> chatUsersList = [
-    ChatUsersModel(
-        'https://picsum.photos/id/117/200/300',
-        'Dani David Chan',
-        'danidavidchan',
-        'But it\'s medium or short, I really would love to check it out.',
-        1629266785,
-        2),
-    ChatUsersModel(
-        'https://picsum.photos/id/117/200/300',
-        'George Ignatius Joe',
-        'GIJoe',
-        'But it\'s medium or short, I really would love to check it out.',
-        1629266785,
-        2),
-    ChatUsersModel(
-        'https://picsum.photos/id/117/200/300',
-        'Sleep Party People',
-        'spp',
-        'But it\'s medium or short, I really would love to check it out.',
-        1629194400,
-        2),
-    ChatUsersModel(
-        'https://picsum.photos/id/117/200/300',
-        'Dani David Chan',
-        'danidavidchan',
-        'But it\'s medium or short, I really would love to check it out.',
-        1629194400,
-        2),
-    ChatUsersModel(
-        'https://picsum.photos/id/117/200/300',
-        'Dani David Chan',
-        'danidavidchan',
-        'But it\'s medium or short, I really would love to check it out.',
-        1629194400,
-        2),
-    ChatUsersModel(
-        'https://picsum.photos/id/117/200/300',
-        'Vlad Tyum',
-        'vladtyum',
-        'But it\'s medium or short, I really would love to check it out.',
-        1629021600,
-        2),
-    ChatUsersModel(
-        'https://picsum.photos/id/117/200/300',
-        'Tin Pham',
-        'tin',
-        'But it\'s medium or short, I really would love to check it out.',
-        1629021600,
-        2),
-    ChatUsersModel(
-        'https://picsum.photos/id/117/200/300',
-        'Utsav Mangla',
-        'utsavm',
-        'But it\'s medium or short, I really would love to check it out.',
-        1629021600,
-        2),
-    ChatUsersModel(
-        'https://picsum.photos/id/117/200/300',
-        'Utsav Mangla',
-        'utsavm',
-        'But it\'s medium or short, I really would love to check it out.',
-        1629021600,
-        2),
-    ChatUsersModel(
-        'https://picsum.photos/id/117/200/300',
-        'Utsav Mangla',
-        'utsavm',
-        'But it\'s medium or short, I really would love to check it out.',
-        1629021600,
-        2),
-    ChatUsersModel(
-        'https://picsum.photos/id/117/200/300',
-        'Utsav Mangla',
-        'utsavm',
-        'But it\'s medium or short, I really would love to check it out.',
-        1629021600,
-        2),
-    ChatUsersModel(
-        'https://picsum.photos/id/117/200/300',
-        'Utsav Mangla',
-        'utsavm',
-        'But it\'s medium or short, I really would love to check it out.',
-        1629021600,
-        2),
-    ChatUsersModel(
-        'https://picsum.photos/id/117/200/300',
-        'Utsav Mangla',
-        'utsavm',
-        'But it\'s medium or short, I really would love to check it out.',
-        1629021600,
-        2),
-  ];
-
-  // Chat Designs End
-
   ChatProvider();
-
-  /// Not Needed Now
-  ChatProvider.initialiseUserAndLoadMessages(ChatUsersModel usersModel) {
-    usersModel = usersModel;
-    initializeUser();
-    loadMessages();
-    notifyListeners();
-  }
-
-  /// Not Needed Now
-  ChatProvider.initialiseChats(String customFirebaseToken,
-      [ChatSignInModel? chatSignInModel]) {
-    selectedTab = tabs[0];
-    signInUserWithCustomFBTokenAndRegister(
-        false, customFirebaseToken, chatSignInModel!);
-    notifyListeners();
-  }
 
   /// Not Needed Now
   ChatProvider.signInAndInit(bool isSwitchedAccount) {
@@ -958,54 +833,6 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Chat Design
-
-  void toggleTabSelection(int index) {
-    for (var element in tabs) {
-      element.isSelected = false;
-    }
-
-    tabs[index].isSelected = true;
-    selectedTab = tabs[index];
-
-    notifyListeners();
-  }
-
-  void followFriend(int index) {
-    usersList[index].isFollowed = true;
-    notifyListeners();
-  }
-
-  /*void play(String uri) async {
-
-    AudioPlayer audioPlayer = AudioPlayer();
-    audioPlayer.onPlayerStateChanged.listen((s) {
-          if (s == AudioPlayerState.PLAYING) {
-            consoleLog('PLAYINGGGG');
-          } else if (s == AudioPlayerState.PAUSED) {
-            consoleLog('PAUSEDDDDD');
-          }else if (s == AudioPlayerState.STOPPED) {
-            consoleLog('STOPPEDDDDDD');
-            // onComplete();
-
-            audioPlayer.stop();
-            audioPlayer = null;
-            isRecordedVoiceMessageFilePlaying = false;
-            notifyListeners();
-          }
-        }, onError: (msg) {
-          consoleLog('ERORRRRRRR: $msg');
-          // onStop();
-
-          audioPlayer.stop();
-          audioPlayer = null;
-          isRecordedVoiceMessageFilePlaying = false;
-          notifyListeners();
-        });
-
-    await audioPlayer.play(uri, isLocal: true).onError((error, stackTrace) => consoleLog('PLAY ERROR: $stackTrace'));
-  }*/
-
   void plays(String uri) async {
     // if (audioPlayer != null) audioPlayer.dispose();
     audioPlayer =
@@ -1067,9 +894,7 @@ class ChatProvider extends ChangeNotifier {
     try {
       if (isSwitchedAccount) {
         consoleLog('SECONDARY FB APP');
-
         FirebaseApp secondaryApp = Firebase.app('secondary');
-
         UserCredential userCredential =
             await FirebaseAuth.instanceFor(app: secondaryApp)
                 .signInWithCustomToken(customFirebaseToken!);

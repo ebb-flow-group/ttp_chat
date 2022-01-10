@@ -10,9 +10,9 @@ import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:ttp_chat/packages/chat_ui/ttp_chat_ui.dart';
 
 import '../../features/chat/presentation/chat_provider.dart';
-import '../../features/chat/util.dart';
 import '../../packages/chat_core/ttp_chat_core.dart';
 import '../../theme/style.dart';
+import '../../utils/util.dart';
 
 class ChatPage extends StatelessWidget {
   final types.Room selectedChatUser;
