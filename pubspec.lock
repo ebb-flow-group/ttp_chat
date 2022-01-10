@@ -205,7 +205,7 @@ packages:
     source: hosted
     version: "2.2.1"
   diffutil_dart:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: diffutil_dart
       url: "https://pub.dartlang.org"
@@ -219,7 +219,7 @@ packages:
     source: hosted
     version: "4.0.4"
   equatable:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: equatable
       url: "https://pub.dartlang.org"
@@ -578,7 +578,7 @@ packages:
     source: hosted
     version: "0.12.11"
   meta:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: meta
       url: "https://pub.dartlang.org"
@@ -718,7 +718,7 @@ packages:
     source: hosted
     version: "4.4.0"
   photo_view:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: photo_view
       url: "https://pub.dartlang.org"
