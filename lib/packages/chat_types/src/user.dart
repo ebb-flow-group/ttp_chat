@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+
 import 'util.dart' show getRoleFromString;
 
 /// All possible roles user can have.
@@ -33,7 +34,7 @@ class User extends Equatable {
   User.fromJson(dynamic json)
       : createdAt = json['createdAt'] as int?,
         firstName = json['firstName'] as String?,
-        id = json['id'] as String,
+        id = json['id'] as String? ?? '',
         imageUrl = json['imageUrl'] as String?,
         lastName = json['lastName'] as String?,
         lastSeen = json['lastSeen'] as int?,
@@ -88,17 +89,7 @@ class User extends Equatable {
 
   /// Equatable props
   @override
-  List<Object?> get props => [
-        createdAt,
-        firstName,
-        id,
-        imageUrl,
-        lastName,
-        lastSeen,
-        metadata,
-        role,
-        updatedAt
-      ];
+  List<Object?> get props => [createdAt, firstName, id, imageUrl, lastName, lastSeen, metadata, role, updatedAt];
 
   /// Created user timestamp, in ms
   final int? createdAt;

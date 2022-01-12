@@ -20,18 +20,19 @@ import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 /// Fetches user from Firebase and returns a promise
 Future<Map<String, dynamic>> fetchUser(String userId, {String? role}) async {
-  final doc =
-      await FirebaseFirestore.instance.collection('users').doc(userId).get();
+  final doc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
 
   final data = doc.data();
 
-  data!['createdAt'] = data['createdAt']?.millisecondsSinceEpoch;
-  data['id'] = doc.id;
-  data['lastSeen'] = data['lastSeen']?.millisecondsSinceEpoch;
-  data['updatedAt'] = data['updatedAt']?.millisecondsSinceEpoch;
-  data['role'] = role;
+  if (data != null) {
+    data['createdAt'] = data['createdAt']?.millisecondsSinceEpoch;
+    data['id'] = doc.id;
+    data['lastSeen'] = data['lastSeen']?.millisecondsSinceEpoch;
+    data['updatedAt'] = data['updatedAt']?.millisecondsSinceEpoch;
+    data['role'] = role;
+  }
 
-  return data;
+  return data ?? {};
 }
 
 /// Returns a list of [types.Room] created from Firebase query.
@@ -62,9 +63,7 @@ Future<types.Room> processRoomDocument(
   var name = '';
   final type = data['type'] as String;
   final userIds = data['userIds'] as List<dynamic>;
-  final userRoles = data['userRoles'] == null
-      ? {}
-      : data['userRoles'] as Map<String, dynamic>;
+  final userRoles = data['userRoles'] == null ? {} : data['userRoles'] as Map<String, dynamic>;
   data['name'] = await getOtherUserName(firebaseUser, userIds);
   var users = [];
   users = await Future.wait(
@@ -80,8 +79,7 @@ Future<types.Room> processRoomDocument(
       );
 
       imageUrl = otherUser['imageUrl'] as String;
-      name = '${otherUser['firstName'] ?? ''} ${otherUser['lastName'] ?? ''}'
-          .trim();
+      name = '${otherUser['firstName'] ?? ''} ${otherUser['lastName'] ?? ''}'.trim();
     } catch (e) {
       // Do nothing if other user is not found, because he should be found.
       // Consider falling back to some default values.
@@ -120,38 +118,28 @@ Future<types.Room> processRoomDocument(
   return types.Room.fromJson(data);
 }
 
-Future<String> getOtherUserName(
-    User firebaseUser, List<dynamic> userIds) async {
+Future<String> getOtherUserName(User firebaseUser, List<dynamic> userIds) async {
   print('CURRENT USER ID: ${firebaseUser.uid}');
   print('SELECTED CHAT USER: $userIds');
 
   final e = userIds.where((element) => element != firebaseUser.uid).toList();
 
-  final snapshot = await FirebaseFirestore.instance
-      .collection('users')
-      .doc(e[0].toString())
-      .get();
+  final snapshot = await FirebaseFirestore.instance.collection('users').doc(e[0].toString()).get();
 
   final data = snapshot.data();
-  return data == null
-      ? ''
-      : '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}';
+  return data == null ? '' : '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}';
 }
 
-Future<String> getOtherUserType(
-    User firebaseUser, List<dynamic> userIds) async {
+Future<String> getOtherUserType(User firebaseUser, List<dynamic> userIds) async {
   print('CURRENT USER ID FOR TYPE: ${firebaseUser.uid}');
   print('SELECTED CHAT USER FOR TYPE: $userIds');
 
   final e = userIds.where((element) => element != firebaseUser.uid).toList();
 
-  final snapshot = await FirebaseFirestore.instance
-      .collection('users')
-      .doc(e[0].toString())
-      .get();
+  final snapshot = await FirebaseFirestore.instance.collection('users').doc(e[0].toString()).get();
 
   final data = snapshot.data();
-  return '${data!['user_type']}';
+  return '${data?['user_type']}';
 }
 
 Future<Map<String, dynamic>> getLastMessageOfRoom(String roomId) async {
@@ -170,9 +158,7 @@ Future<Map<String, dynamic>> getLastMessageOfRoom(String roomId) async {
     return aTimestamp.compareTo(bTimestamp);
   });*/
 
-  return collection.docs.isNotEmpty
-      ? collection.docs[0].data() as Map<String, dynamic>
-      : {};
+  return collection.docs.isNotEmpty ? collection.docs[0].data() as Map<String, dynamic> : {};
 }
 
 Future<int> getUnreadMessageCount(String roomId, User firebaseUser) async {
