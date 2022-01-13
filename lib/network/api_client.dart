@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../features/chat/domain/brand_firebase_token_model.dart';
-import '../features/chat/domain/chat_sign_in_model.dart';
 import '../features/chat/domain/search_user_model.dart';
 import '../features/chat/domain/user_firebase_token_model.dart';
 import '../global.dart';
@@ -27,10 +26,9 @@ abstract class ApiClient {
 
   @GET('/api/chat-users/')
   Future<SearchUserModel> searchChatUser(
-      @Header("Authorization") String authorization,
-      @Query("search") String searchValue);
+      @Header("Authorization") String authorization, @Query("search") String searchValue);
 
-  @POST('/api/auth/')
-  Future<ChatSignInModel> signInMVP(
-      @Field('username') String username, @Field('password') String password);
+  // @POST('/api/auth/')
+  // Future<ChatSignInModel> signInMVP(
+  //     @Field('username') String username, @Field('password') String password);
 }

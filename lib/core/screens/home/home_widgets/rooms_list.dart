@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ttp_chat/core/services/cache_service.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../../../../features/chat/presentation/chat_provider.dart';
@@ -21,8 +22,7 @@ class RoomsList extends StatefulWidget {
   final view list;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const RoomsList(
-      this.stream, this.isSwitchedAccount, this.onViewOrderDetailsClick,
+  const RoomsList(this.stream, this.isSwitchedAccount, this.onViewOrderDetailsClick,
       {this.list = view.brands, Key? key})
       : super(key: key);
 
@@ -41,7 +41,7 @@ class _RoomsListState extends State<RoomsList> {
     chatProvider = context.read<ChatProvider>();
     if (FirebaseAuth.instance.currentUser != null) {
       stream = widget.stream;
-      stream.listen((event) => chatProvider.saveRoomList(event));
+      stream.listen((event) => CacheService().saveRoomList(event));
     }
   }
 
@@ -59,22 +59,17 @@ class _RoomsListState extends State<RoomsList> {
             consoleLog('BRAND STREAM B ERROR: ${snapshot.error}');
           }
 
-          if ((snapshot.hasData &&
-                  snapshot.data != null &&
-                  snapshot.data!.isNotEmpty) ||
+          if ((snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty) ||
               chatProvider.roomList.isNotEmpty) {
             return RoomListView(
               snapshot: snapshot,
               list: widget.list,
               onTap: (room) async {
-                var result = await pushTo(
-                    ChatPage(room, widget.isSwitchedAccount!,
-                        widget.onViewOrderDetailsClick),
-                    context);
+                var result = await pushTo(ChatPage(room, widget.onViewOrderDetailsClick), context);
                 if (result == null) {
                   setState(() {
                     stream = FirebaseChatCore.instance.rooms();
-                    stream.listen((event) => chatProvider.saveRoomList(event));
+                    stream.listen((event) => CacheService().saveRoomList(event));
                   });
                 }
               },
@@ -108,9 +103,7 @@ class RoomListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<types.Room> rooms = snapshot.data!
-        .where((element) =>
-            element.metadata!['other_user_type'] ==
-            (list == view.brands ? 'brand' : 'user'))
+        .where((element) => element.metadata!['other_user_type'] == (list == view.brands ? 'brand' : 'user'))
         .toList();
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 17),

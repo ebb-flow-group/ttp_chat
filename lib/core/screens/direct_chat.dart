@@ -50,8 +50,7 @@ class _DirectChatState extends State<DirectChat> {
 
   init() async {
     await Firebase.initializeApp();
-    String? otherUserId =
-        widget.isBrandUser ? widget.phoneNumber : widget.username;
+    String? otherUserId = widget.isBrandUser ? widget.phoneNumber : widget.username;
     if (otherUserId == '') {
       consoleLog("other UserId is null");
       displaySnackBar("Error, User Not Found", context);
@@ -69,13 +68,10 @@ class _DirectChatState extends State<DirectChat> {
     log(otherUserId);
     if (FirebaseAuth.instance.currentUser == null) {
       widget.isBrandUser
-          ? ChatProvider.brandSignIn(
-              widget.isBrandUser, widget.accessToken, widget.refreshToken)
-          : ChatProvider.userSignIn(
-              widget.isBrandUser, widget.accessToken, widget.refreshToken);
+          ? ChatProvider.brandSignIn(widget.isBrandUser, widget.accessToken, widget.refreshToken)
+          : ChatProvider.userSignIn(widget.isBrandUser, widget.accessToken, widget.refreshToken);
       try {
-        userStream =
-            FirebaseAuth.instance.authStateChanges().listen((User? user) {
+        userStream = FirebaseAuth.instance.authStateChanges().listen((User? user) {
           if (mounted) {
             if (user != null) {
               if (userStream != null) {
@@ -111,8 +107,7 @@ class _DirectChatState extends State<DirectChat> {
       if (user != null) {
         consoleLog("Creating New Room for $otherUserId");
         room = await FirebaseChatCore.instance.createRoom(user);
-        consoleLog(
-            'Room Name: ${room!.name}\nId: ${room!.id}\nUsers: ${room!.userIds}');
+        consoleLog('Room Name: ${room!.name}\nId: ${room!.id}\nUsers: ${room!.userIds}');
         setState(() {});
       } else {
         displaySnackBar("Error, User Not Found", context);
@@ -127,6 +122,6 @@ class _DirectChatState extends State<DirectChat> {
             backgroundColor: Config.creameryColor,
             body: LoadingScreen(),
           )
-        : ChatPage(room!, false, widget.onViewOrderDetailsClick);
+        : ChatPage(room!, widget.onViewOrderDetailsClick);
   }
 }

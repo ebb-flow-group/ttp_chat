@@ -22,8 +22,7 @@ class SearchPage extends StatefulWidget {
   final String? accessToken;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const SearchPage({Key? key, this.accessToken, this.onViewOrderDetailsClick})
-      : super(key: key);
+  const SearchPage({Key? key, this.accessToken, this.onViewOrderDetailsClick}) : super(key: key);
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -45,8 +44,7 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xFFFDFBEF).withOpacity(0.2),
-          title: Text('Start a new chat',
-              style: Theme.of(context).textTheme.headline6),
+          title: Text('Start a new chat', style: Theme.of(context).textTheme.headline6),
         ),
         body: SingleChildScrollView(
           child: SizedBox(
@@ -75,9 +73,7 @@ class _SearchPageState extends State<SearchPage> {
                         textAlign: TextAlign.center,
                       )
                     : const SizedBox(),
-                brandsList.isNotEmpty || usersList.isNotEmpty
-                    ? _tabs()
-                    : const SizedBox(),
+                brandsList.isNotEmpty || usersList.isNotEmpty ? _tabs() : const SizedBox(),
                 brandsList.isNotEmpty || usersList.isNotEmpty
                     ? selectedTabIndex == 0
                         ? brandsListWidget()
@@ -91,8 +87,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void searchUser(String searchValue) async {
-    BaseModel<SearchUserModel> response = await GetIt.I<ApiService>()
-        .searchUser(widget.accessToken!, searchValue);
+    BaseModel<SearchUserModel> response = await GetIt.I<ApiService>().searchUser(widget.accessToken!, searchValue);
 
     if (response.data != null) {
       setState(() {
@@ -159,9 +154,7 @@ class _SearchPageState extends State<SearchPage> {
               }
               types.Room? chatRoom = await checkExist(brand.username!);
               if (chatRoom != null) {
-                pushTo(
-                    ChatPage(chatRoom, false, widget.onViewOrderDetailsClick),
-                    context);
+                pushTo(ChatPage(chatRoom, widget.onViewOrderDetailsClick), context);
               } else {
                 types.User? user = await getUserFromFireStore(
                   brand.username!,
@@ -170,11 +163,9 @@ class _SearchPageState extends State<SearchPage> {
                 if (user != null) {
                   consoleLog("Creating New Room for ${brand.username}");
                   final room = await FirebaseChatCore.instance.createRoom(user);
-                  consoleLog(
-                      'Room Name: ${room.name} \nId: ${room.name} \nUsers: ${room.userIds}');
+                  consoleLog('Room Name: ${room.name} \nId: ${room.name} \nUsers: ${room.userIds}');
                   userRooms.add(room);
-                  pushTo(ChatPage(room, false, widget.onViewOrderDetailsClick),
-                      context);
+                  pushTo(ChatPage(room, widget.onViewOrderDetailsClick), context);
                 } else {
                   displaySnackBar("Error, User Not Found", context);
                 }
@@ -198,21 +189,16 @@ class _SearchPageState extends State<SearchPage> {
             }
             types.Room? chatRoom = await checkExist(singleUser.phoneNumber!);
             if (chatRoom != null) {
-              pushTo(ChatPage(chatRoom, false, widget.onViewOrderDetailsClick),
-                  context);
+              pushTo(ChatPage(chatRoom, widget.onViewOrderDetailsClick), context);
             } else {
-              types.User? user = await getUserFromFireStore(
-                  singleUser.phoneNumber!,
-                  firstName: singleUser.firstName,
-                  lastName: singleUser.lastName);
+              types.User? user = await getUserFromFireStore(singleUser.phoneNumber!,
+                  firstName: singleUser.firstName, lastName: singleUser.lastName);
               if (user != null) {
                 consoleLog("Creating New Room");
                 final room = await FirebaseChatCore.instance.createRoom(user);
-                consoleLog(
-                    'Room Name: ${room.name} \nId: ${room.name} \nUsers: ${room.userIds}');
+                consoleLog('Room Name: ${room.name} \nId: ${room.name} \nUsers: ${room.userIds}');
                 userRooms.add(room);
-                pushTo(ChatPage(room, false, widget.onViewOrderDetailsClick),
-                    context);
+                pushTo(ChatPage(room, widget.onViewOrderDetailsClick), context);
               } else {
                 displaySnackBar("Error, User Not Found", context);
               }
@@ -254,8 +240,7 @@ class _SearchPageState extends State<SearchPage> {
         consoleLog("checking from firestore");
         QuerySnapshot snapshot = await FirebaseFirestore.instance
             .collection('rooms')
-            .where('userIds',
-                arrayContains: FirebaseAuth.instance.currentUser!.uid)
+            .where('userIds', arrayContains: FirebaseAuth.instance.currentUser!.uid)
             .get();
         if (snapshot.docs.isNotEmpty) {
           for (var doc in snapshot.docs) {

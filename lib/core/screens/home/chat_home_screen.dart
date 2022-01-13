@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ttp_chat/core/services/cache_service.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../../../features/chat/presentation/chat_provider.dart';
@@ -20,23 +21,16 @@ class ChatHomeScreen extends StatelessWidget {
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
   const ChatHomeScreen(
-      {Key? key,
-      this.isSwitchedAccount = false,
-      this.accessToken,
-      this.refreshToken,
-      this.onViewOrderDetailsClick})
+      {Key? key, this.isSwitchedAccount = false, this.accessToken, this.refreshToken, this.onViewOrderDetailsClick})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ChatProvider>(
       create: (context) => isSwitchedAccount
-          ? ChatProvider.brandSignIn(
-              isSwitchedAccount, accessToken!, refreshToken!)
-          : ChatProvider.userSignIn(
-              isSwitchedAccount, accessToken!, refreshToken!),
-      child: _ChatHomeScreen(
-          isSwitchedAccount, accessToken, onViewOrderDetailsClick),
+          ? ChatProvider.brandSignIn(isSwitchedAccount, accessToken!, refreshToken!)
+          : ChatProvider.userSignIn(isSwitchedAccount, accessToken!, refreshToken!),
+      child: _ChatHomeScreen(isSwitchedAccount, accessToken, onViewOrderDetailsClick),
     );
   }
 }
@@ -46,8 +40,7 @@ class _ChatHomeScreen extends StatefulWidget {
   final String? accessToken;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const _ChatHomeScreen(
-      this.isSwitchedAccount, this.accessToken, this.onViewOrderDetailsClick);
+  const _ChatHomeScreen(this.isSwitchedAccount, this.accessToken, this.onViewOrderDetailsClick);
 
   @override
   _ChatHomeScreenState createState() => _ChatHomeScreenState();
@@ -75,7 +68,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     initializeFlutterFire();
     super.initState();
     if (FirebaseAuth.instance.currentUser == null) {
-      chatProvider.clearRoomList();
+      CacheService().clearRoomList();
     } else {
       chatProvider.getLocalRoomList();
     }
@@ -104,17 +97,13 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     return Scaffold(
         appBar: chatAppBar(context,
             goToSearch: () => pushTo(
-                SearchPage(
-                    accessToken: widget.accessToken,
-                    onViewOrderDetailsClick: widget.onViewOrderDetailsClick!),
+                SearchPage(accessToken: widget.accessToken, onViewOrderDetailsClick: widget.onViewOrderDetailsClick!),
                 context)),
         body: chatProvider.isRoomListEmpty
             ? StartChatMessage(
                 goToSearch: () => pushTo(
                     SearchPage(
-                        accessToken: widget.accessToken,
-                        onViewOrderDetailsClick:
-                            widget.onViewOrderDetailsClick!),
+                        accessToken: widget.accessToken, onViewOrderDetailsClick: widget.onViewOrderDetailsClick!),
                     context),
               )
             : RoomListView(

@@ -16,36 +16,30 @@ import '../../utils/util.dart';
 
 class ChatPage extends StatelessWidget {
   final types.Room selectedChatUser;
-  final bool isSwitchedAccount;
+
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const ChatPage(this.selectedChatUser, this.isSwitchedAccount,
-      this.onViewOrderDetailsClick,
-      {Key? key})
-      : super(key: key);
+  const ChatPage(this.selectedChatUser, this.onViewOrderDetailsClick, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ChatProvider>(
-      create: (context) => ChatProvider.initialiseAndLoadMessages(
-          selectedChatUser, isSwitchedAccount),
-      child: _ChatPage(isSwitchedAccount, onViewOrderDetailsClick),
+      create: (context) => ChatProvider.initialiseAndLoadMessages(selectedChatUser),
+      child: _ChatPage(onViewOrderDetailsClick),
     );
   }
 }
 
 class _ChatPage extends StatefulWidget {
-  final bool isSwitchedAccount;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const _ChatPage(this.isSwitchedAccount, this.onViewOrderDetailsClick);
+  const _ChatPage(this.onViewOrderDetailsClick);
 
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
-class _ChatPageState extends State<_ChatPage>
-    with SingleTickerProviderStateMixin {
+class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixin {
   late ChatProvider chatProvider;
   late AnimationController controller;
   late Animation<Offset> offset;
@@ -60,11 +54,9 @@ class _ChatPageState extends State<_ChatPage>
     chatProvider.openTheRecorder();
     chatProvider.flutterSoundPlayer.openAudioSession();
 
-    controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 800));
+    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
 
-    offset = Tween<Offset>(begin: const Offset(-2.0, 0.0), end: Offset.zero)
-        .animate(controller);
+    offset = Tween<Offset>(begin: const Offset(-2.0, 0.0), end: Offset.zero).animate(controller);
 
     updateUnreadMessageStatus();
   }
@@ -121,21 +113,11 @@ class _ChatPageState extends State<_ChatPage>
           color: Theme.of(context).backgroundColor,
           child: StreamBuilder<types.Room>(
             initialData: chatProvider.selectedChatUser,
-            stream: /*widget.isSwitchedAccount
-                ? FirebaseChatCore.instanceFor(app: Firebase.app('secondary'))
-                    .room(chatProvider.selectedChatUser!.id)
-                : */
-                FirebaseChatCore.instance
-                    .room(chatProvider.selectedChatUser!.id),
+            stream: FirebaseChatCore.instance.room(chatProvider.selectedChatUser!.id),
             builder: (context, snapshot) {
               return StreamBuilder<List<types.Message>>(
                 initialData: const [],
-                stream: /*widget.isSwitchedAccount
-                    ? FirebaseChatCore.instanceFor(
-                            app: Firebase.app('secondary'))
-                        .messages(snapshot.data!)
-                    : */
-                    FirebaseChatCore.instance.messages(snapshot.data!),
+                stream: FirebaseChatCore.instance.messages(snapshot.data!),
                 builder: (context, snapshot) {
                   return Stack(
                     children: [
@@ -151,68 +133,50 @@ class _ChatPageState extends State<_ChatPage>
                         },
                         onEndReachedThreshold: 10.0,
                         onTextChanged: (String value) {},
-                        isAttachmentUploading:
-                            chatProvider.isAttachmentUploading,
+                        isAttachmentUploading: chatProvider.isAttachmentUploading,
                         onAttachmentPressed: _handleAttachmentPressed,
                         onVoiceMessagePressed: _handleVoiceMessagePressed,
                         onMessageTap: chatProvider.handleFBMessageTap,
-                        onPreviewDataFetched:
-                            chatProvider.handleFBPreviewDataFetched,
+                        onPreviewDataFetched: chatProvider.handleFBPreviewDataFetched,
                         onSendPressed: chatProvider.handleFBSendPressed,
                         user: types.User(
-                          id: /*widget.isSwitchedAccount
-                              ? FirebaseChatCore.instanceFor(
-                                          app: Firebase.app('secondary'))
-                                      .firebaseUser
-                                      .uid
-                              : */
-                              FirebaseChatCore.instance.firebaseUser.uid,
+                          id: FirebaseChatCore.instance.firebaseUser.uid,
                         ),
                         buildCustomMessage: (message) {
-                          print(
-                              'CUSTOM MESSAGE METADATA: ${message.createdAt}');
+                          print('CUSTOM MESSAGE METADATA: ${message.createdAt}');
                           return Container(
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.grey[300]!),
                                 borderRadius: BorderRadius.circular(2),
-                                color: ThemeUtils.defaultAppThemeData
-                                    .scaffoldBackgroundColor),
+                                color: ThemeUtils.defaultAppThemeData.scaffoldBackgroundColor),
                             child: Padding(
                               padding: const EdgeInsets.all(20.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12.0, vertical: 6.0),
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor),
+                                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                                    decoration: BoxDecoration(color: Theme.of(context).primaryColor),
                                     child: Text(
-                                      getOrderStatus(
-                                          message.metadata!['status']),
+                                      getOrderStatus(message.metadata!['status']),
                                       style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w700),
+                                          color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),
                                     ),
                                   ),
                                   const SizedBox(height: 8),
                                   Divider(color: Colors.grey[300]!),
                                   const SizedBox(height: 8),
                                   Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               'Order ${message.metadata!['id']}',
                                               style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .primaryColor,
+                                                  color: Theme.of(context).primaryColor,
                                                   fontSize: 22,
                                                   fontWeight: FontWeight.w700),
                                             ),
@@ -222,8 +186,7 @@ class _ChatPageState extends State<_ChatPage>
                                             Row(
                                               children: [
                                                 Text(
-                                                  getOrderDate(
-                                                      message.createdAt!),
+                                                  getOrderDate(message.createdAt!),
                                                   style: const TextStyle(
                                                     color: Colors.grey,
                                                     fontSize: 14,
@@ -265,35 +228,19 @@ class _ChatPageState extends State<_ChatPage>
                                             ),
                                             GestureDetector(
                                               onTap: () {
-                                                context.push(RouteParser(
-                                                        '/orders/detail/:id')
-                                                    .reverse({
-                                                  'id':
-                                                      "${message.metadata!['id']}"
-                                                }));
+                                                context.push(RouteParser('/orders/detail/:id')
+                                                    .reverse({'id': "${message.metadata!['id']}"}));
 
-                                                widget.onViewOrderDetailsClick!(
-                                                    message.metadata!['id'],
-                                                    message.metadata![
-                                                        'message_type'],
-                                                    message.metadata!['link'] ??
-                                                        '');
+                                                widget.onViewOrderDetailsClick!(message.metadata!['id'],
+                                                    message.metadata!['message_type'], message.metadata!['link'] ?? '');
                                               },
                                               child: Container(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color:
-                                                            Colors.grey[300]!)),
+                                                width: MediaQuery.of(context).size.width,
+                                                decoration: BoxDecoration(border: Border.all(color: Colors.grey[300]!)),
                                                 child: Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(vertical: 12),
+                                                  padding: const EdgeInsets.symmetric(vertical: 12),
                                                   child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
                                                       SvgPicture.asset(
                                                         'assets/icon/order_details.svg',
@@ -306,15 +253,10 @@ class _ChatPageState extends State<_ChatPage>
                                                       Text(
                                                         'View Order Details',
                                                         style: TextStyle(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColor,
+                                                            color: Theme.of(context).primaryColor,
                                                             fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w700),
-                                                        textAlign:
-                                                            TextAlign.center,
+                                                            fontWeight: FontWeight.w700),
+                                                        textAlign: TextAlign.center,
                                                       ),
                                                     ],
                                                   ),
@@ -335,42 +277,29 @@ class _ChatPageState extends State<_ChatPage>
                         showUserAvatars: false,
                         theme: DefaultChatTheme(
                           messageBorderRadius: 0.0,
-                          backgroundColor: ThemeUtils
-                              .defaultAppThemeData.scaffoldBackgroundColor,
+                          backgroundColor: ThemeUtils.defaultAppThemeData.scaffoldBackgroundColor,
                           primaryColor: Theme.of(context).colorScheme.secondary,
                           secondaryColor: Theme.of(context).primaryColor,
                           inputTextColor: Theme.of(context).primaryColor,
-                          sentMessageBodyTextStyle: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.normal),
-                          sentMessageCaptionTextStyle: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.normal),
-                          sentMessageLinkTitleTextStyle:
-                              const TextStyle(color: Colors.white),
-                          sentMessageLinkDescriptionTextStyle: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.normal),
-                          receivedMessageBodyTextStyle: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.normal),
-                          receivedMessageCaptionTextStyle: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.normal),
-                          receivedMessageLinkTitleTextStyle:
-                              const TextStyle(color: Colors.white),
+                          sentMessageBodyTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+                          sentMessageCaptionTextStyle:
+                              const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+                          sentMessageLinkTitleTextStyle: const TextStyle(color: Colors.white),
+                          sentMessageLinkDescriptionTextStyle:
+                              const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+                          receivedMessageBodyTextStyle:
+                              const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+                          receivedMessageCaptionTextStyle:
+                              const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+                          receivedMessageLinkTitleTextStyle: const TextStyle(color: Colors.white),
                           receivedMessageLinkDescriptionTextStyle:
-                              const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.normal),
+                              const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
                           sentMessageDocumentIconColor: Colors.white,
                           receivedMessageDocumentIconColor: Colors.white,
                         ),
                         emptyState: emptyMessageState(),
                         customDateHeaderText: (DateTime dateTime) {
-                          return DateFormat('dd MMM | hh:mm a')
-                              .format(dateTime)
-                              .toUpperCase();
+                          return DateFormat('dd MMM | hh:mm a').format(dateTime).toUpperCase();
                         },
                       ),
                       if (isOk)
@@ -384,9 +313,7 @@ class _ChatPageState extends State<_ChatPage>
                                 0, //24 + _query.padding.left,
                                 20,
                                 0, //24 + _query.padding.right,
-                                20 +
-                                    MediaQuery.of(context).viewInsets.bottom +
-                                    MediaQuery.of(context).padding.bottom,
+                                20 + MediaQuery.of(context).viewInsets.bottom + MediaQuery.of(context).padding.bottom,
                               ),
                               decoration: BoxDecoration(
                                 color: Theme.of(context).primaryColor,
@@ -395,8 +322,7 @@ class _ChatPageState extends State<_ChatPage>
                                     spreadRadius: 0,
                                     blurRadius: 10,
                                     offset: const Offset(0, 1),
-                                    color: const Color(0xFF000000)
-                                        .withOpacity(.15),
+                                    color: const Color(0xFF000000).withOpacity(.15),
                                   ),
                                 ],
                               ),
@@ -462,21 +388,17 @@ class _ChatPageState extends State<_ChatPage>
                                   Expanded(
                                     child: Container(
                                       alignment: Alignment.centerLeft,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10),
+                                      padding: const EdgeInsets.symmetric(horizontal: 10),
                                       child: SingleChildScrollView(
                                         scrollDirection: Axis.horizontal,
                                         controller: chatProvider.controller,
                                         child: AnimatedList(
                                           key: chatProvider.waveFormListKey,
-                                          initialItemCount:
-                                              chatProvider.waveFormList.length,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
+                                          initialItemCount: chatProvider.waveFormList.length,
+                                          physics: const NeverScrollableScrollPhysics(),
                                           scrollDirection: Axis.horizontal,
                                           shrinkWrap: true,
-                                          itemBuilder:
-                                              (context, index, animation) {
+                                          itemBuilder: (context, index, animation) {
                                             return SlideTransition(
                                               position: CurvedAnimation(
                                                 curve: Curves.easeOut,
@@ -488,26 +410,15 @@ class _ChatPageState extends State<_ChatPage>
                                               child: Row(
                                                 children: [
                                                   Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 3),
+                                                    padding: const EdgeInsets.only(right: 3),
                                                     child: Container(
                                                       width: 3,
-                                                      height: chatProvider.waveFormList[
-                                                                      index] ==
-                                                                  0.0 ||
-                                                              chatProvider.waveFormList[
-                                                                      index] ==
-                                                                  1.0
+                                                      height: chatProvider.waveFormList[index] == 0.0 ||
+                                                              chatProvider.waveFormList[index] == 1.0
                                                           ? 2.0
-                                                          : chatProvider
-                                                                  .waveFormList[
-                                                              index],
+                                                          : chatProvider.waveFormList[index],
                                                       decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(5),
-                                                          color: Colors.white),
+                                                          borderRadius: BorderRadius.circular(5), color: Colors.white),
                                                     ),
                                                   ),
                                                 ],
@@ -605,9 +516,7 @@ class _ChatPageState extends State<_ChatPage>
                 Container(
                   width: 40,
                   height: 4,
-                  decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(20)),
+                  decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(20)),
                 ),
                 const SizedBox(
                   height: 20,
@@ -662,9 +571,7 @@ class _ChatPageState extends State<_ChatPage>
           const SizedBox(height: 50),
           Text(
             'You\'re about to chat up...',
-            style: TextStyle(
-                fontWeight: FontWeight.normal,
-                color: Theme.of(context).primaryColor),
+            style: TextStyle(fontWeight: FontWeight.normal, color: Theme.of(context).primaryColor),
           ),
           const SizedBox(height: 30),
           _buildAvatar(chatProvider.selectedChatUser!, 50),
@@ -685,9 +592,7 @@ class _ChatPageState extends State<_ChatPage>
           const SizedBox(height: 4),
           Text(
             '@${chatProvider.selectedChatUser?.id}',
-            style: TextStyle(
-                fontWeight: FontWeight.normal,
-                color: Theme.of(context).primaryColor),
+            style: TextStyle(fontWeight: FontWeight.normal, color: Theme.of(context).primaryColor),
           ),
           const SizedBox(height: 30),
           ElevatedButton(
@@ -696,10 +601,10 @@ class _ChatPageState extends State<_ChatPage>
               ),
               child: Text(
                 "View Profile",
-                style: Theme.of(context).textTheme.headline4!.copyWith(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline4!
+                    .copyWith(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white),
               ),
               onPressed: () {}),
         ],
@@ -765,14 +670,12 @@ class _ChatPageState extends State<_ChatPage>
           .collection('rooms')
           .doc(chatProvider.selectedChatUser!.id)
           .collection('messages')
-          .where('authorId',
-              isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)
+          .where('authorId', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)
           .get();
 
       // .where('status', isEqualTo: 'sent')
 
-      for (QueryDocumentSnapshot<Map<String, dynamic>> singleMessage
-          in collection.docs) {
+      for (QueryDocumentSnapshot<Map<String, dynamic>> singleMessage in collection.docs) {
         FirebaseFirestore.instance
             .collection('rooms')
             .doc(chatProvider.selectedChatUser!.id)
@@ -783,75 +686,6 @@ class _ChatPageState extends State<_ChatPage>
     } catch (e, s) {
       print('UPDATE UNREAD MESSAGE STATUS ERROR CAUGHT: $e\n$s');
     }
-  }
-}
-
-class AttachmentSheet extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20.0),
-          topRight: Radius.circular(20.0),
-        ),
-      ),
-      child: Column(
-        children: [
-          ListView(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              _ListItem(
-                leading: Image.asset(
-                  'assets/icon/dine_in_tab_icon.png',
-                  height: 20,
-                  width: 20,
-                  color: Theme.of(context).primaryColor,
-                ),
-                title: const Text('Upload a photo'),
-                onTap: () {
-                  Navigator.pop(context);
-                  context.read<ChatProvider>().handleImageSelection();
-                },
-              ),
-              _ListItem(
-                leading: Image.asset(
-                  'assets/icon/takeaway_tab_icon.png',
-                  height: 20,
-                  width: 20,
-                  color: Theme.of(context).primaryColor,
-                ),
-                title: const Text('Upload a file'),
-                onTap: () {
-                  Navigator.pop(context);
-                  context.read<ChatProvider>().handleFileSelection();
-                },
-              ),
-              _ListItem(
-                leading: Image.asset(
-                  'assets/icon/delivery_tab_icon.png',
-                  height: 20,
-                  width: 20,
-                  color: Theme.of(context).primaryColor,
-                ),
-                title: const Text('Upload a voice message'),
-                showDivider: true,
-                onTap: () {
-                  Navigator.pop(context);
-                  context
-                      .read<ChatProvider>()
-                      .handleVoiceMessageSelection(context);
-                },
-              ),
-              // Divider(),
-              const SizedBox(height: 50),
-            ],
-          ),
-        ],
-      ),
-    );
   }
 }
 
@@ -922,8 +756,7 @@ class VisualComponent extends StatefulWidget {
   _VisualComponentState createState() => _VisualComponentState();
 }
 
-class _VisualComponentState extends State<VisualComponent>
-    with SingleTickerProviderStateMixin {
+class _VisualComponentState extends State<VisualComponent> with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController animationController;
 
@@ -931,10 +764,8 @@ class _VisualComponentState extends State<VisualComponent>
   void initState() {
     super.initState();
 
-    animationController = AnimationController(
-        duration: Duration(milliseconds: widget.duration!), vsync: this);
-    final curvedAnimation = CurvedAnimation(
-        parent: animationController, curve: Curves.easeInOutCubic);
+    animationController = AnimationController(duration: Duration(milliseconds: widget.duration!), vsync: this);
+    final curvedAnimation = CurvedAnimation(parent: animationController, curve: Curves.easeInOutCubic);
 
     animation = Tween<double>(begin: 5, end: 100).animate(curvedAnimation)
       ..addListener(() {
@@ -954,21 +785,14 @@ class _VisualComponentState extends State<VisualComponent>
     return Container(
       width: 7,
       margin: const EdgeInsets.only(right: 2),
-      decoration: BoxDecoration(
-          color: Theme.of(context).accentColor,
-          borderRadius: BorderRadius.circular(5)),
+      decoration: BoxDecoration(color: Theme.of(context).accentColor, borderRadius: BorderRadius.circular(5)),
       height: animation.value,
     );
   }
 }
 
 class MusicVisualizer extends StatelessWidget {
-  List<Color> colors = [
-    Colors.blueAccent,
-    Colors.greenAccent,
-    Colors.redAccent,
-    Colors.yellowAccent
-  ];
+  List<Color> colors = [Colors.blueAccent, Colors.greenAccent, Colors.redAccent, Colors.yellowAccent];
   List<int> duration = [900, 700, 600, 800, 500];
 
   @override

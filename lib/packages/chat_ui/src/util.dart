@@ -25,8 +25,7 @@ Color getUserAvatarNameColor(types.User user, List<Color> colors) {
 }
 
 /// Returns user name as joined firstName and lastName
-String getUserName(types.User user) =>
-    '${user.firstName ?? ''} ${user.lastName ?? ''}'.trim();
+String getUserName(types.User user) => '${user.firstName ?? ''} ${user.lastName ?? ''}'.trim();
 
 /// Returns formatted date used as a divider between different days in the
 /// chat history
@@ -36,18 +35,12 @@ String getVerboseDateTimeRepresentation(
   String? dateLocale,
   DateFormat? timeFormat,
 }) {
-  final formattedDate = dateFormat != null
-      ? dateFormat.format(dateTime)
-      : DateFormat.MMMd(dateLocale).format(dateTime);
-  final formattedTime = timeFormat != null
-      ? timeFormat.format(dateTime)
-      : DateFormat.Hm(dateLocale).format(dateTime);
+  final formattedDate = dateFormat != null ? dateFormat.format(dateTime) : DateFormat.MMMd(dateLocale).format(dateTime);
+  final formattedTime = timeFormat != null ? timeFormat.format(dateTime) : DateFormat.Hm(dateLocale).format(dateTime);
   final localDateTime = dateTime.toLocal();
   final now = DateTime.now();
 
-  if (localDateTime.day == now.day &&
-      localDateTime.month == now.month &&
-      localDateTime.year == now.year) {
+  if (localDateTime.day == now.day && localDateTime.month == now.month && localDateTime.year == now.year) {
     return formattedTime;
   }
 
@@ -67,8 +60,6 @@ List<Object> calculateChatMessages(
 }) {
   final chatMessages = <Object>[];
   final gallery = <PreviewImage>[];
-
-  print('NOT EMPTY TWO');
 
   var shouldShowName = false;
 
@@ -112,15 +103,12 @@ List<Object> calculateChatMessages(
     }
 
     if (messageHasCreatedAt && nextMessageHasCreatedAt) {
-      nextMessageDateThreshold =
-          nextMessage!.createdAt! - message.createdAt! >= 900000;
+      nextMessageDateThreshold = nextMessage!.createdAt! - message.createdAt! >= 900000;
 
-      nextMessageDifferentDay =
-          DateTime.fromMillisecondsSinceEpoch(message.createdAt!).day !=
-              DateTime.fromMillisecondsSinceEpoch(nextMessage.createdAt!).day;
+      nextMessageDifferentDay = DateTime.fromMillisecondsSinceEpoch(message.createdAt!).day !=
+          DateTime.fromMillisecondsSinceEpoch(nextMessage.createdAt!).day;
 
-      nextMessageInGroup = nextMessageSameAuthor &&
-          nextMessage.createdAt! - message.createdAt! <= 60000;
+      nextMessageInGroup = nextMessageSameAuthor && nextMessage.createdAt! - message.createdAt! <= 60000;
     }
 
     if (isFirst && messageHasCreatedAt) {
@@ -141,15 +129,12 @@ List<Object> calculateChatMessages(
       );
     }
 
-    print('MESSAGEEEEE: ${message.toJson()}');
+    // print('MESSAGEEEEE: ${message.toJson()}');
 
     chatMessages.insert(0, {
       'message': message,
       'nextMessageInGroup': nextMessageInGroup,
-      'showName': notMyMessage &&
-          showUserNames &&
-          showName &&
-          getUserName(message.author).isNotEmpty,
+      'showName': notMyMessage && showUserNames && showName && getUserName(message.author).isNotEmpty,
       'showStatus': true,
     });
 
