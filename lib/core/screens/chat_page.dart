@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:route_parser/route_parser.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:ttp_chat/packages/chat_ui/ttp_chat_ui.dart';
+import 'package:ttp_chat/utils/functions.dart';
 
 import '../../features/chat/presentation/chat_provider.dart';
 import '../../packages/chat_core/ttp_chat_core.dart';
@@ -51,8 +52,8 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
     super.initState();
 
     chatProvider = context.read<ChatProvider>();
-    chatProvider.openTheRecorder();
-    chatProvider.flutterSoundPlayer.openAudioSession();
+    //chatProvider.openTheRecorder();
+    // chatProvider.flutterSoundPlayer.openAudioSession();
 
     controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
 
@@ -64,7 +65,7 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
   @override
   void dispose() {
     super.dispose();
-    chatProvider.disposeAudioMessageTimer();
+    chatProvider.disposeTimer();
   }
 
   @override
@@ -115,6 +116,7 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
             initialData: chatProvider.selectedChatUser,
             stream: FirebaseChatCore.instance.room(chatProvider.selectedChatUser!.id),
             builder: (context, snapshot) {
+              consoleLog("Firebase Api Call");
               return StreamBuilder<List<types.Message>>(
                 initialData: const [],
                 stream: FirebaseChatCore.instance.messages(snapshot.data!),
@@ -339,52 +341,8 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                                       chatProvider.stopWaveFormAnimation();
                                       controller.reverse();
                                       chatProvider.removeRecordedVoiceMessage();
-
-                                      /*if (chatProvider.voiceMessageFile != null) {
-                                              if (chatProvider
-                                                  .isRecordedVoiceMessageFilePlaying) {
-                                                chatProvider
-                                                    .stopVoiceMessageAnimation();
-                                              } else {
-                                                chatProvider
-                                                    .playVoiceMessageAnimation();
-                                              }
-                                            }*/
                                     },
                                   ),
-                                  /*Expanded(
-                                    child: Container(
-                                      alignment: Alignment.centerLeft,
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 10),
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        controller: chatProvider.controller,
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: chatProvider.waveFormList
-                                              .map((e) {
-                                            return SlideTransition(
-                                              position: offsetTwo,
-                                              child: Container(
-                                                padding: const EdgeInsets.only(
-                                                    right: 3),
-                                                width: 3,
-                                                height: e == 0.0 || e == 1.0
-                                                    ? 2.0
-                                                    : e,
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                    color: Colors.white),
-                                              ),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ),
-                                    ),
-                                  ),*/
                                   Expanded(
                                     child: Container(
                                       alignment: Alignment.centerLeft,
@@ -440,7 +398,6 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                                       chatProvider.stopRecording();
                                       controller.reverse();
                                       chatProvider.stopWaveFormAnimation();
-                                      // chatProvider.handleSendVoiceMessagePressed();
                                     },
                                   ),
                                 ],

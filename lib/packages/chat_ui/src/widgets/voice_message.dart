@@ -5,8 +5,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
-// import 'package:flutter_sound/public/util/flutter_sound_helper.dart';
-import '../util.dart';
 import 'inherited_chat_theme.dart';
 import 'inherited_l10n.dart';
 import 'inherited_user.dart';
@@ -46,11 +44,9 @@ class _VoiceMessageState extends State<VoiceMessage> {
 
   get isPaused => playerState == PlayerState.paused;*/
 
-  get durationText =>
-      duration != null ? duration.toString().split('.').first : '';
+  get durationText => duration != null ? duration.toString().split('.').first : '';
 
-  get positionText =>
-      position != null ? position.toString().split('.').first : '';
+  get positionText => position != null ? position.toString().split('.').first : '';
 
   bool isMuted = false;
 
@@ -118,8 +114,7 @@ class _VoiceMessageState extends State<VoiceMessage> {
 
   void play() async {
     audioPlayer = AudioPlayer(playerId: widget.message!.uri.split('/').last);
-    audioPlayer!.onAudioPositionChanged
-        .listen((p) => setState(() => position = p));
+    audioPlayer!.onAudioPositionChanged.listen((p) => setState(() => position = p));
     audioPlayer!.onPlayerStateChanged.listen((s) {
       if (s == PlayerState.PLAYING) {
         audioPlayer!.onDurationChanged.listen((Duration d) {
@@ -194,9 +189,7 @@ class _VoiceMessageState extends State<VoiceMessage> {
     final _user = InheritedUser.of(context)!.user;
     final _color = _user!.id == widget.message!.author.id
         ? InheritedChatTheme.of(context)!.theme!.sentMessageDocumentIconColor
-        : InheritedChatTheme.of(context)!
-            .theme!
-            .receivedMessageDocumentIconColor;
+        : InheritedChatTheme.of(context)!.theme!.receivedMessageDocumentIconColor;
 
     return Semantics(
       key: widget.key,
@@ -233,12 +226,8 @@ class _VoiceMessageState extends State<VoiceMessage> {
                 )),
             Expanded(
               child: LinearProgressIndicator(
-                value: position != null &&
-                        position!.inSeconds > 0 &&
-                        duration != null &&
-                        duration!.inSeconds > 0
-                    ? (position?.inSeconds.toDouble() ?? 0.0) /
-                        (duration?.inSeconds.toDouble() ?? 0.0)
+                value: position != null && position!.inSeconds > 0 && duration != null && duration!.inSeconds > 0
+                    ? (position?.inSeconds.toDouble() ?? 0.0) / (duration?.inSeconds.toDouble() ?? 0.0)
                     : 0.0,
                 valueColor: const AlwaysStoppedAnimation(Colors.white),
                 backgroundColor: Colors.grey[300],
@@ -250,12 +239,8 @@ class _VoiceMessageState extends State<VoiceMessage> {
               child: Text(
                 timerText,
                 style: _user.id == widget.message!.author.id
-                    ? InheritedChatTheme.of(context)!
-                        .theme!
-                        .sentMessageBodyTextStyle
-                    : InheritedChatTheme.of(context)!
-                        .theme!
-                        .receivedMessageBodyTextStyle,
+                    ? InheritedChatTheme.of(context)!.theme!.sentMessageBodyTextStyle
+                    : InheritedChatTheme.of(context)!.theme!.receivedMessageBodyTextStyle,
                 textWidthBasis: TextWidthBasis.longestLine,
               ),
             ),
@@ -311,8 +296,7 @@ class _VoiceMessageState extends State<VoiceMessage> {
     );
   }
 
-  Row _buildControlAndProgressView() =>
-      Row(mainAxisSize: MainAxisSize.min, children: [
+  Row _buildControlAndProgressView() => Row(mainAxisSize: MainAxisSize.min, children: [
         Container(
           height: 42,
           width: 42,
@@ -320,13 +304,10 @@ class _VoiceMessageState extends State<VoiceMessage> {
             alignment: Alignment.center,
             children: [
               CircularProgressIndicator(
-                value: position != null &&
-                        position!.inMilliseconds > 0 &&
-                        duration != null &&
-                        duration!.inMilliseconds > 0
-                    ? (position?.inMilliseconds.toDouble() ?? 0.0) /
-                        (duration?.inMilliseconds.toDouble() ?? 0.0)
-                    : 0.0,
+                value:
+                    position != null && position!.inMilliseconds > 0 && duration != null && duration!.inMilliseconds > 0
+                        ? (position?.inMilliseconds.toDouble() ?? 0.0) / (duration?.inMilliseconds.toDouble() ?? 0.0)
+                        : 0.0,
                 valueColor: const AlwaysStoppedAnimation(Colors.cyan),
                 backgroundColor: Colors.grey.shade400,
               ),

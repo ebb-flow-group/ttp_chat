@@ -48,8 +48,7 @@ class Message extends StatelessWidget {
   final void Function(types.Message)? onMessageTap;
 
   /// See [TextMessage.onPreviewDataFetched]
-  final void Function(types.TextMessage, types.PreviewData)?
-      onPreviewDataFetched;
+  final void Function(types.TextMessage, types.PreviewData)? onPreviewDataFetched;
 
   /// Rounds border of the message to visually group messages together.
   final bool? roundBorder;
@@ -70,8 +69,7 @@ class Message extends StatelessWidget {
   final bool? usePreviewData;
 
   Widget _buildAvatar(BuildContext context) {
-    final color = getUserAvatarNameColor(message!.author,
-        InheritedChatTheme.of(context)!.theme!.userAvatarNameColors!);
+    final color = getUserAvatarNameColor(message!.author, InheritedChatTheme.of(context)!.theme!.userAvatarNameColors!);
     final hasImage = message!.author.imageUrl != null;
     final name = getUserName(message!.author);
 
@@ -79,16 +77,13 @@ class Message extends StatelessWidget {
         ? Container(
             margin: const EdgeInsets.only(right: 8),
             child: CircleAvatar(
-              backgroundImage:
-                  hasImage ? NetworkImage(message!.author.imageUrl!) : null,
+              backgroundImage: hasImage ? NetworkImage(message!.author.imageUrl!) : null,
               backgroundColor: color,
               radius: 16,
               child: !hasImage
                   ? Text(
                       name.isEmpty ? '' : name[0].toUpperCase(),
-                      style: InheritedChatTheme.of(context)!
-                          .theme!
-                          .userAvatarTextStyle,
+                      style: InheritedChatTheme.of(context)!.theme!.userAvatarTextStyle,
                     )
                   : null,
             ),
@@ -102,9 +97,7 @@ class Message extends StatelessWidget {
     switch (message!.type) {
       case types.MessageType.custom:
         final customMessage = message as types.CustomMessage;
-        return buildCustomMessage != null
-            ? buildCustomMessage!(customMessage)
-            : const SizedBox();
+        return buildCustomMessage != null ? buildCustomMessage!(customMessage) : const SizedBox();
       case types.MessageType.file:
         final fileMessage = message as types.FileMessage;
         return FileMessage(
@@ -112,8 +105,7 @@ class Message extends StatelessWidget {
         );
       case types.MessageType.voice:
         final voiceMessage = message as types.VoiceMessage;
-        return VoiceMessage(
-            message: voiceMessage, currentUserIsAuthor: currentUserIsAuthor);
+        return VoiceMessage(message: voiceMessage);
       case types.MessageType.image:
         final imageMessage = message as types.ImageMessage;
         return ImageMessage(
@@ -136,23 +128,20 @@ class Message extends StatelessWidget {
   Widget _buildStatus(BuildContext context) {
     switch (message!.status) {
       case types.Status.error:
-        return /*InheritedChatTheme.of(context)!.theme!.errorIcon ?? */ Image
-            .asset(
+        return /*InheritedChatTheme.of(context)!.theme!.errorIcon ?? */ Image.asset(
           'assets/icon-error.png',
           color: InheritedChatTheme.of(context)!.theme!.errorColor,
           package: 'ttp_chat',
         );
       case types.Status.sent:
       case types.Status.delivered:
-        return /*InheritedChatTheme.of(context)!.theme!.deliveredIcon ??*/ Image
-            .asset(
+        return /*InheritedChatTheme.of(context)!.theme!.deliveredIcon ??*/ Image.asset(
           'assets/icon-delivered.png',
           color: InheritedChatTheme.of(context)!.theme!.primaryColor,
           package: 'ttp_chat',
         );
       case types.Status.seen:
-        return /*InheritedChatTheme.of(context)!.theme!.seenIcon ??*/ Image
-            .asset(
+        return /*InheritedChatTheme.of(context)!.theme!.seenIcon ??*/ Image.asset(
           'assets/icon-seen.png',
           color: InheritedChatTheme.of(context)!.theme!.primaryColor,
           package: 'ttp_chat',
@@ -179,13 +168,9 @@ class Message extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _user = InheritedUser.of(context)!.user;
-    final _messageBorderRadius =
-        InheritedChatTheme.of(context)!.theme!.messageBorderRadius;
+    final _messageBorderRadius = InheritedChatTheme.of(context)!.theme!.messageBorderRadius;
     final _borderRadius = BorderRadius.only(
-      bottomLeft: Radius.circular(
-          _user!.id == message!.author.id || roundBorder!
-              ? _messageBorderRadius!
-              : 0),
+      bottomLeft: Radius.circular(_user!.id == message!.author.id || roundBorder! ? _messageBorderRadius! : 0),
       bottomRight: Radius.circular(_user.id == message!.author.id
           ? roundBorder!
               ? _messageBorderRadius!
@@ -197,9 +182,7 @@ class Message extends StatelessWidget {
     final _currentUserIsAuthor = _user.id == message!.author.id;
 
     return Container(
-      alignment: _user.id == message!.author.id
-          ? Alignment.centerRight
-          : Alignment.centerLeft,
+      alignment: _user.id == message!.author.id ? Alignment.centerRight : Alignment.centerLeft,
       margin: const EdgeInsets.only(
         bottom: 4,
         left: 20,
@@ -222,14 +205,9 @@ class Message extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: _borderRadius,
-                      color: !_currentUserIsAuthor ||
-                              message!.type == types.MessageType.image
-                          ? InheritedChatTheme.of(context)!
-                              .theme!
-                              .secondaryColor // primaryColor
-                          : InheritedChatTheme.of(context)!
-                              .theme!
-                              .primaryColor, // accentColor
+                      color: !_currentUserIsAuthor || message!.type == types.MessageType.image
+                          ? InheritedChatTheme.of(context)!.theme!.secondaryColor // primaryColor
+                          : InheritedChatTheme.of(context)!.theme!.primaryColor, // accentColor
                     ),
                     child: ClipRRect(
                       borderRadius: _borderRadius,

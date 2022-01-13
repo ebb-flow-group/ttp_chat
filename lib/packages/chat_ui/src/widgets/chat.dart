@@ -117,8 +117,7 @@ class Chat extends StatefulWidget {
   final void Function(types.Message)? onMessageTap;
 
   /// See [Message.onPreviewDataFetched]
-  final void Function(types.TextMessage, types.PreviewData)?
-      onPreviewDataFetched;
+  final void Function(types.TextMessage, types.PreviewData)? onPreviewDataFetched;
 
   /// See [Input.onSendPressed]
   final void Function(types.PartialText)? onSendPressed;
@@ -212,13 +211,11 @@ class _ChatState extends State<Chat> {
       child: Stack(
         children: [
           PhotoViewGallery.builder(
-            builder: (BuildContext context, int index) =>
-                PhotoViewGalleryPageOptions(
+            builder: (BuildContext context, int index) => PhotoViewGalleryPageOptions(
               imageProvider: Conditional().getProvider(_gallery[index].uri!),
             ),
             itemCount: _gallery.length,
-            loadingBuilder: (context, event) =>
-                _imageGalleryLoadingBuilder(context, event!),
+            loadingBuilder: (context, event) => _imageGalleryLoadingBuilder(context, event!),
             onPageChanged: _onPageChanged,
             pageController: PageController(initialPage: _imageViewIndex),
             scrollPhysics: const ClampingScrollPhysics(),
@@ -264,10 +261,9 @@ class _ChatState extends State<Chat> {
     } else {
       final map = object as Map<String, Object>;
       final message = map['message'] as types.Message;
-      final _messageWidth =
-          widget.showUserAvatars! && message.author.id != widget.user!.id
-              ? min(MediaQuery.of(context).size.width * 0.72, 440).floor()
-              : min(MediaQuery.of(context).size.width * 0.78, 440).floor();
+      final _messageWidth = widget.showUserAvatars! && message.author.id != widget.user!.id
+          ? min(MediaQuery.of(context).size.width * 0.72, 440).floor()
+          : min(MediaQuery.of(context).size.width * 0.78, 440).floor();
 
       try {
         return Message(
@@ -277,8 +273,7 @@ class _ChatState extends State<Chat> {
           messageWidth: _messageWidth,
           onMessageLongPress: widget.onMessageLongPress!,
           onMessageTap: (tappedMessage) {
-            if (tappedMessage is types.ImageMessage &&
-                widget.disableImageGallery != true) {
+            if (tappedMessage is types.ImageMessage && widget.disableImageGallery != true) {
               _onImagePressed(tappedMessage);
             }
 
@@ -286,8 +281,7 @@ class _ChatState extends State<Chat> {
           },
           onPreviewDataFetched: _onPreviewDataFetched,
           roundBorder: map['nextMessageInGroup'] == true,
-          showAvatar:
-              widget.showUserAvatars! && map['nextMessageInGroup'] == false,
+          showAvatar: widget.showUserAvatars! && map['nextMessageInGroup'] == false,
           showName: map['showName'] == true,
           showStatus: map['showStatus'] == true,
           showUserAvatars: widget.showUserAvatars!,
@@ -368,17 +362,14 @@ class _ChatState extends State<Chat> {
                                 child: _buildEmptyState(),
                               )
                             : GestureDetector(
-                                onTap: () => FocusManager.instance.primaryFocus
-                                    ?.unfocus(),
+                                onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
                                 child: ChatList(
                                   key: ValueKey(_chatMessages.length),
                                   isLastPage: widget.isLastPage!,
-                                  itemBuilder: (item, index) =>
-                                      _buildMessage(item),
+                                  itemBuilder: (item, index) => _buildMessage(item),
                                   items: _chatMessages,
                                   onEndReached: widget.onEndReached!,
-                                  onEndReachedThreshold:
-                                      widget.onEndReachedThreshold!,
+                                  onEndReachedThreshold: widget.onEndReachedThreshold!,
                                 ),
                               ),
                       ),

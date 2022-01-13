@@ -158,7 +158,7 @@ Future<Map<String, dynamic>> getLastMessageOfRoom(String roomId) async {
     return aTimestamp.compareTo(bTimestamp);
   });*/
 
-  return collection.docs.isNotEmpty ? collection.docs[0].data() as Map<String, dynamic> : {};
+  return collection.docs.isNotEmpty ? collection.docs[0].data() : {};
 }
 
 Future<int> getUnreadMessageCount(String roomId, User firebaseUser) async {

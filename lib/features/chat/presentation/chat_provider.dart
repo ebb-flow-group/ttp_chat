@@ -1,23 +1,20 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-// import 'package:audioplayers/audioplayers.dart' as ap;
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
@@ -34,18 +31,13 @@ enum ApiStatus { called, success, failed }
 
 class ChatProvider extends ChangeNotifier {
   types.User? user;
-  FlutterSoundRecorder flutterSoundRecorder = FlutterSoundRecorder();
-  FlutterSoundPlayer flutterSoundPlayer = FlutterSoundPlayer();
+
   List<types.Message> messagesList = [];
-  Codec _codec = Codec.aacMP4;
   String voiceMessageFilePath = '';
   bool isRecording = false;
   types.VoiceMessage? recordedVoiceMessage;
   File? voiceMessageFile;
-  int? recordedVoiceMessageFileDuration;
-  Duration? audioMessageDuration;
-  Timer? audioMessageTimer;
-  bool isRecordedVoiceMessageFilePlaying = false;
+  Duration audioMessageDuration = const Duration(seconds: 0);
   bool isAttachmentUploading = false;
   List<double> waveFormList = [];
   Timer? waveFormTimer;
@@ -61,6 +53,33 @@ class ChatProvider extends ChangeNotifier {
   String? accessToken, refreshToken;
 
   List<types.Room> roomList = [];
+
+  //! To get the duration of the recorded audio
+  Timer? recorderTimer;
+  startTimer() {
+    audioMessageDuration = const Duration(seconds: 0);
+    recorderTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      Record().isRecording().then((running) {
+        if (running) {
+          audioMessageDuration = audioMessageDuration + const Duration(seconds: 1);
+          consoleLog(audioMessageDuration.toString());
+        } else {
+          consoleLog('recorder stopped');
+          if (recorderTimer != null) recorderTimer!.cancel();
+        }
+      });
+    });
+  }
+
+  disposeTimer() {
+    Record().stop();
+    if (recorderTimer != null) {
+      recorderTimer!.cancel();
+    }
+    if (waveFormTimer != null) {
+      waveFormTimer!.cancel();
+    }
+  }
 
   getLocalRoomList() {
     SharedPreferences.getInstance().then((prefs) {
@@ -106,9 +125,7 @@ class ChatProvider extends ChangeNotifier {
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
       consoleLog('UserId: ${userCredential.user!.uid}');
-      //  checkIfUserIsBrandOrUser(userCredential.user!.uid);
       getCountData();
-      // createUserOnFirestore(chatSignInModel, userCredential.user!.uid);
       apiStatus = ApiStatus.success;
       notifyListeners();
     } catch (e, s) {
@@ -121,7 +138,6 @@ class ChatProvider extends ChangeNotifier {
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(brandsList[0].firebaseToken!);
       consoleLog('UserId: ${userCredential.user!.uid}');
-      //   checkIfUserIsBrandOrUser(userCredential.user!.uid);
       getCountData();
       apiStatus = ApiStatus.success;
       notifyListeners();
@@ -134,19 +150,6 @@ class ChatProvider extends ChangeNotifier {
     selectedTabIndex = value;
     notifyListeners();
   }
-
-  // void checkIfUserIsBrandOrUser(String uid) async {
-  //   final snapshot = await FirebaseFirestore.instance.collection('users').doc(uid).get();
-
-  //   final data = snapshot.data();
-  //   consoleLog('USER TYPE: ${data!['user_type']}');
-  //   if (data['user_type'] == 'brand') {
-  //     isBrand = true;
-  //   } else if (data['user_type'] == 'user') {
-  //     isBrand = false;
-  //   }
-  //   notifyListeners();
-  // }
 
   void getUserFirebaseToken(String accessToken) async {
     consoleLog('ACCESS TOKEN 1: $accessToken');
@@ -182,6 +185,7 @@ class ChatProvider extends ChangeNotifier {
   void getCountData() {
     notifyListeners();
     FirebaseChatCore.instance.rooms().listen((event) {
+      consoleLog("strinddddddddddddg");
       notifyListeners();
       if (event.isEmpty) {
         isRoomListEmpty = true;
@@ -207,12 +211,14 @@ class ChatProvider extends ChangeNotifier {
 
       consoleLog('APP APPLE DOCS DIRE: $voiceMessageFilePath');
 
-      await Record().start(
-        path: voiceMessageFilePath,
-        encoder: AudioEncoder.AAC,
-        bitRate: 128000,
-        samplingRate: 44100,
-      );
+      await Record()
+          .start(
+            path: voiceMessageFilePath,
+            encoder: AudioEncoder.AAC,
+            bitRate: 128000,
+            samplingRate: 44100,
+          )
+          .then((value) => startTimer());
     } else {
       //get permission
     }
@@ -228,11 +234,6 @@ class ChatProvider extends ChangeNotifier {
     await Record().stop();
 
     voiceMessageFile = File(voiceMessageFilePath);
-    audioMessageDuration = await FlutterSoundHelper().duration(voiceMessageFilePath);
-
-    consoleLog('DURATION FOR METADATA: ${audioMessageDuration!.inSeconds}');
-
-    recordedVoiceMessageFileDuration = audioMessageDuration!.inSeconds;
 
     recordedVoiceMessage = null;
 
@@ -247,7 +248,7 @@ class ChatProvider extends ChangeNotifier {
         name: voiceMessageFilePath.split('/').last,
         size: File(voiceMessageFilePath).lengthSync(),
         uri: voiceMessageFilePath,
-        duration: Duration.zero.inSeconds);
+        duration: audioMessageDuration.inSeconds);
 
     consoleLog('METADATA: ${recordedVoiceMessage!.metadata}');
 
@@ -275,41 +276,38 @@ class ChatProvider extends ChangeNotifier {
     waveFormTimer!.cancel();
   }
 
-  void disposeAudioMessageTimer() {
-    if (audioMessageTimer != null) audioMessageTimer!.cancel();
-  }
-
   void removeRecordedVoiceMessage() async {
     await Record().stop();
     voiceMessageFile = null;
     voiceMessageFilePath = '';
-    isRecordedVoiceMessageFilePlaying = false;
+
     // audioPlayer.stop();
     // audioPlayer.dispose();
     notifyListeners();
   }
 
-  void openTheRecorder() async {
-    if (!kIsWeb) {
-      var status = await Permission.microphone.request();
-      if (status != PermissionStatus.granted) {
-        throw RecordingPermissionException('Microphone permission not granted');
-      }
+  // void openTheRecorder() async {
+  //   if (!kIsWeb) {
+  //     var status = await Permission.microphone.request();
+  //     if (status != PermissionStatus.granted) {
+  //       //'Microphone permission not granted'
+  //       throw Error();
+  //     }
 
-      var storageStatus = await Permission.storage.request();
-      if (storageStatus != PermissionStatus.granted) {
-        throw Exception('Storage permission not granted');
-      }
-    }
-    await flutterSoundRecorder.openAudioSession();
-    if (!await flutterSoundRecorder.isEncoderSupported(_codec) && kIsWeb) {
-      _codec = Codec.aacMP4;
-      //  _mPath = DateTime.now().millisecondsSinceEpoch.toString();
-      if (!await flutterSoundRecorder.isEncoderSupported(_codec) && kIsWeb) {
-        return;
-      }
-    }
-  }
+  //     var storageStatus = await Permission.storage.request();
+  //     if (storageStatus != PermissionStatus.granted) {
+  //       throw Exception('Storage permission not granted');
+  //     }
+  //   }
+  //   // await flutterSoundRecorder.openAudioSession();
+  //   // if (!await flutterSoundRecorder.isEncoderSupported(_codec) && kIsWeb) {
+  //   //   _codec = Codec.aacMP4;
+  //   //   //  _mPath = DateTime.now().millisecondsSinceEpoch.toString();
+  //   //   if (!await flutterSoundRecorder.isEncoderSupported(_codec) && kIsWeb) {
+  //   //     return;
+  //   //   }
+  //   // }
+  // }
 
   void handleImageSelection() async {
     final result = await ImagePicker().pickImage(
@@ -383,7 +381,7 @@ class ChatProvider extends ChangeNotifier {
 
   void addVoiceMessage() {
     addMessage(recordedVoiceMessage);
-    isRecordedVoiceMessageFilePlaying = false;
+
     voiceMessageFile = null;
     voiceMessageFilePath = '';
     notifyListeners();
@@ -423,8 +421,8 @@ class ChatProvider extends ChangeNotifier {
 
       await OpenFile.open(localPath);
     } else if (message is types.VoiceMessage) {
-      Duration? duration = await FlutterSoundHelper().duration(message.uri);
-      consoleLog('ON TAP DURATION: $duration');
+      // Duration? duration = await FlutterSoundHelper().duration(message.uri);
+      // consoleLog('ON TAP DURATION: $duration');
     }
   }
 
@@ -528,15 +526,14 @@ class ChatProvider extends ChangeNotifier {
             name: name,
             size: voiceMessageFile!.lengthSync(),
             uri: uri,
-            duration: audioMessageDuration!.inSeconds);
+            duration: audioMessageDuration.inSeconds);
 
         FirebaseChatCore.instance.sendMessage(message, selectedChatUser!.id);
-        isRecordedVoiceMessageFilePlaying = false;
+
         voiceMessageFile = null;
         voiceMessageFilePath = '';
         setAttachmentUploading(false);
       } on FirebaseException catch (e) {
-        isRecordedVoiceMessageFilePlaying = false;
         voiceMessageFile = null;
         voiceMessageFilePath = '';
         setAttachmentUploading(false);
