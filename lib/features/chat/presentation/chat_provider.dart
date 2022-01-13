@@ -62,9 +62,9 @@ class ChatProvider extends ChangeNotifier {
       Record().isRecording().then((running) {
         if (running) {
           audioMessageDuration = audioMessageDuration + const Duration(seconds: 1);
-          consoleLog(audioMessageDuration.toString());
+          consoleLog("Recorder running for ${audioMessageDuration.inSeconds} seconds");
         } else {
-          consoleLog('recorder stopped');
+          consoleLog('Recorder Stopped');
           if (recorderTimer != null) recorderTimer!.cancel();
         }
       });
@@ -185,7 +185,6 @@ class ChatProvider extends ChangeNotifier {
   void getCountData() {
     notifyListeners();
     FirebaseChatCore.instance.rooms().listen((event) {
-      consoleLog("strinddddddddddddg");
       notifyListeners();
       if (event.isEmpty) {
         isRoomListEmpty = true;
@@ -200,17 +199,12 @@ class ChatProvider extends ChangeNotifier {
 
   void startRecording() async {
     bool result = await Record().hasPermission();
-
     if (result) {
       Directory voiceMessageDirectory = await getApplicationDocumentsDirectory();
-
-      consoleLog('APP APPLE DOCS DIRE: ${voiceMessageDirectory.path}');
-
+      consoleLog('Directory Path: ${voiceMessageDirectory.path}');
       voiceMessageFilePath = '';
       voiceMessageFilePath = '${voiceMessageDirectory.path}/${DateTime.now().millisecondsSinceEpoch.toString()}.mp4';
-
-      consoleLog('APP APPLE DOCS DIRE: $voiceMessageFilePath');
-
+      consoleLog('Audio Message Path: $voiceMessageFilePath');
       await Record()
           .start(
             path: voiceMessageFilePath,
@@ -222,21 +216,16 @@ class ChatProvider extends ChangeNotifier {
     } else {
       //get permission
     }
-
     isRecording = true;
-
     notifyListeners();
   }
 
   void stopRecording() async {
     isRecording = false;
-    consoleLog('VOICE MESSAGE FILE PATH: $voiceMessageFilePath');
+    consoleLog('Audio Message Path: $voiceMessageFilePath');
     await Record().stop();
-
     voiceMessageFile = File(voiceMessageFilePath);
-
     recordedVoiceMessage = null;
-
     recordedVoiceMessage = types.VoiceMessage(
         author: user ??
             types.User(
@@ -272,7 +261,6 @@ class ChatProvider extends ChangeNotifier {
   }
 
   void stopWaveFormAnimation() {
-    // if(waveFormListKey.currentState.mounted) waveFormListKey.currentState.dispose();
     waveFormTimer!.cancel();
   }
 
@@ -280,34 +268,8 @@ class ChatProvider extends ChangeNotifier {
     await Record().stop();
     voiceMessageFile = null;
     voiceMessageFilePath = '';
-
-    // audioPlayer.stop();
-    // audioPlayer.dispose();
     notifyListeners();
   }
-
-  // void openTheRecorder() async {
-  //   if (!kIsWeb) {
-  //     var status = await Permission.microphone.request();
-  //     if (status != PermissionStatus.granted) {
-  //       //'Microphone permission not granted'
-  //       throw Error();
-  //     }
-
-  //     var storageStatus = await Permission.storage.request();
-  //     if (storageStatus != PermissionStatus.granted) {
-  //       throw Exception('Storage permission not granted');
-  //     }
-  //   }
-  //   // await flutterSoundRecorder.openAudioSession();
-  //   // if (!await flutterSoundRecorder.isEncoderSupported(_codec) && kIsWeb) {
-  //   //   _codec = Codec.aacMP4;
-  //   //   //  _mPath = DateTime.now().millisecondsSinceEpoch.toString();
-  //   //   if (!await flutterSoundRecorder.isEncoderSupported(_codec) && kIsWeb) {
-  //   //     return;
-  //   //   }
-  //   // }
-  // }
 
   void handleImageSelection() async {
     final result = await ImagePicker().pickImage(
@@ -375,7 +337,7 @@ class ChatProvider extends ChangeNotifier {
 
   void addMessage([types.Message? message]) {
     messagesList.insert(0, message!);
-    consoleLog('MESSAGE LIST LENGTH: ${messagesList.length}');
+    consoleLog('Message List Length : ${messagesList.length}');
     notifyListeners();
   }
 
@@ -404,7 +366,7 @@ class ChatProvider extends ChangeNotifier {
     if (message is types.FileMessage) {
       var localPath = message.uri;
 
-      consoleLog('LOCAL PATH: $localPath');
+      consoleLog('Local Path: $localPath');
 
       if (message.uri.startsWith('https')) {
         final client = http.Client();
@@ -421,8 +383,7 @@ class ChatProvider extends ChangeNotifier {
 
       await OpenFile.open(localPath);
     } else if (message is types.VoiceMessage) {
-      // Duration? duration = await FlutterSoundHelper().duration(message.uri);
-      // consoleLog('ON TAP DURATION: $duration');
+      consoleLog('Voice Message Tapped');
     }
   }
 
@@ -507,19 +468,18 @@ class ChatProvider extends ChangeNotifier {
     if (voiceMessageFile != null) {
       setAttachmentUploading(true);
       final name = voiceMessageFile!.path.split('/').last;
-      consoleLog('VOICE MESSAGE FILE NAME: $name');
+      consoleLog('Audio File : $name');
       final filePath = voiceMessageFile?.path;
-      consoleLog('VOICE MESSAGE FILE PATH: $filePath');
+      consoleLog('Audio File Path: $filePath');
       final file = File(filePath ?? '');
-      consoleLog('VOICE MESSAGE FILE: $file');
-      consoleLog('VOICE MESSAGE FILE SIZE: ${voiceMessageFile!.lengthSync()}');
+      consoleLog('Audio File Size: ${voiceMessageFile!.lengthSync()}');
 
       try {
         final reference = FirebaseStorage.instance.ref(name);
         await reference.putFile(file);
         final uri = await reference.getDownloadURL();
-        consoleLog('VOICE MESSAGE FILE FB STORAGE URL: $uri');
-        consoleLog('VOICE MESSAGE FILE MIME TYPE: ${lookupMimeType(filePath ?? '')}');
+        consoleLog('Audio Url: $uri');
+        consoleLog('Audio Type: ${lookupMimeType(filePath ?? '')}');
 
         final message = types.PartialVoice(
             mimeType: lookupMimeType(filePath ?? ''),
