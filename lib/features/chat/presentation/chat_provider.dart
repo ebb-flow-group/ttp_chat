@@ -1,5 +1,3 @@
-// ignore_for_file: unused_local_variable
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -119,7 +117,7 @@ class ChatProvider extends ChangeNotifier {
   }
 
   void userCustomFirebaseTokenSignIn(String firebaseToken) async {
-    consoleLog('USER FIREBASE TOKEN 1: $firebaseToken');
+    consoleLog('User Token : $firebaseToken');
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
       consoleLog('UserId: ${userCredential.user!.uid}');
@@ -127,12 +125,11 @@ class ChatProvider extends ChangeNotifier {
       apiStatus = ApiStatus.success;
       notifyListeners();
     } catch (e, s) {
-      consoleLog('USER CUSTOM FIREBASE TOKEN SIGN IN ERROR: $e\n$s');
+      consoleLog('Firebase Token SignIn Error: $e\n$s');
     }
   }
 
   void brandCustomFirebaseTokenSignIn(List<BrandFirebaseTokenData> brandsList) async {
-    consoleLog('SECONDARY FB APP');
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(brandsList[0].firebaseToken!);
       consoleLog('UserId: ${userCredential.user!.uid}');
@@ -140,7 +137,7 @@ class ChatProvider extends ChangeNotifier {
       apiStatus = ApiStatus.success;
       notifyListeners();
     } catch (e, s) {
-      consoleLog('BRAND CUSTOM FIREBASE TOKEN SIGN IN ERROR: $e\n$s');
+      consoleLog('Firebase Token SignIn Error: $e\n$s');
     }
   }
 
