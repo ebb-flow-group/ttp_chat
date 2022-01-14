@@ -314,24 +314,6 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  // void handlePreviewDataFetched(types.TextMessage message, types.PreviewData previewData) {
-  //   final index = messagesList.indexWhere((element) => element.id == message.id);
-  //   final updatedMessage = messagesList[index].copyWith(previewData: previewData);
-  //   messagesList[index] = updatedMessage;
-  //   notifyListeners();
-  // }
-
-  // void handleSendPressed(types.PartialText message) {
-  //   final textMessage = types.TextMessage(
-  //     author: user!,
-  //     createdAt: DateTime.now().millisecondsSinceEpoch,
-  //     id: const Uuid().v4(),
-  //     text: message.text,
-  //   );
-
-  //   addMessage(textMessage);
-  // }
-
   void addMessage([types.Message? message]) {
     messagesList.insert(0, message!);
     consoleLog('Message List Length : ${messagesList.length}');

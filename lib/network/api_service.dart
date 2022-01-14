@@ -18,21 +18,6 @@ class ApiService {
     apiClient = ApiClient(dio, url);
   }
 
-  // Future<BaseModel<ChatSignInModel>> signInMVP(
-  //     String username, String password) async {
-  //   ChatSignInModel response;
-  //   try {
-  //     dio = Dio();
-  //     apiClient = ApiClient(dio, 'https://django-firebase-mvp.herokuapp.com');
-  //     response = await apiClient.signInMVP(username, password);
-  //   } catch (error) {
-  //     consoleLog('Error: $error');
-  //     return BaseModel()
-  //       ..setException(ServerError.withError(error: error as DioError));
-  //   }
-  //   return BaseModel()..data = response;
-  // }
-
   Future<BaseModel<UserFirebaseTokenModel>> getUserFirebaseToken(String accessToken) async {
     UserFirebaseTokenModel response;
     try {
