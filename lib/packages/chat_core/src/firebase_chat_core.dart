@@ -20,8 +20,7 @@ class FirebaseChatCore {
   User firebaseUser = FirebaseAuth.instance.currentUser!;
 
   /// Singleton instance
-  static final FirebaseChatCore instance =
-      FirebaseChatCore._privateConstructor();
+  static final FirebaseChatCore instance = FirebaseChatCore._privateConstructor();
 
   // ignore: sort_constructors_first
   FirebaseChatCore.instanceFor({@required FirebaseApp? app}) {
@@ -81,10 +80,8 @@ class FirebaseChatCore {
   }) async {
     if (firebaseUser == null) return Future.error('User does not exist');
 
-    final query = await FirebaseFirestore.instance
-        .collection('rooms')
-        .where('userIds', arrayContains: firebaseUser.uid)
-        .get();
+    final query =
+        await FirebaseFirestore.instance.collection('rooms').where('userIds', arrayContains: firebaseUser.uid).get();
 
     final rooms = await processRoomsQuery(firebaseUser, query);
 
@@ -95,8 +92,7 @@ class FirebaseChatCore {
         final userIds = room.users.map((u) => u.id);
         print('IS USER PRESENT: ${userIds.contains(firebaseUser.uid)}');
         print('IS OTHER USER PRESENT: ${userIds.contains(otherUser.id)}');
-        return userIds.contains(firebaseUser.uid) &&
-            userIds.contains(otherUser.id);
+        return userIds.contains(firebaseUser.uid) && userIds.contains(otherUser.id);
       });
     } catch (e) {
       // Do nothing if room does not exist
@@ -205,13 +201,9 @@ class FirebaseChatCore {
             .collection('rooms')
             .where('userIds', arrayContains: firebaseUser.uid)
             .orderBy('updatedAt', descending: true)
-        : FirebaseFirestore.instance
-            .collection('rooms')
-            .where('userIds', arrayContains: firebaseUser.uid);
+        : FirebaseFirestore.instance.collection('rooms').where('userIds', arrayContains: firebaseUser.uid);
 
-    return collection
-        .snapshots()
-        .asyncMap((query) => processRoomsQuery(firebaseUser, query));
+    return collection.snapshots().asyncMap((query) => processRoomsQuery(firebaseUser, query));
   }
 
   /// Sends a message to the Firestore. Accepts any partial message and a
@@ -224,34 +216,19 @@ class FirebaseChatCore {
 
     if (partialMessage is types.PartialCustom) {
       message = types.CustomMessage.fromPartial(
-          author: types.User(id: firebaseUser.uid),
-          id: '',
-          partialCustom: partialMessage,
-          status: types.Status.sent);
+          author: types.User(id: firebaseUser.uid), id: '', partialCustom: partialMessage, status: types.Status.sent);
     } else if (partialMessage is types.PartialFile) {
       message = types.FileMessage.fromPartial(
-          author: types.User(id: firebaseUser.uid),
-          id: '',
-          partialFile: partialMessage,
-          status: types.Status.sent);
+          author: types.User(id: firebaseUser.uid), id: '', partialFile: partialMessage, status: types.Status.sent);
     } else if (partialMessage is types.PartialVoice) {
       message = types.VoiceMessage.fromPartial(
-          author: types.User(id: firebaseUser.uid),
-          id: '',
-          partialVoice: partialMessage,
-          status: types.Status.sent);
+          author: types.User(id: firebaseUser.uid), id: '', partialVoice: partialMessage, status: types.Status.sent);
     } else if (partialMessage is types.PartialImage) {
       message = types.ImageMessage.fromPartial(
-          author: types.User(id: firebaseUser.uid),
-          id: '',
-          partialImage: partialMessage,
-          status: types.Status.sent);
+          author: types.User(id: firebaseUser.uid), id: '', partialImage: partialMessage, status: types.Status.sent);
     } else if (partialMessage is types.PartialText) {
       message = types.TextMessage.fromPartial(
-          author: types.User(id: firebaseUser.uid),
-          id: '',
-          partialText: partialMessage,
-          status: types.Status.sent);
+          author: types.User(id: firebaseUser.uid), id: '', partialText: partialMessage, status: types.Status.sent);
     } else {
       message = types.TextMessage.fromPartial(
           author: const types.User(id: ''),
@@ -266,9 +243,7 @@ class FirebaseChatCore {
     messageMap['createdAt'] = FieldValue.serverTimestamp();
     messageMap['updatedAt'] = FieldValue.serverTimestamp();
 
-    await FirebaseFirestore.instance
-        .collection('rooms/$roomId/messages')
-        .add(messageMap);
+    await FirebaseFirestore.instance.collection('rooms/$roomId/messages').add(messageMap);
   }
 
   /// Updates a message in the Firestore. Accepts any message and a
@@ -281,10 +256,7 @@ class FirebaseChatCore {
     messageMap.removeWhere((key, value) => key == 'id' || key == 'createdAt');
     messageMap['updatedAt'] = FieldValue.serverTimestamp();
 
-    await FirebaseFirestore.instance
-        .collection('rooms/$roomId/messages')
-        .doc(message.id)
-        .update(messageMap);
+    await FirebaseFirestore.instance.collection('rooms/$roomId/messages').doc(message.id).update(messageMap);
   }
 
   /// Returns a stream of all users from Firebase

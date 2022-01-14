@@ -31,7 +31,6 @@ enum ApiStatus { called, success, failed }
 
 class ChatProvider extends ChangeNotifier {
   types.User? user;
-
   List<types.Message> messagesList = [];
   String voiceMessageFilePath = '';
   bool isRecording = false;
@@ -45,7 +44,6 @@ class ChatProvider extends ChangeNotifier {
   GlobalKey<AnimatedListState>? waveFormListKey;
 
   ApiStatus apiStatus = ApiStatus.called;
-  // FB Integration Variables
   types.Room? selectedChatUser;
 
   int selectedTabIndex = 0, brandListCount = 0, userListCount = 0;
@@ -95,14 +93,14 @@ class ChatProvider extends ChangeNotifier {
   ChatProvider.userSignIn(bool isSwitchedAccount, this.accessToken, this.refreshToken) {
     selectedTabIndex = 0;
     if (FirebaseAuth.instance.currentUser == null) {
-      consoleLog('CURRENT USER IS NULL');
+      consoleLog('User is not signed in');
       getUserFirebaseToken(accessToken!);
     } else {
       // FirebaseAuth.instance.currentUser!.reload();
       getCountData();
       apiStatus = ApiStatus.success;
       notifyListeners();
-      consoleLog('CURRENT USER IS NOT NULL');
+      consoleLog('User is signed in');
     }
   }
 
@@ -110,13 +108,13 @@ class ChatProvider extends ChangeNotifier {
     selectedTabIndex = 0;
     if (FirebaseAuth.instance.currentUser == null) {
       getBrandFirebaseToken(accessToken!);
-      consoleLog('CURRENT BRAND IS NULL');
+      consoleLog('Brand is not signed in');
     } else {
       // FirebaseAuth.instance.currentUser!.reload();
       getCountData();
       apiStatus = ApiStatus.success;
       notifyListeners();
-      consoleLog('CURRENT BRAND IS NOT NULL');
+      consoleLog('Brand is signed in');
     }
   }
 
@@ -152,23 +150,23 @@ class ChatProvider extends ChangeNotifier {
   }
 
   void getUserFirebaseToken(String accessToken) async {
-    consoleLog('ACCESS TOKEN 1: $accessToken');
+    consoleLog('Access Token : $accessToken');
     BaseModel<UserFirebaseTokenModel> response = await GetIt.I<ApiService>().getUserFirebaseToken(accessToken);
     if (response.data != null) {
-      consoleLog('USER FIREBASE TOKEN 1: ${response.data!.firebaseToken!}');
+      consoleLog('User Firebase Token : ${response.data!.firebaseToken!}');
       userCustomFirebaseTokenSignIn(response.data!.firebaseToken!);
     } else {
       apiStatus = ApiStatus.failed;
       notifyListeners();
-      consoleLog('CUSTOM SIGN IN ERROR: ${response.getException.getErrorMessage()}');
+      consoleLog('SignIn Error: ${response.getException.getErrorMessage()}');
     }
   }
 
   void getBrandFirebaseToken(String accessToken) async {
-    consoleLog('ACCESS TOKEN 1: $accessToken');
+    consoleLog('Access Token : $accessToken');
     BaseModel<BrandFirebaseTokenModel> response = await GetIt.I<ApiService>().getBrandFirebaseToken(accessToken);
     if (response.data != null) {
-      consoleLog('BRAND FIREBASE TOKEN 1: ${response.data!.toJson()}');
+      consoleLog('Brand Firebase Token : ${response.data!.toJson()}');
       if (response.data!.brandFirebaseTokenList!.isEmpty || response.data!.brandFirebaseTokenList!.length > 1) {
         apiStatus = ApiStatus.failed;
         notifyListeners();
@@ -178,7 +176,7 @@ class ChatProvider extends ChangeNotifier {
     } else {
       apiStatus = ApiStatus.failed;
       notifyListeners();
-      consoleLog('CUSTOM SIGN IN ERROR: ${response.getException.getErrorMessage()}');
+      consoleLog('SignIn Error: ${response.getException.getErrorMessage()}');
     }
   }
 
@@ -316,24 +314,23 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  void handlePreviewDataFetched(types.TextMessage message, types.PreviewData previewData) {
-    final index = messagesList.indexWhere((element) => element.id == message.id);
-    final updatedMessage = messagesList[index].copyWith(previewData: previewData);
+  // void handlePreviewDataFetched(types.TextMessage message, types.PreviewData previewData) {
+  //   final index = messagesList.indexWhere((element) => element.id == message.id);
+  //   final updatedMessage = messagesList[index].copyWith(previewData: previewData);
+  //   messagesList[index] = updatedMessage;
+  //   notifyListeners();
+  // }
 
-    messagesList[index] = updatedMessage;
-    notifyListeners();
-  }
+  // void handleSendPressed(types.PartialText message) {
+  //   final textMessage = types.TextMessage(
+  //     author: user!,
+  //     createdAt: DateTime.now().millisecondsSinceEpoch,
+  //     id: const Uuid().v4(),
+  //     text: message.text,
+  //   );
 
-  void handleSendPressed(types.PartialText message) {
-    final textMessage = types.TextMessage(
-      author: user!,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-      id: const Uuid().v4(),
-      text: message.text,
-    );
-
-    addMessage(textMessage);
-  }
+  //   addMessage(textMessage);
+  // }
 
   void addMessage([types.Message? message]) {
     messagesList.insert(0, message!);
@@ -393,11 +390,7 @@ class ChatProvider extends ChangeNotifier {
   }
 
   void handleFBImageSelection() async {
-    final result = await ImagePicker().pickImage(
-      imageQuality: 70,
-      maxWidth: 1440,
-      source: ImageSource.gallery,
-    );
+    final result = await ImagePicker().pickImage(imageQuality: 70, maxWidth: 1440, source: ImageSource.gallery);
 
     if (result != null) {
       setAttachmentUploading(true);
@@ -413,17 +406,9 @@ class ChatProvider extends ChangeNotifier {
         final uri = await reference.getDownloadURL();
 
         final message = types.PartialImage(
-          height: image.height.toDouble(),
-          name: name,
-          size: size,
-          uri: uri,
-          width: image.width.toDouble(),
-        );
+            height: image.height.toDouble(), name: name, size: size, uri: uri, width: image.width.toDouble());
 
-        FirebaseChatCore.instance.sendMessage(
-          message,
-          selectedChatUser!.id,
-        );
+        FirebaseChatCore.instance.sendMessage(message, selectedChatUser!.id);
         setAttachmentUploading(false);
       } on FirebaseException catch (e) {
         setAttachmentUploading(false);

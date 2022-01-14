@@ -10,7 +10,7 @@ import '../../../../features/chat/presentation/chat_provider.dart';
 import '../../../../packages/chat_core/src/firebase_chat_core.dart';
 import '../../../../utils/functions.dart';
 import '../../../widgets/no_search_results.dart';
-import '../../chat_page.dart';
+import '../../chat_page/chat_page.dart';
 import '../../loading_screen.dart';
 import '../../widgets/chat_tile.dart';
 import '../../widgets/helpers.dart';

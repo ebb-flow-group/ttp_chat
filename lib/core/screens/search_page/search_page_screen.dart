@@ -12,7 +12,7 @@ import '../../../network/api_service.dart';
 import '../../../packages/chat_core/src/firebase_chat_core.dart';
 import '../../../utils/functions.dart';
 import '../../widgets/input_search.dart';
-import '../chat_page.dart';
+import '../chat_page/chat_page.dart';
 import 'search_widgets/search_brand_tile.dart';
 import 'search_widgets/search_list_view.dart';
 import 'search_widgets/search_tab_bar.dart';

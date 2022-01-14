@@ -15,7 +15,7 @@ class LoadingScreen extends StatefulWidget {
 class _LoadingScreenState extends State<LoadingScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return const SafeArea(
       child: Center(
           child: RiveAnim(
         riveFileName: 'assets/chat_icons/loading_anim.riv',

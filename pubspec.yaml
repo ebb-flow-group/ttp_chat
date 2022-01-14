@@ -84,6 +84,8 @@ flutter:
     - packages/ttp_chat/assets/icon/add.svg
     - packages/ttp_chat/assets/icon/mic.svg
     - packages/ttp_chat/assets/icon/send.svg
+    - packages/ttp_chat/assets/icon/delete.svg
+    - packages/ttp_chat/assets/icon/order_details.svg
 
   fonts:
     - family: AvenirNextLTPro

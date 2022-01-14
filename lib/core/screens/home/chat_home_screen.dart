@@ -82,12 +82,11 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   @override
   Widget build(BuildContext context) {
     chatProvider = context.watch<ChatProvider>();
-    if (_error) {
-      return Container();
-    }
-
     if (!_initialized || chatProvider.apiStatus == ApiStatus.called) {
       return const Scaffold(body: LoadingScreen());
+    }
+    if (_error) {
+      return Container();
     }
 
     if (chatProvider.apiStatus == ApiStatus.failed) {

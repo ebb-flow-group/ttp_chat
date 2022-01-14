@@ -63,7 +63,7 @@ Future<types.Room> processRoomDocument(
   var name = '';
   final type = data['type'] as String;
   final userIds = data['userIds'] as List<dynamic>;
-  final userRoles = data['userRoles'] == null ? {} : data['userRoles'] as Map<String, dynamic>;
+  // final userRoles = data['userRoles'] == null ? {} : data['userRoles'] as Map<String, dynamic>;
   data['name'] = await getOtherUserName(firebaseUser, userIds);
   var users = [];
   users = await Future.wait(
@@ -119,8 +119,8 @@ Future<types.Room> processRoomDocument(
 }
 
 Future<String> getOtherUserName(User firebaseUser, List<dynamic> userIds) async {
-  print('CURRENT USER ID: ${firebaseUser.uid}');
-  print('SELECTED CHAT USER: $userIds');
+  // print('CURRENT USER ID: ${firebaseUser.uid}');
+  // print('SELECTED CHAT USER: $userIds');
 
   final e = userIds.where((element) => element != firebaseUser.uid).toList();
 
@@ -131,8 +131,8 @@ Future<String> getOtherUserName(User firebaseUser, List<dynamic> userIds) async 
 }
 
 Future<String> getOtherUserType(User firebaseUser, List<dynamic> userIds) async {
-  print('CURRENT USER ID FOR TYPE: ${firebaseUser.uid}');
-  print('SELECTED CHAT USER FOR TYPE: $userIds');
+  // print('CURRENT USER ID FOR TYPE: ${firebaseUser.uid}');
+  // print('SELECTED CHAT USER FOR TYPE: $userIds');
 
   final e = userIds.where((element) => element != firebaseUser.uid).toList();
 
