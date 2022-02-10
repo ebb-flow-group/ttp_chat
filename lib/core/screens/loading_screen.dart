@@ -18,7 +18,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     return const SafeArea(
       child: Center(
           child: RiveAnim(
-        riveFileName: 'assets/chat_icons/loading_anim.riv',
+        riveFileName: 'packages/ttp_chat/assets/anim/loading_anim.riv',
       )),
     );
   }
