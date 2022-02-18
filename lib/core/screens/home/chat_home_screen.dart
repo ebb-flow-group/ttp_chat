@@ -6,7 +6,7 @@ import 'package:ttp_chat/core/services/cache_service.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../../../features/chat/presentation/chat_provider.dart';
-import '../../../packages/chat_core/src/firebase_chat_core.dart';
+import '../../../global.dart';
 import '../../../utils/functions.dart';
 import '../chat_error_screen.dart';
 import '../loading_screen.dart';
@@ -125,7 +125,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if (mounted) {
           if (FirebaseAuth.instance.currentUser != null) {
-            stream = FirebaseChatCore.instance.rooms(orderByUpdatedAt: true);
+            stream = roomsStream;
           }
         }
       });

@@ -7,7 +7,7 @@ import 'package:ttp_chat/core/services/cache_service.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../../../../features/chat/presentation/chat_provider.dart';
-import '../../../../packages/chat_core/src/firebase_chat_core.dart';
+import '../../../../global.dart';
 import '../../../../utils/functions.dart';
 import '../../../widgets/no_search_results.dart';
 import '../../chat_page/chat_page.dart';
@@ -68,7 +68,7 @@ class _RoomsListState extends State<RoomsList> {
                 var result = await pushTo(ChatPage(room, widget.onViewOrderDetailsClick), context);
                 if (result == null) {
                   setState(() {
-                    stream = FirebaseChatCore.instance.rooms();
+                    stream = roomsStream;
                     stream.listen((event) => CacheService().saveRoomList(event));
                   });
                 }

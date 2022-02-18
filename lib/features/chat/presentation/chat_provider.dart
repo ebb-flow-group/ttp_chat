@@ -17,6 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:uuid/uuid.dart';
 
+import '../../../global.dart';
 import '../../../models/base_model.dart';
 import '../../../network/api_service.dart';
 import '../../../packages/chat_core/ttp_chat_core.dart';
@@ -178,7 +179,7 @@ class ChatProvider extends ChangeNotifier {
 
   void getCountData() {
     notifyListeners();
-    FirebaseChatCore.instance.rooms().listen((event) {
+    roomsStream.listen((event) {
       notifyListeners();
       if (event.isEmpty) {
         isRoomListEmpty = true;
