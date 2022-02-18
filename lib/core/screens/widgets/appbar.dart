@@ -4,8 +4,7 @@ import 'package:flutter_svg/svg.dart';
 AppBar chatAppBar(BuildContext context, {void Function()? goToSearch}) {
   return AppBar(
     backgroundColor: const Color(0xFFFDFBEF).withOpacity(0.2),
-    title: Text('Chat',
-        style: Theme.of(context).textTheme.headline6!.copyWith(fontSize: 24)),
+    title: Text('Chat', style: Theme.of(context).textTheme.headline6!.copyWith(fontSize: 24)),
     actions: [
       Row(
         children: [

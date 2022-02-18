@@ -42,8 +42,7 @@ class ChatL10nEn extends ChatL10n {
     String inputPlaceholder = 'Message',
     String sendButtonAccessibilityLabel = 'Send',
   }) : super(
-          attachmentButtonAccessibilityLabel:
-              attachmentButtonAccessibilityLabel,
+          attachmentButtonAccessibilityLabel: attachmentButtonAccessibilityLabel,
           emptyChatPlaceholder: emptyChatPlaceholder,
           fileButtonAccessibilityLabel: fileButtonAccessibilityLabel,
           inputPlaceholder: inputPlaceholder,
@@ -64,8 +63,7 @@ class ChatL10nEs extends ChatL10n {
     String inputPlaceholder = 'Mensaje',
     String sendButtonAccessibilityLabel = 'Enviar',
   }) : super(
-          attachmentButtonAccessibilityLabel:
-              attachmentButtonAccessibilityLabel,
+          attachmentButtonAccessibilityLabel: attachmentButtonAccessibilityLabel,
           emptyChatPlaceholder: emptyChatPlaceholder,
           fileButtonAccessibilityLabel: fileButtonAccessibilityLabel,
           inputPlaceholder: inputPlaceholder,
@@ -86,8 +84,7 @@ class ChatL10nKo extends ChatL10n {
     String inputPlaceholder = '메시지',
     String sendButtonAccessibilityLabel = '보내기',
   }) : super(
-          attachmentButtonAccessibilityLabel:
-              attachmentButtonAccessibilityLabel,
+          attachmentButtonAccessibilityLabel: attachmentButtonAccessibilityLabel,
           emptyChatPlaceholder: emptyChatPlaceholder,
           fileButtonAccessibilityLabel: fileButtonAccessibilityLabel,
           inputPlaceholder: inputPlaceholder,
@@ -108,8 +105,7 @@ class ChatL10nPl extends ChatL10n {
     String inputPlaceholder = 'Napisz wiadomość',
     String sendButtonAccessibilityLabel = 'Wyślij',
   }) : super(
-          attachmentButtonAccessibilityLabel:
-              attachmentButtonAccessibilityLabel,
+          attachmentButtonAccessibilityLabel: attachmentButtonAccessibilityLabel,
           emptyChatPlaceholder: emptyChatPlaceholder,
           fileButtonAccessibilityLabel: fileButtonAccessibilityLabel,
           inputPlaceholder: inputPlaceholder,
@@ -130,8 +126,7 @@ class ChatL10nPt extends ChatL10n {
     String inputPlaceholder = 'Mensagem',
     String sendButtonAccessibilityLabel = 'Enviar',
   }) : super(
-          attachmentButtonAccessibilityLabel:
-              attachmentButtonAccessibilityLabel,
+          attachmentButtonAccessibilityLabel: attachmentButtonAccessibilityLabel,
           emptyChatPlaceholder: emptyChatPlaceholder,
           fileButtonAccessibilityLabel: fileButtonAccessibilityLabel,
           inputPlaceholder: inputPlaceholder,
@@ -152,8 +147,7 @@ class ChatL10nRu extends ChatL10n {
     String inputPlaceholder = 'Сообщение',
     String sendButtonAccessibilityLabel = 'Отправить',
   }) : super(
-          attachmentButtonAccessibilityLabel:
-              attachmentButtonAccessibilityLabel,
+          attachmentButtonAccessibilityLabel: attachmentButtonAccessibilityLabel,
           emptyChatPlaceholder: emptyChatPlaceholder,
           fileButtonAccessibilityLabel: fileButtonAccessibilityLabel,
           inputPlaceholder: inputPlaceholder,
@@ -174,8 +168,7 @@ class ChatL10nUk extends ChatL10n {
     String inputPlaceholder = 'Повідомлення',
     String sendButtonAccessibilityLabel = 'Надіслати',
   }) : super(
-          attachmentButtonAccessibilityLabel:
-              attachmentButtonAccessibilityLabel,
+          attachmentButtonAccessibilityLabel: attachmentButtonAccessibilityLabel,
           emptyChatPlaceholder: emptyChatPlaceholder,
           fileButtonAccessibilityLabel: fileButtonAccessibilityLabel,
           inputPlaceholder: inputPlaceholder,

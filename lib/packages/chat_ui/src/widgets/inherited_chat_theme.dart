@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+
 import '../chat_theme.dart';
 
 /// Used to make provided [ChatTheme] class available through the whole package
@@ -18,6 +19,5 @@ class InheritedChatTheme extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(InheritedChatTheme oldWidget) =>
-      theme.hashCode != oldWidget.theme.hashCode;
+  bool updateShouldNotify(InheritedChatTheme oldWidget) => theme.hashCode != oldWidget.theme.hashCode;
 }

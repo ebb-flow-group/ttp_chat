@@ -17,9 +17,7 @@ class PreviewData extends Equatable {
   /// Creates preview data from a map (decoded JSON).
   PreviewData.fromJson(Map<String, dynamic> json)
       : description = json['description'] as String?,
-        image = json['image'] == null
-            ? null
-            : PreviewDataImage.fromJson(json['image'] as Map<String, dynamic>),
+        image = json['image'] == null ? null : PreviewDataImage.fromJson(json['image'] as Map<String, dynamic>),
         link = json['link'] as String?,
         title = json['title'] as String?;
 

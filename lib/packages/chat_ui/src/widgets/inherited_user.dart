@@ -18,6 +18,5 @@ class InheritedUser extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(InheritedUser oldWidget) =>
-      user!.id != oldWidget.user!.id;
+  bool updateShouldNotify(InheritedUser oldWidget) => user!.id != oldWidget.user!.id;
 }

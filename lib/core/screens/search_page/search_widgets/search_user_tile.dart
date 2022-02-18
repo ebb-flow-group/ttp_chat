@@ -5,8 +5,7 @@ import '../../../../features/chat/domain/search_user_model.dart';
 import '../../../../utils/functions.dart';
 
 class SearchUserTile extends StatelessWidget {
-  const SearchUserTile({Key? key, required this.singleUser, this.onChatClick})
-      : super(key: key);
+  const SearchUserTile({Key? key, required this.singleUser, this.onChatClick}) : super(key: key);
 
   final Users singleUser;
   final void Function()? onChatClick;
@@ -22,10 +21,8 @@ class SearchUserTile extends StatelessWidget {
                 Container(
                   width: 60,
                   height: 60,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: Colors.grey[200]),
-                  child: Icon(Icons.person,
-                      color: Theme.of(context).primaryColor.withOpacity(0.2)),
+                  decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.grey[200]),
+                  child: Icon(Icons.person, color: Theme.of(context).primaryColor.withOpacity(0.2)),
                 ),
                 const SizedBox(width: 17),
                 Expanded(
@@ -37,8 +34,7 @@ class SearchUserTile extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              singleUser.firstName != null &&
-                                      singleUser.lastName != null
+                              singleUser.firstName != null && singleUser.lastName != null
                                   ? '${singleUser.firstName!} ${singleUser.lastName!}'
                                   : 'Guest',
                               style: TextStyle(
@@ -47,12 +43,8 @@ class SearchUserTile extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              singleUser.email != null
-                                  ? singleUser.email!
-                                  : singleUser.phoneNumber!,
-                              style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.normal),
+                              singleUser.email != null ? singleUser.email! : singleUser.phoneNumber!,
+                              style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.normal),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),

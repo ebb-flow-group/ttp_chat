@@ -191,7 +191,7 @@ class DefaultChatTheme extends ChatTheme {
   /// Creates a default chat theme. Use this constructor if you want to
   /// override only a couple of variables, otherwise create a new class
   /// which extends [ChatTheme]
-  DefaultChatTheme({
+  const DefaultChatTheme({
     Widget? attachmentButtonIcon,
     Color backgroundColor = NEUTRAL_7,
     TextStyle dateDividerTextStyle = const TextStyle(
@@ -319,8 +319,7 @@ class DefaultChatTheme extends ChatTheme {
           receivedMessageBodyTextStyle: receivedMessageBodyTextStyle,
           receivedMessageCaptionTextStyle: receivedMessageCaptionTextStyle,
           receivedMessageDocumentIconColor: receivedMessageDocumentIconColor,
-          receivedMessageLinkDescriptionTextStyle:
-              receivedMessageLinkDescriptionTextStyle,
+          receivedMessageLinkDescriptionTextStyle: receivedMessageLinkDescriptionTextStyle,
           receivedMessageLinkTitleTextStyle: receivedMessageLinkTitleTextStyle,
           secondaryColor: secondaryColor,
           seenIcon: seenIcon ?? const SizedBox(),
@@ -329,8 +328,7 @@ class DefaultChatTheme extends ChatTheme {
           sentMessageBodyTextStyle: sentMessageBodyTextStyle,
           sentMessageCaptionTextStyle: sentMessageCaptionTextStyle,
           sentMessageDocumentIconColor: sentMessageDocumentIconColor,
-          sentMessageLinkDescriptionTextStyle:
-              sentMessageLinkDescriptionTextStyle,
+          sentMessageLinkDescriptionTextStyle: sentMessageLinkDescriptionTextStyle,
           sentMessageLinkTitleTextStyle: sentMessageLinkTitleTextStyle,
           userAvatarNameColors: userAvatarNameColors,
           userAvatarTextStyle: userAvatarTextStyle,
@@ -472,8 +470,7 @@ class DarkChatTheme extends ChatTheme {
           receivedMessageBodyTextStyle: receivedMessageBodyTextStyle,
           receivedMessageCaptionTextStyle: receivedMessageCaptionTextStyle,
           receivedMessageDocumentIconColor: receivedMessageDocumentIconColor,
-          receivedMessageLinkDescriptionTextStyle:
-              receivedMessageLinkDescriptionTextStyle,
+          receivedMessageLinkDescriptionTextStyle: receivedMessageLinkDescriptionTextStyle,
           receivedMessageLinkTitleTextStyle: receivedMessageLinkTitleTextStyle,
           secondaryColor: secondaryColor,
           seenIcon: seenIcon!,
@@ -482,8 +479,7 @@ class DarkChatTheme extends ChatTheme {
           sentMessageBodyTextStyle: sentMessageBodyTextStyle,
           sentMessageCaptionTextStyle: sentMessageCaptionTextStyle,
           sentMessageDocumentIconColor: sentMessageDocumentIconColor,
-          sentMessageLinkDescriptionTextStyle:
-              sentMessageLinkDescriptionTextStyle,
+          sentMessageLinkDescriptionTextStyle: sentMessageLinkDescriptionTextStyle,
           sentMessageLinkTitleTextStyle: sentMessageLinkTitleTextStyle,
           userAvatarNameColors: userAvatarNameColors,
           userAvatarTextStyle: userAvatarTextStyle,

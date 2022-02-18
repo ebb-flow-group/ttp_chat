@@ -44,11 +44,9 @@ class ChatList extends StatefulWidget {
 }
 
 /// [ChatList] widget state
-class _ChatListState extends State<ChatList>
-    with SingleTickerProviderStateMixin {
+class _ChatListState extends State<ChatList> with SingleTickerProviderStateMixin {
   bool _isNextPageLoading = false;
-  final GlobalKey<SliverAnimatedListState> _listKey =
-      GlobalKey<SliverAnimatedListState>();
+  final GlobalKey<SliverAnimatedListState> _listKey = GlobalKey<SliverAnimatedListState>();
   List<Object> _oldData = [];
   final _scrollController = ScrollController();
 
@@ -190,8 +188,7 @@ class _ChatListState extends State<ChatList>
         }
 
         if (notification.metrics.pixels >=
-            (notification.metrics.maxScrollExtent *
-                (widget.onEndReachedThreshold ?? 0.75))) {
+            (notification.metrics.maxScrollExtent * (widget.onEndReachedThreshold ?? 0.75))) {
           if (widget.items!.isEmpty || _isNextPageLoading) return false;
 
           _controller.duration = const Duration();
@@ -222,8 +219,7 @@ class _ChatListState extends State<ChatList>
             sliver: SliverAnimatedList(
               initialItemCount: widget.items!.length,
               key: _listKey,
-              itemBuilder: (_, index, animation) =>
-                  _buildNewMessage(index, animation),
+              itemBuilder: (_, index, animation) => _buildNewMessage(index, animation),
             ),
           ),
           SliverPadding(

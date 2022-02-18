@@ -21,8 +21,7 @@ class SendButton extends StatelessWidget {
       margin: const EdgeInsets.only(left: 16),
       width: 24,
       child: IconButton(
-        icon: /*InheritedChatTheme.of(context)!.theme!.sendButtonIcon ??*/ Image
-            .asset(
+        icon: /*InheritedChatTheme.of(context)!.theme!.sendButtonIcon ??*/ Image.asset(
           'assets/icon-send.png',
           color: InheritedChatTheme.of(context)!.theme!.inputTextColor,
           package: 'ttp_chat',

@@ -33,9 +33,7 @@ class RoomListView extends StatelessWidget {
         const SizedBox(height: 17),
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 17.0),
-          child: InputSearch(
-              hintText: 'Search a brand, user or mobile',
-              onChanged: (String value) {}),
+          child: InputSearch(hintText: 'Search a brand, user or mobile', onChanged: (String value) {}),
         ),
         const SizedBox(height: 17),
         HomeTabs(
@@ -45,18 +43,12 @@ class RoomListView extends StatelessWidget {
             onTap: onTap),
         isSwitchedAccount
             ? Expanded(
-                child: RoomsList(
-                    stream, isSwitchedAccount, onViewOrderDetailsClick,
-                    list: chatProvider.selectedTabIndex == 0
-                        ? view.users
-                        : view.brands),
+                child: RoomsList(stream, isSwitchedAccount, onViewOrderDetailsClick,
+                    list: chatProvider.selectedTabIndex == 0 ? view.users : view.brands),
               )
             : Expanded(
-                child: RoomsList(
-                    stream, isSwitchedAccount, onViewOrderDetailsClick,
-                    list: chatProvider.selectedTabIndex == 0
-                        ? view.brands
-                        : view.users),
+                child: RoomsList(stream, isSwitchedAccount, onViewOrderDetailsClick,
+                    list: chatProvider.selectedTabIndex == 0 ? view.brands : view.users),
               )
       ],
     );

@@ -5,8 +5,7 @@ import '../../../../features/chat/domain/search_user_model.dart';
 import '../../../../utils/functions.dart';
 
 class SearchBrandTile extends StatelessWidget {
-  const SearchBrandTile({Key? key, required this.brand, this.onChatClick})
-      : super(key: key);
+  const SearchBrandTile({Key? key, required this.brand, this.onChatClick}) : super(key: key);
 
   final Brands brand;
   final void Function()? onChatClick;
@@ -26,9 +25,7 @@ class SearchBrandTile extends StatelessWidget {
                       shape: BoxShape.circle,
                       color: Colors.grey[200],
                     ),
-                    child: Icon(Icons.fastfood,
-                        color:
-                            Theme.of(context).primaryColor.withOpacity(0.2))),
+                    child: Icon(Icons.fastfood, color: Theme.of(context).primaryColor.withOpacity(0.2))),
                 const SizedBox(width: 17),
                 Expanded(
                   child: Row(
@@ -47,9 +44,7 @@ class SearchBrandTile extends StatelessWidget {
                             const SizedBox(height: 4),
                             Text(
                               '@${brand.username}',
-                              style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.normal),
+                              style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.normal),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),

@@ -1,5 +1,4 @@
-class TabsModel
-{
+class TabsModel {
   String? title;
   bool? isSelected;
 

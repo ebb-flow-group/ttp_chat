@@ -4,12 +4,7 @@ import '../../../widgets/triangle_painter.dart';
 
 class SearchTabBar extends StatelessWidget {
   const SearchTabBar(
-      {Key? key,
-      required this.selectedTabIndex,
-      this.onTap,
-      required this.count,
-      required this.index,
-      this.title = ""})
+      {Key? key, required this.selectedTabIndex, this.onTap, required this.count, required this.index, this.title = ""})
       : super(key: key);
 
   final int selectedTabIndex;
@@ -33,10 +28,8 @@ class SearchTabBar extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: TextStyle(
-                        color: selectedTabIndex == index
-                            ? Theme.of(context).primaryColor
-                            : Colors.grey[400]),
+                    style:
+                        TextStyle(color: selectedTabIndex == index ? Theme.of(context).primaryColor : Colors.grey[400]),
                   ),
                   const SizedBox(width: 6),
                   count == 0
@@ -49,8 +42,7 @@ class SearchTabBar extends StatelessWidget {
                           ),
                           child: Text(
                             count.toString(),
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 12, height: 1),
+                            style: const TextStyle(color: Colors.white, fontSize: 12, height: 1),
                           ),
                         )
                 ],

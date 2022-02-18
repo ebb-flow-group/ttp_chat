@@ -53,36 +53,31 @@ class ThemeUtils {
         caption: TextStyle(fontSize: 13, color: Color(0xFF234958)),
         button: TextStyle(fontWeight: FontWeight.bold),
       ),
-      colorScheme:
-          ColorScheme.fromSwatch().copyWith(secondary: const Color(0xFFE28777)),
+      colorScheme: ColorScheme.fromSwatch().copyWith(secondary: const Color(0xFFE28777)),
     );
   }
 }
 
-TextStyle appBarTitleStyle(BuildContext context) =>
-    Theme.of(context).textTheme.subtitle1!.copyWith(
-          color: Theme.of(context).primaryColor,
-          fontSize: 17,
-          fontWeight: FontWeight.bold,
-        );
+TextStyle appBarTitleStyle(BuildContext context) => Theme.of(context).textTheme.subtitle1!.copyWith(
+      color: Theme.of(context).primaryColor,
+      fontSize: 17,
+      fontWeight: FontWeight.bold,
+    );
 
-TextStyle textFieldLabelStyle(BuildContext context) =>
-    Theme.of(context).textTheme.caption!.copyWith(
-          color: Theme.of(context).colorScheme.secondary,
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-        );
+TextStyle textFieldLabelStyle(BuildContext context) => Theme.of(context).textTheme.caption!.copyWith(
+      color: Theme.of(context).colorScheme.secondary,
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+    );
 
-TextStyle textFieldHintStyle(BuildContext context) =>
-    Theme.of(context).textTheme.caption!.copyWith(
-          color: Theme.of(context).hintColor,
-          fontWeight: FontWeight.normal,
-          height: 3,
-        );
+TextStyle textFieldHintStyle(BuildContext context) => Theme.of(context).textTheme.caption!.copyWith(
+      color: Theme.of(context).hintColor,
+      fontWeight: FontWeight.normal,
+      height: 3,
+    );
 
-TextStyle textFieldInputStyle(BuildContext context) =>
-    Theme.of(context).textTheme.caption!.copyWith(
-          color: Theme.of(context).primaryColor,
-          fontSize: 15,
-          fontWeight: FontWeight.normal,
-        );
+TextStyle textFieldInputStyle(BuildContext context) => Theme.of(context).textTheme.caption!.copyWith(
+      color: Theme.of(context).primaryColor,
+      fontSize: 15,
+      fontWeight: FontWeight.normal,
+    );

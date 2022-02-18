@@ -4,8 +4,7 @@ import 'package:flutter/material.dart' hide Element;
 import 'package:html/dom.dart' show Document, Element;
 import 'package:html/parser.dart' as parser show parse;
 import 'package:http/http.dart' as http show get;
-import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart'
-    show PreviewData, PreviewDataImage;
+import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' show PreviewData, PreviewDataImage;
 
 import 'types.dart';
 
@@ -61,9 +60,7 @@ List<String> _getImageUrls(Document document, String baseUrl) {
   var attribute = 'content';
   var elements = meta
       .where(
-        (e) =>
-            e.attributes['property'] == 'og:image' ||
-            e.attributes['property'] == 'twitter:image',
+        (e) => e.attributes['property'] == 'og:image' || e.attributes['property'] == 'twitter:image',
       )
       .toList();
 
@@ -78,9 +75,7 @@ List<String> _getImageUrls(Document document, String baseUrl) {
       element.attributes[attribute]?.trim(),
     );
 
-    return actualImageUrl != null
-        ? [...previousValue, actualImageUrl]
-        : previousValue;
+    return actualImageUrl != null ? [...previousValue, actualImageUrl] : previousValue;
   });
 }
 
@@ -214,9 +209,8 @@ Future<PreviewData> getPreviewData(String text, {String? proxy}) async {
     String imageUrl;
 
     if (imageUrls.isNotEmpty) {
-      imageUrl = imageUrls.length == 1
-          ? _calculateUrl(imageUrls[0], proxy)
-          : await _getBiggestImageUrl(imageUrls, proxy);
+      imageUrl =
+          imageUrls.length == 1 ? _calculateUrl(imageUrls[0], proxy) : await _getBiggestImageUrl(imageUrls, proxy);
 
       imageSize = await _getImageSize(imageUrl);
       previewDataImage = PreviewDataImage(
@@ -245,5 +239,4 @@ Future<PreviewData> getPreviewData(String text, {String? proxy}) async {
 const REGEX_IMAGE_CONTENT_TYPE = r'image\/*';
 
 /// Regex to find all links in the text
-const REGEX_LINK =
-    r'([\w+]+\:\/\/)?([\w\d-]+\.)*[\w-]+[\.\:]\w+([\/\?\=\&\#\.]?[\w-]+)*\/?';
+const REGEX_LINK = r'([\w+]+\:\/\/)?([\w\d-]+\.)*[\w-]+[\.\:]\w+([\/\?\=\&\#\.]?[\w-]+)*\/?';

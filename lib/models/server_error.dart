@@ -46,25 +46,21 @@ class ServerError implements Exception {
 
         // Try to get issue from response
         if (error.response?.data is Map) {
-          ErrorMessage errorMessage =
-              ErrorMessage.fromJson(error.response!.data);
+          ErrorMessage errorMessage = ErrorMessage.fromJson(error.response!.data);
 
           if (errorMessage.detail != null) {
             _errorMessage = errorMessage.detail;
             break;
-          } else if (errorMessage.username != null &&
-              errorMessage.username!.isNotEmpty) {
+          } else if (errorMessage.username != null && errorMessage.username!.isNotEmpty) {
             _errorMessage = errorMessage.username![0];
             break;
-          } else if (errorMessage.email != null &&
-              errorMessage.email!.isNotEmpty) {
+          } else if (errorMessage.email != null && errorMessage.email!.isNotEmpty) {
             _errorMessage = errorMessage.email![0];
             break;
           }
         }
 
-        _errorMessage =
-            "Received invalid status code: ${error.response!.statusCode}";
+        _errorMessage = "Received invalid status code: ${error.response!.statusCode}";
         break;
     }
     return _errorMessage;

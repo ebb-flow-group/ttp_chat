@@ -132,23 +132,12 @@ class _CustomInputState extends State<CustomInput> {
                   decoration: InputDecoration(
                     hintText: 'Say something...',
                     border: InputBorder.none,
-                    hintStyle: InheritedChatTheme.of(context)!
-                        .theme!
-                        .inputTextStyle!
-                        .copyWith(
-                          color: InheritedChatTheme.of(context)!
-                              .theme!
-                              .inputTextColor!
-                              .withOpacity(0.5),
+                    hintStyle: InheritedChatTheme.of(context)!.theme!.inputTextStyle!.copyWith(
+                          color: InheritedChatTheme.of(context)!.theme!.inputTextColor!.withOpacity(0.5),
                         ),
                   ),
-                  style: InheritedChatTheme.of(context)!
-                      .theme!
-                      .inputTextStyle!
-                      .copyWith(
-                        color: InheritedChatTheme.of(context)!
-                            .theme!
-                            .inputTextColor,
+                  style: InheritedChatTheme.of(context)!.theme!.inputTextStyle!.copyWith(
+                        color: InheritedChatTheme.of(context)!.theme!.inputTextColor,
                       ),
                   maxLines: 5,
                   minLines: 1,
@@ -160,9 +149,7 @@ class _CustomInputState extends State<CustomInput> {
               icon: SvgPicture.asset(
                 'assets/icon/send.svg',
                 package: 'ttp_chat',
-                color: _sendButtonVisible
-                    ? InheritedChatTheme.of(context)!.theme!.secondaryColor
-                    : Colors.grey[400],
+                color: _sendButtonVisible ? InheritedChatTheme.of(context)!.theme!.secondaryColor : Colors.grey[400],
                 width: 18,
                 height: 18,
               ),

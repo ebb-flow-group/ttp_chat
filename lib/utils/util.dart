@@ -20,8 +20,7 @@ Color getUserAvatarNameColor(types.User user) {
   return colors[index];
 }
 
-String getUserName(types.User user) =>
-    '${user.firstName ?? ''} ${user.lastName ?? ''} / ${user.id}'.trim();
+String getUserName(types.User user) => '${user.firstName ?? ''} ${user.lastName ?? ''} / ${user.id}'.trim();
 
 Color getRoomAvatarNameColor(types.Room user) {
   final index = user.id.hashCode % colors.length;

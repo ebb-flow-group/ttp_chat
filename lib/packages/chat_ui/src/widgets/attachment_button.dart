@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 import 'inherited_chat_theme.dart';
 import 'inherited_l10n.dart';
 
@@ -29,8 +30,7 @@ class AttachmentButton extends StatelessWidget {
         ),
         onPressed: onPressed,
         padding: EdgeInsets.zero,
-        tooltip:
-            InheritedL10n.of(context)!.l10n!.attachmentButtonAccessibilityLabel,
+        tooltip: InheritedL10n.of(context)!.l10n!.attachmentButtonAccessibilityLabel,
       ),
     );
   }

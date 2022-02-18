@@ -7,8 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 Future pushTo(Widget page, BuildContext context) {
-  return Navigator.of(context)
-      .push(MaterialPageRoute(builder: (context) => page));
+  return Navigator.of(context).push(MaterialPageRoute(builder: (context) => page));
 }
 
 displaySnackBar(String message, BuildContext context) {
@@ -32,8 +31,7 @@ displaySnackBar(String message, BuildContext context) {
 Future<types.User?> getUserFromFireStore(String userId,
     {String? firstName, String? imageUrl = "", String? lastName = ""}) async {
   try {
-    DocumentSnapshot snapshot =
-        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
     if (snapshot.exists) {
       var data = snapshot.data() as Map<String, dynamic>;
       types.User result = types.User(

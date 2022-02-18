@@ -26,9 +26,7 @@ class FileMessage extends StatelessWidget {
     final _user = InheritedUser.of(context)!.user;
     final _color = _user!.id == message!.author.id
         ? InheritedChatTheme.of(context)!.theme!.sentMessageDocumentIconColor
-        : InheritedChatTheme.of(context)!
-            .theme!
-            .receivedMessageDocumentIconColor;
+        : InheritedChatTheme.of(context)!.theme!.receivedMessageDocumentIconColor;
 
     return Semantics(
       label: InheritedL10n.of(context)!.l10n!.fileButtonAccessibilityLabel,
@@ -44,8 +42,7 @@ class FileMessage extends StatelessWidget {
               ),
               height: 42,
               width: 42,
-              child: /*InheritedChatTheme.of(context)!.theme!.documentIcon ??*/ Image
-                  .asset(
+              child: /*InheritedChatTheme.of(context)!.theme!.documentIcon ??*/ Image.asset(
                 'assets/icon-document.png',
                 color: _color,
                 package: 'ttp_chat',
@@ -62,12 +59,8 @@ class FileMessage extends StatelessWidget {
                     Text(
                       message!.name,
                       style: _user.id == message!.author.id
-                          ? InheritedChatTheme.of(context)!
-                              .theme!
-                              .sentMessageBodyTextStyle
-                          : InheritedChatTheme.of(context)!
-                              .theme!
-                              .receivedMessageBodyTextStyle,
+                          ? InheritedChatTheme.of(context)!.theme!.sentMessageBodyTextStyle
+                          : InheritedChatTheme.of(context)!.theme!.receivedMessageBodyTextStyle,
                       textWidthBasis: TextWidthBasis.longestLine,
                     ),
                     Container(
@@ -76,12 +69,8 @@ class FileMessage extends StatelessWidget {
                       ),
                       child: Text(formatBytes(message!.size),
                           style: _user.id == message!.author.id
-                              ? InheritedChatTheme.of(context)!
-                                  .theme!
-                                  .sentMessageCaptionTextStyle
-                              : InheritedChatTheme.of(context)!
-                                  .theme!
-                                  .receivedMessageCaptionTextStyle),
+                              ? InheritedChatTheme.of(context)!.theme!.sentMessageCaptionTextStyle
+                              : InheritedChatTheme.of(context)!.theme!.receivedMessageCaptionTextStyle),
                     ),
                   ],
                 ),
