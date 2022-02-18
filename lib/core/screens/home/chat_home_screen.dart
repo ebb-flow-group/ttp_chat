@@ -125,7 +125,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if (mounted) {
           if (FirebaseAuth.instance.currentUser != null) {
-            stream = FirebaseChatCore.instance.rooms();
+            stream = FirebaseChatCore.instance.rooms(orderByUpdatedAt: true);
           }
         }
       });

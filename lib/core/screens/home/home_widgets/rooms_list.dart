@@ -68,7 +68,7 @@ class _RoomsListState extends State<RoomsList> {
                 var result = await pushTo(ChatPage(room, widget.onViewOrderDetailsClick), context);
                 if (result == null) {
                   setState(() {
-                    stream = FirebaseChatCore.instance.rooms();
+                    stream = FirebaseChatCore.instance.rooms(orderByUpdatedAt: true);
                     stream.listen((event) => CacheService().saveRoomList(event));
                   });
                 }
