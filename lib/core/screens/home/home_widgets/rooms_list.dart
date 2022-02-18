@@ -59,7 +59,7 @@ class _RoomsListState extends State<RoomsList> {
             consoleLog('BRAND STREAM B ERROR: ${snapshot.error}');
           }
 
-          if ((snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty) ||
+          if ((snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty) &&
               chatProvider.roomList.isNotEmpty) {
             return RoomListView(
               snapshot: snapshot,
@@ -78,7 +78,7 @@ class _RoomsListState extends State<RoomsList> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const LoadingScreen();
           }
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          if (!snapshot.hasData || snapshot.data!.isEmpty || snapshot.data == null) {
             return const NoResults();
           }
           return Container();

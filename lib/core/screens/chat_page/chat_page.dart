@@ -99,7 +99,7 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                     onPreviewDataFetched: chatProvider.handleFBPreviewDataFetched,
                     onSendPressed: chatProvider.handleFBSendPressed,
                     user: types.User(
-                      id: FirebaseChatCore.instance.firebaseUser.uid,
+                      id: FirebaseChatCore.instance.firebaseUser?.uid ?? "",
                     ),
                     buildCustomMessage: (message) => OrderMessageWidget(message),
                     onMessageLongPress: (message) {},

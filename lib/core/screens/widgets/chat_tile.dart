@@ -41,12 +41,9 @@ class ChatTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      getLastMessageDateTime(
-                          room.metadata?['last_messages'] ?? {}),
-                      style: const TextStyle(
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12),
+                      // DateTime.fromMillisecondsSinceEpoch(room.updatedAt!).toString(),
+                      getLastMessageDateTime(room.metadata?['last_messages'] ?? {}),
+                      style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 12),
                     ),
                     const SizedBox(height: 6),
                     room.metadata?['unread_message_count'] != 0
@@ -57,11 +54,8 @@ class ChatTile extends StatelessWidget {
                               color: Colors.red,
                             ),
                             child: Text(
-                              room.metadata?['unread_message_count']
-                                      .toString() ??
-                                  "",
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 12, height: 1),
+                              room.metadata?['unread_message_count'].toString() ?? "",
+                              style: const TextStyle(color: Colors.white, fontSize: 12, height: 1),
                             ),
                           )
                         : const SizedBox()
