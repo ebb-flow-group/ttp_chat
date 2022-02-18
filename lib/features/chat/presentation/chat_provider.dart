@@ -179,17 +179,20 @@ class ChatProvider extends ChangeNotifier {
 
   void getCountData() {
     notifyListeners();
-    roomsStream.listen((event) {
-      notifyListeners();
-      if (event.isEmpty) {
-        isRoomListEmpty = true;
-        notifyListeners();
-      } else {
-        brandListCount = event.where((element) => element.metadata!['other_user_type'] == 'brand').toList().length;
-        userListCount = event.where((element) => element.metadata!['other_user_type'] == 'user').toList().length;
-        notifyListeners();
-      }
-    });
+    try {
+      roomsStream.listen((event) {
+        if (event.isEmpty) {
+          isRoomListEmpty = true;
+          notifyListeners();
+        } else {
+          brandListCount = event.where((element) => element.metadata!['other_user_type'] == 'brand').toList().length;
+          userListCount = event.where((element) => element.metadata!['other_user_type'] == 'user').toList().length;
+          notifyListeners();
+        }
+      });
+    } catch (e) {
+      consoleLog("Error: $e");
+    }
   }
 
   void startRecording() async {
