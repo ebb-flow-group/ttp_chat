@@ -5,8 +5,10 @@ import 'dart:math';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
@@ -118,12 +120,30 @@ class ChatProvider extends ChangeNotifier {
   void userCustomFirebaseTokenSignIn(String firebaseToken) async {
     consoleLog('User Token : $firebaseToken');
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
+      // consoleLog("---------------------------------");
+      // consoleLog(Firebase.app().name);
+      // consoleLog(Firebase.apps.first.name);
+
+      // consoleLog("---------------------------------");
+      // for (var app in Firebase.apps) {
+      //   consoleLog(app.name);
+      //   try {
+      //     await FirebaseAuth.instanceFor(app: app).signInWithCustomToken(firebaseToken);
+      //   } catch (e) {
+      //     consoleLog("error");
+      //   }
+      // }
+
+      // consoleLog("---------------------------------");
+      UserCredential userCredential =
+          await FirebaseAuth.instanceFor(app: Firebase.apps.first).signInWithCustomToken(firebaseToken);
       consoleLog('UserId: ${userCredential.user!.uid}');
       getCountData();
       apiStatus = ApiStatus.success;
       notifyListeners();
     } catch (e, s) {
+      apiStatus = ApiStatus.failed;
+      notifyListeners();
       consoleLog('Firebase Token SignIn Error: $e\n$s');
     }
   }
@@ -136,6 +156,8 @@ class ChatProvider extends ChangeNotifier {
       apiStatus = ApiStatus.success;
       notifyListeners();
     } catch (e, s) {
+      apiStatus = ApiStatus.failed;
+      notifyListeners();
       consoleLog('Firebase Token SignIn Error: $e\n$s');
     }
   }
@@ -147,7 +169,7 @@ class ChatProvider extends ChangeNotifier {
 
   void getUserFirebaseToken(String accessToken) async {
     consoleLog('Access Token : $accessToken');
-    BaseModel<UserFirebaseTokenModel> response = await ApiService().getUserFirebaseToken(accessToken);
+    BaseModel<UserFirebaseTokenModel> response = await GetIt.I<ApiService>().getUserFirebaseToken(accessToken);
     if (response.data != null) {
       consoleLog('User Firebase Token : ${response.data!.firebaseToken!}');
       userCustomFirebaseTokenSignIn(response.data!.firebaseToken!);
@@ -160,7 +182,7 @@ class ChatProvider extends ChangeNotifier {
 
   void getBrandFirebaseToken(String accessToken) async {
     consoleLog('Access Token : $accessToken');
-    BaseModel<BrandFirebaseTokenModel> response = await ApiService().getBrandFirebaseToken(accessToken);
+    BaseModel<BrandFirebaseTokenModel> response = await GetIt.I<ApiService>().getBrandFirebaseToken(accessToken);
     if (response.data != null) {
       consoleLog('Brand Firebase Token : ${response.data!.toJson()}');
       if (response.data!.brandFirebaseTokenList!.isEmpty || response.data!.brandFirebaseTokenList!.length > 1) {

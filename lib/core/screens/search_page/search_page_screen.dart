@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../../../features/chat/domain/search_user_model.dart';
@@ -86,8 +87,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void searchUser(String searchValue) async {
-    BaseModel<SearchUserModel> response = await ApiService().searchUser(widget.accessToken!, searchValue);
-
+    BaseModel<SearchUserModel> response = await GetIt.I<ApiService>().searchUser(widget.accessToken!, searchValue);
     if (response.data != null) {
       setState(() {
         brandsList.clear();

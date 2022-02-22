@@ -4,11 +4,10 @@ import 'package:retrofit/retrofit.dart';
 import '../features/chat/domain/brand_firebase_token_model.dart';
 import '../features/chat/domain/search_user_model.dart';
 import '../features/chat/domain/user_firebase_token_model.dart';
-import '../global.dart';
 
 part 'api_client.g.dart';
 
-@RestApi(baseUrl: BASE_URL)
+@RestApi()
 abstract class ApiClient {
   factory ApiClient(Dio dio, String url) {
     return _ApiClient(dio, baseUrl: url);
