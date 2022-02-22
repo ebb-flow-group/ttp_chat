@@ -4,7 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../theme/style.dart';
 
 class ChatErrorScreen extends StatefulWidget {
-  const ChatErrorScreen({Key? key}) : super(key: key);
+  final void Function()? onContactSupport;
+  const ChatErrorScreen({this.onContactSupport, Key? key}) : super(key: key);
 
   @override
   _ChatErrorScreenState createState() => _ChatErrorScreenState();
@@ -62,7 +63,9 @@ class _ChatErrorScreenState extends State<ChatErrorScreen> {
             ),
             color: Theme.of(context).colorScheme.secondary,
             textColor: Theme.of(context).scaffoldBackgroundColor,
-            onPressed: () {},
+            onPressed: () {
+              if (widget.onContactSupport != null) widget.onContactSupport!();
+            },
             minWidth: MediaQuery.of(context).size.width,
             height: 42,
           ),

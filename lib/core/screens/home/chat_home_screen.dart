@@ -18,11 +18,17 @@ import 'home_widgets/room_list_view.dart';
 class ChatHomeScreen extends StatelessWidget {
   final bool isSwitchedAccount;
   final String? accessToken, refreshToken;
+  final void Function()? onContactSupport;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const ChatHomeScreen(
-      {Key? key, this.isSwitchedAccount = false, this.accessToken, this.refreshToken, this.onViewOrderDetailsClick})
-      : super(key: key);
+  const ChatHomeScreen({
+    Key? key,
+    this.onContactSupport,
+    this.onViewOrderDetailsClick,
+    this.isSwitchedAccount = false,
+    this.accessToken,
+    this.refreshToken,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,17 +36,18 @@ class ChatHomeScreen extends StatelessWidget {
       create: (context) => isSwitchedAccount
           ? ChatProvider.brandSignIn(isSwitchedAccount, accessToken!, refreshToken!)
           : ChatProvider.userSignIn(isSwitchedAccount, accessToken!, refreshToken!),
-      child: _ChatHomeScreen(isSwitchedAccount, accessToken, onViewOrderDetailsClick),
+      child: _ChatHomeScreen(isSwitchedAccount, accessToken, onViewOrderDetailsClick, onContactSupport),
     );
   }
 }
 
 class _ChatHomeScreen extends StatefulWidget {
-  final bool? isSwitchedAccount;
-  final String? accessToken;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const _ChatHomeScreen(this.isSwitchedAccount, this.accessToken, this.onViewOrderDetailsClick);
+  final bool? isSwitchedAccount;
+  final void Function()? onContactSupport;
+  final String? accessToken;
+  const _ChatHomeScreen(this.isSwitchedAccount, this.accessToken, this.onViewOrderDetailsClick, this.onContactSupport);
 
   @override
   _ChatHomeScreenState createState() => _ChatHomeScreenState();
@@ -59,8 +66,6 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   int brandListCount = 0, userListCount = 0;
 
   late Stream<List<types.Room>> stream;
-
-  String stateChangeMessage = '';
 
   @override
   void initState() {
@@ -90,7 +95,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     }
 
     if (chatProvider.apiStatus == ApiStatus.failed) {
-      return const ChatErrorScreen();
+      return ChatErrorScreen(onContactSupport: widget.onContactSupport);
     }
 
     return Scaffold(
