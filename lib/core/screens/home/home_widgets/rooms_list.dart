@@ -102,9 +102,10 @@ class RoomListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<types.Room> rooms = snapshot.data!
-        .where((element) => element.metadata!['other_user_type'] == (list == view.brands ? 'brand' : 'user'))
-        .toList();
+    List<types.Room> rooms = snapshot.data
+            ?.where((element) => element.metadata!['other_user_type'] == (list == view.brands ? 'brand' : 'user'))
+            .toList() ??
+        [];
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 17),
       padding: const EdgeInsets.only(top: 17),
