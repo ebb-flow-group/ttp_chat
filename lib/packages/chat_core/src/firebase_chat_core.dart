@@ -17,7 +17,7 @@ class FirebaseChatCore {
 
   /// Current logged in user in Firebase. Does not update automatically.
   /// Use [FirebaseAuth.authStateChanges] to listen to the state changes.
-  User firebaseUser = FirebaseAuth.instance.currentUser!;
+  User? firebaseUser = FirebaseAuth.instance.currentUser;
 
   /// Singleton instance
   static final FirebaseChatCore instance = FirebaseChatCore._privateConstructor();
@@ -42,7 +42,7 @@ class FirebaseChatCore {
   }) async {
     if (firebaseUser == null) return Future.error('User does not exist');
 
-    final currentUser = await fetchUser(firebaseUser.uid);
+    final currentUser = await fetchUser(firebaseUser!.uid);
     final roomUsers = [types.User.fromJson(currentUser)] + users!;
 
     final room = await FirebaseFirestore.instance.collection('rooms').add({
@@ -81,25 +81,25 @@ class FirebaseChatCore {
     if (firebaseUser == null) return Future.error('User does not exist');
 
     final query =
-        await FirebaseFirestore.instance.collection('rooms').where('userIds', arrayContains: firebaseUser.uid).get();
+        await FirebaseFirestore.instance.collection('rooms').where('userIds', arrayContains: firebaseUser!.uid).get();
 
-    final rooms = await processRoomsQuery(firebaseUser, query);
+    final rooms = await processRoomsQuery(firebaseUser!, query);
 
     try {
       return rooms.firstWhere((room) {
         if (room.type == types.RoomType.group) return false;
 
         final userIds = room.users.map((u) => u.id);
-        print('IS USER PRESENT: ${userIds.contains(firebaseUser.uid)}');
+        print('IS USER PRESENT: ${userIds.contains(firebaseUser!.uid)}');
         print('IS OTHER USER PRESENT: ${userIds.contains(otherUser.id)}');
-        return userIds.contains(firebaseUser.uid) && userIds.contains(otherUser.id);
+        return userIds.contains(firebaseUser!.uid) && userIds.contains(otherUser.id);
       });
     } catch (e) {
       // Do nothing if room does not exist
       // Create a new room instead
     }
 
-    final currentUser = await fetchUser(firebaseUser.uid);
+    final currentUser = await fetchUser(firebaseUser!.uid);
     final users = [types.User.fromJson(currentUser), otherUser];
 
     final room = await FirebaseFirestore.instance.collection('rooms').add({
@@ -180,7 +180,7 @@ class FirebaseChatCore {
         .collection('rooms')
         .doc(roomId)
         .snapshots()
-        .asyncMap((doc) => processRoomDocument(doc, firebaseUser));
+        .asyncMap((doc) => processRoomDocument(doc, firebaseUser!));
   }
 
   /// Returns a stream of rooms from Firebase. Only rooms where current
@@ -199,11 +199,11 @@ class FirebaseChatCore {
     final collection = orderByUpdatedAt
         ? FirebaseFirestore.instance
             .collection('rooms')
-            .where('userIds', arrayContains: firebaseUser.uid)
+            .where('userIds', arrayContains: firebaseUser!.uid)
             .orderBy('updatedAt', descending: true)
-        : FirebaseFirestore.instance.collection('rooms').where('userIds', arrayContains: firebaseUser.uid);
+        : FirebaseFirestore.instance.collection('rooms').where('userIds', arrayContains: firebaseUser?.uid);
 
-    return collection.snapshots().asyncMap((query) => processRoomsQuery(firebaseUser, query));
+    return collection.snapshots().asyncMap((query) => processRoomsQuery(firebaseUser!, query));
   }
 
   /// Sends a message to the Firestore. Accepts any partial message and a
@@ -216,19 +216,19 @@ class FirebaseChatCore {
 
     if (partialMessage is types.PartialCustom) {
       message = types.CustomMessage.fromPartial(
-          author: types.User(id: firebaseUser.uid), id: '', partialCustom: partialMessage, status: types.Status.sent);
+          author: types.User(id: firebaseUser!.uid), id: '', partialCustom: partialMessage, status: types.Status.sent);
     } else if (partialMessage is types.PartialFile) {
       message = types.FileMessage.fromPartial(
-          author: types.User(id: firebaseUser.uid), id: '', partialFile: partialMessage, status: types.Status.sent);
+          author: types.User(id: firebaseUser!.uid), id: '', partialFile: partialMessage, status: types.Status.sent);
     } else if (partialMessage is types.PartialVoice) {
       message = types.VoiceMessage.fromPartial(
-          author: types.User(id: firebaseUser.uid), id: '', partialVoice: partialMessage, status: types.Status.sent);
+          author: types.User(id: firebaseUser!.uid), id: '', partialVoice: partialMessage, status: types.Status.sent);
     } else if (partialMessage is types.PartialImage) {
       message = types.ImageMessage.fromPartial(
-          author: types.User(id: firebaseUser.uid), id: '', partialImage: partialMessage, status: types.Status.sent);
+          author: types.User(id: firebaseUser!.uid), id: '', partialImage: partialMessage, status: types.Status.sent);
     } else if (partialMessage is types.PartialText) {
       message = types.TextMessage.fromPartial(
-          author: types.User(id: firebaseUser.uid), id: '', partialText: partialMessage, status: types.Status.sent);
+          author: types.User(id: firebaseUser!.uid), id: '', partialText: partialMessage, status: types.Status.sent);
     } else {
       message = types.TextMessage.fromPartial(
           author: const types.User(id: ''),
@@ -239,7 +239,7 @@ class FirebaseChatCore {
 
     final messageMap = message.toJson();
     messageMap.removeWhere((key, value) => key == 'author' || key == 'id');
-    messageMap['authorId'] = firebaseUser.uid;
+    messageMap['authorId'] = firebaseUser?.uid;
     messageMap['createdAt'] = FieldValue.serverTimestamp();
     messageMap['updatedAt'] = FieldValue.serverTimestamp();
 
@@ -252,7 +252,7 @@ class FirebaseChatCore {
   /// room ID. Message will probably be taken from the [messages] stream.
   void updateMessage(types.Message message, String roomId) async {
     if (firebaseUser == null) return;
-    if (message.author.id != firebaseUser.uid) return;
+    if (message.author.id != firebaseUser!.uid) return;
 
     final messageMap = message.toJson();
     messageMap.removeWhere((key, value) => key == 'id' || key == 'createdAt');
@@ -268,7 +268,7 @@ class FirebaseChatCore {
           (snapshot) => snapshot.docs.fold<List<types.User>>(
             [],
             (previousValue, doc) {
-              if (firebaseUser.uid == doc.id) return previousValue;
+              if (firebaseUser!.uid == doc.id) return previousValue;
 
               final data = doc.data();
 

@@ -6,9 +6,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
+import '../packages/chat_core/src/util.dart';
+
 Future pushTo(Widget page, BuildContext context) {
-  return Navigator.of(context)
-      .push(MaterialPageRoute(builder: (context) => page));
+  return Navigator.of(context).push(MaterialPageRoute(builder: (context) => page));
 }
 
 displaySnackBar(String message, BuildContext context) {
@@ -32,8 +33,7 @@ displaySnackBar(String message, BuildContext context) {
 Future<types.User?> getUserFromFireStore(String userId,
     {String? firstName, String? imageUrl = "", String? lastName = ""}) async {
   try {
-    DocumentSnapshot snapshot =
-        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
     if (snapshot.exists) {
       var data = snapshot.data() as Map<String, dynamic>;
       types.User result = types.User(
@@ -84,21 +84,12 @@ Future<types.Room?> checkIfRoomExists(String userId) async {
         .collection('rooms')
         .where('userIds', arrayContains: FirebaseAuth.instance.currentUser!.uid)
         .get();
-
-    if (snapshot.docs.isNotEmpty) {
-      for (var roomDoc in snapshot.docs) {
-        var room = roomDoc.data() as Map<String, dynamic>;
-        var userIds = (room['userIds'] ?? []) as List<dynamic>;
-        if (userIds.contains(userId)) {
+    List<types.Room> rooms = await processRoomsQuery(FirebaseAuth.instance.currentUser!, snapshot);
+    if (rooms.isNotEmpty) {
+      for (var room in rooms) {
+        if (room.userIds.contains(userId)) {
           consoleLog('Room Exists $room');
-          return types.Room(
-            id: roomDoc.id,
-            type: types.RoomType.direct,
-            name: room['name'],
-            imageUrl: room['imageUrl'],
-            userIds: room['userIds'] ?? [],
-            users: const [],
-          );
+          return room;
         }
       }
       log("Room Doesn't Exist");
