@@ -98,17 +98,19 @@ class _CustomInputState extends State<CustomInput> {
         ),
         child: Row(
           children: [
-            if (_textController.text.isEmpty)
-              IconButton(
-                icon: SvgPicture.asset(
-                  'assets/icon/mic.svg',
-                  package: 'ttp_chat',
-                  color: InheritedChatTheme.of(context)!.theme!.secondaryColor,
-                  width: 18,
-                  height: 18,
-                ),
-                onPressed: widget.onVoiceMessagePressed,
-              ),
+            //TODO: Removing audio option for now
+            //?https://www.notion.so/tabletophq/Voice-messaging-function-in-chat-not-working-can-t-close-it-once-you-click-on-it-too-have-to-exit--13cdbc89cdc142178353a498b79077c5
+            // if (_textController.text.isEmpty)
+            //   IconButton(
+            //     icon: SvgPicture.asset(
+            //       'assets/icon/mic.svg',
+            //       package: 'ttp_chat',
+            //       color: InheritedChatTheme.of(context)!.theme!.secondaryColor,
+            //       width: 18,
+            //       height: 18,
+            //     ),
+            //     onPressed: widget.onVoiceMessagePressed,
+            //   ),
             if (_textController.text.isEmpty)
               if (widget.onAttachmentPressed != null) _attachmentWidget(),
             Expanded(
@@ -132,23 +134,12 @@ class _CustomInputState extends State<CustomInput> {
                   decoration: InputDecoration(
                     hintText: 'Say something...',
                     border: InputBorder.none,
-                    hintStyle: InheritedChatTheme.of(context)!
-                        .theme!
-                        .inputTextStyle!
-                        .copyWith(
-                          color: InheritedChatTheme.of(context)!
-                              .theme!
-                              .inputTextColor!
-                              .withOpacity(0.5),
+                    hintStyle: InheritedChatTheme.of(context)!.theme!.inputTextStyle!.copyWith(
+                          color: InheritedChatTheme.of(context)!.theme!.inputTextColor!.withOpacity(0.5),
                         ),
                   ),
-                  style: InheritedChatTheme.of(context)!
-                      .theme!
-                      .inputTextStyle!
-                      .copyWith(
-                        color: InheritedChatTheme.of(context)!
-                            .theme!
-                            .inputTextColor,
+                  style: InheritedChatTheme.of(context)!.theme!.inputTextStyle!.copyWith(
+                        color: InheritedChatTheme.of(context)!.theme!.inputTextColor,
                       ),
                   maxLines: 5,
                   minLines: 1,
@@ -160,9 +151,7 @@ class _CustomInputState extends State<CustomInput> {
               icon: SvgPicture.asset(
                 'assets/icon/send.svg',
                 package: 'ttp_chat',
-                color: _sendButtonVisible
-                    ? InheritedChatTheme.of(context)!.theme!.secondaryColor
-                    : Colors.grey[400],
+                color: _sendButtonVisible ? InheritedChatTheme.of(context)!.theme!.secondaryColor : Colors.grey[400],
                 width: 18,
                 height: 18,
               ),

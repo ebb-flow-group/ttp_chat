@@ -304,9 +304,7 @@ class _ChatState extends State<Chat> {
         width: 20.0,
         height: 20.0,
         child: CircularProgressIndicator(
-          value: event == null || event.expectedTotalBytes == null
-              ? 0
-              : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
+          value: event.expectedTotalBytes == null ? 0 : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
         ),
       ),
     );
@@ -381,9 +379,9 @@ class _ChatState extends State<Chat> {
                       ),*/
 
                       CustomInput(
-                        isAttachmentUploading: widget.isAttachmentUploading!,
-                        onAttachmentPressed: widget.onAttachmentPressed!,
-                        onVoiceMessagePressed: widget.onVoiceMessagePressed!,
+                        isAttachmentUploading: widget.isAttachmentUploading,
+                        onAttachmentPressed: widget.onAttachmentPressed,
+                        onVoiceMessagePressed: widget.onVoiceMessagePressed,
                         onSendPressed: widget.onSendPressed!,
                         onTextChanged: widget.onTextChanged!,
                       ),
