@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
@@ -30,19 +32,38 @@ class ChatUtils {
     }
   }
 
-  String getOrderType(String orderType) {
-    switch (orderType) {
-      case 'pick_up':
-        return 'Pickup';
-      case 'take_away':
-        return 'Pickup';
-      case 'dine_in':
-        return 'Dine In';
-      case 'delivery':
-        return 'Delivery';
-      default:
-        return '';
+  String getOrderType(Map<String, dynamic>? metadata) {
+    if (metadata == null) return "";
+    log(metadata.toString());
+    String orderType = metadata['type'];
+    if (metadata["message_type"] == "home_order_update" || metadata["message_type"] == "home_order_create") {
+      switch (orderType) {
+        case 'pick_up':
+          return 'Pickup';
+        case 'take_away':
+          return 'Pickup';
+        case 'dine_in':
+          return 'Dine In';
+        case 'delivery':
+          return 'Delivery';
+        default:
+          return '';
+      }
+    } else {
+      switch (orderType) {
+        case 'pick_up':
+          return 'Pickup';
+        case 'take_away':
+          return 'Take Away';
+        case 'dine_in':
+          return 'Dine In';
+        case 'delivery':
+          return 'Delivery';
+        default:
+          return '';
+      }
     }
+    return "";
   }
 
   String getOrderDate(int orderDate) {
