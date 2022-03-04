@@ -82,6 +82,8 @@ class OrderMessageWidget extends StatelessWidget {
                             softWrap: true,
                           ),
                           Text(
+                            //TODO Show correct order type based on HomeOrder/HomeBrand, with old Order/Brand
+                            //!https://www.notion.so/tabletophq/Take-Away-Pickup-rename-b9ce98007a5145c88853bcb8ad2817be?d=b8f06bdfb9024354bf33f5b54183f956
                             ' \u2022 ${ChatUtils().getOrderType(message.metadata!['type'])}',
                             style: const TextStyle(
                               color: Colors.grey,
