@@ -33,9 +33,9 @@ class ChatUtils {
   String getOrderType(String orderType) {
     switch (orderType) {
       case 'pick_up':
-        return 'Take Away';
+        return 'Pickup';
       case 'take_away':
-        return 'Take Away';
+        return 'Pickup';
       case 'dine_in':
         return 'Dine In';
       case 'delivery':
