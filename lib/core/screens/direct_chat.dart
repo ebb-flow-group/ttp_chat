@@ -15,12 +15,16 @@ import 'loading_screen.dart';
 
 class DirectChat extends StatefulWidget {
   final bool isBrandUser;
+  final String? otherUserId;
   final String? accessToken, refreshToken;
-  final String phoneNumber, username, firstName, lastName, profileImage;
+  final String firstName, lastName, profileImage;
+  @Deprecated('Use otherUserId instead')
+  final String username, phoneNumber;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
   const DirectChat(
       {required this.accessToken,
       required this.refreshToken,
+      this.otherUserId,
       this.phoneNumber = "",
       this.username = "",
       this.firstName = "",
@@ -48,9 +52,13 @@ class _DirectChatState extends State<DirectChat> {
 
   StreamSubscription<User?>? userStream;
 
+  String get getOtherUserId {
+    return widget.otherUserId ?? (widget.username.isEmpty ? widget.phoneNumber : widget.username);
+  }
+
   init() async {
     await Firebase.initializeApp();
-    String? otherUserId = widget.isBrandUser ? widget.phoneNumber : widget.username;
+    String? otherUserId = getOtherUserId;
     if (otherUserId == '') {
       consoleLog("other UserId is null");
       displaySnackBar("Error, User Not Found", context);
