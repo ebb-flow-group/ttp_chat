@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/theme/style.dart';
 
@@ -27,15 +26,15 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ],
       ),
-      actions: [
-        IconButton(
-            icon: SvgPicture.asset(
-              'assets/chat_icons/settings_two.svg',
-              color: Theme.of(context).primaryColor,
-              height: 18,
-              width: 18,
-            ),
-            onPressed: () {}),
+      actions: const [
+        // IconButton(
+        //     icon: SvgPicture.asset(
+        //       'assets/chat_icons/settings_two.svg',
+        //       color: Theme.of(context).primaryColor,
+        //       height: 18,
+        //       width: 18,
+        //     ),
+        //     onPressed: () {}),
       ],
     );
   }

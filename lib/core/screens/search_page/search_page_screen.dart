@@ -10,6 +10,7 @@ import '../../../features/chat/domain/search_user_model.dart';
 import '../../../models/base_model.dart';
 import '../../../network/api_service.dart';
 import '../../../packages/chat_core/src/firebase_chat_core.dart';
+import '../../../packages/chat_core/src/util.dart';
 import '../../../utils/functions.dart';
 import '../../widgets/input_search.dart';
 import '../chat_page/chat_page.dart';
@@ -241,18 +242,10 @@ class _SearchPageState extends State<SearchPage> {
             .collection('rooms')
             .where('userIds', arrayContains: FirebaseAuth.instance.currentUser!.uid)
             .get();
+
         if (snapshot.docs.isNotEmpty) {
-          for (var doc in snapshot.docs) {
-            var data = doc.data() as Map<String, dynamic>;
-            userRooms.add(types.Room(
-              id: doc.id,
-              type: types.RoomType.direct,
-              name: data['name'],
-              imageUrl: data['imageUrl'],
-              userIds: data['userIds'] ?? [],
-              users: const [],
-            ));
-          }
+          List<types.Room> rooms = await processRoomsQuery(FirebaseAuth.instance.currentUser!, snapshot);
+          userRooms.addAll(rooms);
           consoleLog(userRooms.toString());
           //Check Room Again
           consoleLog("Checking room again from List");
