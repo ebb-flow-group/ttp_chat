@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:route_parser/route_parser.dart';
-import 'package:ttp_chat/core/screens/chat_page/chat_widgets/chat_utils.dart';
+import 'package:ttp_chat/core/screens/chat_utils.dart';
 import 'package:ttp_chat/packages/chat_types/src/message.dart';
 import 'package:ttp_chat/theme/style.dart';
 

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ttp_chat/config.dart';
-import 'package:ttp_chat/core/screens/chat_page/chat_widgets/chat_utils.dart';
 import 'package:ttp_chat/core/screens/chat_page/chat_widgets/recording_animation.dart';
+import 'package:ttp_chat/core/screens/chat_utils.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:ttp_chat/packages/chat_ui/ttp_chat_ui.dart';
 

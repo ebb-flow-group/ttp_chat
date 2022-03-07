@@ -34,8 +34,8 @@ class ChatHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ChatProvider>(
       create: (context) => isSwitchedAccount
-          ? ChatProvider.brandSignIn(isSwitchedAccount, accessToken!, refreshToken!)
-          : ChatProvider.userSignIn(isSwitchedAccount, accessToken!, refreshToken!),
+          ? ChatProvider.brandSignIn(accessToken!, refreshToken!)
+          : ChatProvider.userSignIn(accessToken!, refreshToken!),
       child: _ChatHomeScreen(isSwitchedAccount, accessToken, onViewOrderDetailsClick, onContactSupport),
     );
   }

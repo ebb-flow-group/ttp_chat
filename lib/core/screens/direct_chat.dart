@@ -76,8 +76,8 @@ class _DirectChatState extends State<DirectChat> {
     log(otherUserId);
     if (FirebaseAuth.instance.currentUser == null) {
       widget.isBrandUser
-          ? ChatProvider.brandSignIn(widget.isBrandUser, widget.accessToken, widget.refreshToken)
-          : ChatProvider.userSignIn(widget.isBrandUser, widget.accessToken, widget.refreshToken);
+          ? ChatProvider.brandSignIn(widget.accessToken, widget.refreshToken)
+          : ChatProvider.userSignIn(widget.accessToken, widget.refreshToken);
       try {
         userStream = FirebaseAuth.instance.authStateChanges().listen((User? user) {
           if (mounted) {

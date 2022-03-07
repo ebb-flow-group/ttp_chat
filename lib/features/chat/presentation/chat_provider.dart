@@ -95,7 +95,7 @@ class ChatProvider extends ChangeNotifier {
     });
   }
 
-  ChatProvider.userSignIn(bool isSwitchedAccount, this.accessToken, this.refreshToken) {
+  ChatProvider.userSignIn(this.accessToken, this.refreshToken) {
     selectedTabIndex = 0;
     if (FirebaseAuth.instance.currentUser == null) {
       consoleLog('User is not signed in');
@@ -109,7 +109,7 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  ChatProvider.brandSignIn(bool isSwitchedAccount, this.accessToken, this.refreshToken) {
+  ChatProvider.brandSignIn(this.accessToken, this.refreshToken) {
     selectedTabIndex = 0;
     if (FirebaseAuth.instance.currentUser == null) {
       getBrandFirebaseToken(accessToken!);

@@ -2,11 +2,54 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:intl/intl.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/utils/functions.dart';
 
+import '../../packages/chat_core/src/util.dart';
+
 class ChatUtils {
+  static initFirebaseApp(
+      {required String accessToken,
+      required String refreshToken,
+      bool isBrandApp = false,
+      void Function()? onInit}) async {
+    await Firebase.initializeApp();
+    if (FirebaseAuth.instance.currentUser == null) {
+      isBrandApp
+          ? ChatProvider.brandSignIn(accessToken, refreshToken)
+          : ChatProvider.userSignIn(accessToken, refreshToken);
+      try {
+        FirebaseAuth.instance.authStateChanges().listen((User? user) {
+          if (user != null) {
+            onInit?.call();
+          }
+        });
+      } catch (e) {
+        consoleLog(e.toString());
+      }
+    } else {
+      onInit?.call();
+    }
+  }
+
+  Stream<List<int>> getUnreadMessages() {
+    var firebaseUser = FirebaseAuth.instance.currentUser;
+    if (firebaseUser == null) return const Stream.empty();
+
+    final collection = FirebaseFirestore.instance.collection('rooms').where('userIds', arrayContains: firebaseUser.uid);
+
+    return collection.snapshots().asyncMap((query) => processChatsQuery(query));
+  }
+
+  Future<List<int>> processChatsQuery(
+    QuerySnapshot query,
+  ) async {
+    final futures = query.docs.map((doc) => getUnreadMessageCount(doc.id, FirebaseAuth.instance.currentUser!));
+    return await Future.wait(futures);
+  }
+
   String getOrderStatus(String status) {
     switch (status) {
       case 'paid':
