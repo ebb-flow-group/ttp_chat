@@ -1,6 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'message.dart' show Status;
 import 'room.dart' show RoomType;
 import 'user.dart' show Role;
+
+String? getChatUserId(List? ids) {
+  String? chatUserId;
+  if (ids == null && (ids?.isEmpty == true)) {
+    return null;
+  }
+  for (var id in ids!) {
+    if (id != FirebaseAuth.instance.currentUser?.uid) {
+      chatUserId = id;
+    }
+  }
+  return chatUserId;
+}
 
 /// Converts [stringStatus] to the [Status] enum.
 Status? getStatusFromString(String? stringStatus) {
