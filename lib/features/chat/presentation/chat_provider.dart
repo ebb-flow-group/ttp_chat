@@ -29,6 +29,7 @@ import '../domain/user_firebase_token_model.dart';
 enum ApiStatus { called, success, failed }
 
 class ChatProvider extends ChangeNotifier {
+  String searchString = '';
   types.User? user;
   List<types.Message> messagesList = [];
   String voiceMessageFilePath = '';
@@ -50,6 +51,11 @@ class ChatProvider extends ChangeNotifier {
   String? accessToken, refreshToken;
 
   List<types.Room> roomList = [];
+
+  searchUsers(String s) {
+    searchString = s;
+    notifyListeners();
+  }
 
   //! To get the duration of the recorded audio
   Timer? recorderTimer;

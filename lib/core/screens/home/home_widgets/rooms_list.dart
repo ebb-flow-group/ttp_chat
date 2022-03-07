@@ -106,6 +106,13 @@ class RoomListView extends StatelessWidget {
             ?.where((element) => element.metadata!['other_user_type'] == (list == view.brands ? 'brand' : 'user'))
             .toList() ??
         [];
+    //For Searching Users
+    if (context.read<ChatProvider>().searchString.isNotEmpty) {
+      rooms = rooms
+          .where((element) =>
+              (element.name?.toLowerCase().contains(context.read<ChatProvider>().searchString.toLowerCase()) == true))
+          .toList();
+    }
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 17),
       padding: const EdgeInsets.only(top: 17),
