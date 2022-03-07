@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:ttp_chat/config.dart';
 import 'package:ttp_chat/core/screens/chat_page/chat_widgets/chat_utils.dart';
 import 'package:ttp_chat/core/screens/chat_page/chat_widgets/recording_animation.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
@@ -79,6 +80,9 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
             initialData: const [],
             stream: messageStream,
             builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const LinearProgressIndicator(color: Config.primaryColor);
+              }
               return Stack(
                 children: [
                   Chat(
