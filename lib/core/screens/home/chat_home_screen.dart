@@ -44,7 +44,7 @@ class ChatHomeScreen extends StatelessWidget {
 class _ChatHomeScreen extends StatefulWidget {
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  final bool? isSwitchedAccount;
+  final bool isSwitchedAccount;
   final void Function()? onContactSupport;
   final String? accessToken;
   const _ChatHomeScreen(this.isSwitchedAccount, this.accessToken, this.onViewOrderDetailsClick, this.onContactSupport);
@@ -113,7 +113,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
             : RoomListView(
                 onTap: onTabTapped,
                 onViewOrderDetailsClick: widget.onViewOrderDetailsClick,
-                isSwitchedAccount: widget.isSwitchedAccount ?? false,
+                isSwitchedAccount: widget.isSwitchedAccount,
                 selectedTabIndex: selectedTabIndex,
                 chatProvider: chatProvider,
                 stream: stream));

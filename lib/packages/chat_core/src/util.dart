@@ -20,6 +20,7 @@ import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 /// Fetches user from Firebase and returns a promise
 Future<Map<String, dynamic>> fetchUser(String userId, {String? role}) async {
+  if (userId.isEmpty) return {};
   final doc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
 
   final data = doc.data();
@@ -41,6 +42,7 @@ Future<List<types.Room>> processRoomsQuery(
   User firebaseUser,
   QuerySnapshot query,
 ) async {
+  // log("************************* processRoomsQuery *************************");
   final futures = query.docs.map(
     (doc) => processRoomDocument(doc, firebaseUser),
   );
@@ -121,11 +123,12 @@ Future<String> getOtherUserName(User firebaseUser, List<dynamic> userIds) async 
   // print('SELECTED CHAT USER: $userIds');
 
   final e = userIds.where((element) => element != firebaseUser.uid).toList();
-
-  final snapshot = await FirebaseFirestore.instance.collection('users').doc(e[0].toString()).get();
-
-  final data = snapshot.data();
-  return data == null ? '' : '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}';
+  if (e.isNotEmpty && e.first.toString().isNotEmpty) {
+    final snapshot = await FirebaseFirestore.instance.collection('users').doc(e[0].toString()).get();
+    final data = snapshot.data();
+    return data == null ? '' : '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}';
+  }
+  return "";
 }
 
 Future<String> getOtherUserType(User firebaseUser, List<dynamic> userIds) async {
@@ -133,11 +136,13 @@ Future<String> getOtherUserType(User firebaseUser, List<dynamic> userIds) async 
   // print('SELECTED CHAT USER FOR TYPE: $userIds');
 
   final e = userIds.where((element) => element != firebaseUser.uid).toList();
+  if (e.isNotEmpty && e.first.toString().isNotEmpty) {
+    final snapshot = await FirebaseFirestore.instance.collection('users').doc(e[0].toString()).get();
 
-  final snapshot = await FirebaseFirestore.instance.collection('users').doc(e[0].toString()).get();
-
-  final data = snapshot.data();
-  return '${data?['user_type']}';
+    final data = snapshot.data();
+    return '${data?['user_type']}';
+  }
+  return "";
 }
 
 Future<Map<String, dynamic>> getLastMessageOfRoom(String roomId) async {

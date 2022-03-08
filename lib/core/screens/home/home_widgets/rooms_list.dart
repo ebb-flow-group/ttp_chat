@@ -17,7 +17,7 @@ import '../../widgets/helpers.dart';
 
 class RoomsList extends StatefulWidget {
   final Stream<List<types.Room>> stream;
-  final bool? isSwitchedAccount;
+  final bool isSwitchedAccount;
 
   final view list;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
