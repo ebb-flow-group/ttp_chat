@@ -10,6 +10,9 @@ import 'package:ttp_chat/utils/functions.dart';
 import '../../packages/chat_core/src/util.dart';
 
 class ChatUtils {
+  final bool isCreatorsApp;
+  ChatUtils({this.isCreatorsApp = false});
+
   static initFirebaseApp(
       {required String accessToken,
       required String refreshToken,
