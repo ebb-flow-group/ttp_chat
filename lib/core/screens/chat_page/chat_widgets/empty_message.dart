@@ -32,11 +32,11 @@ class EmptyMessage extends StatelessWidget {
           chatProvider.selectedChatUser?.name ?? "",
           style: appBarTitleStyle(context),
         ),
-        const SizedBox(height: 4),
-        Text(
-          '@${getChatUserId(chatProvider.selectedChatUser?.userIds)}',
-          style: TextStyle(fontWeight: FontWeight.normal, color: Theme.of(context).primaryColor),
-        ),
+        //  const SizedBox(height: 4),
+        // Text(
+        //   '@${getChatUserId(chatProvider.selectedChatUser?.userIds)}',
+        //   style: TextStyle(fontWeight: FontWeight.normal, color: Theme.of(context).primaryColor),
+        // ),
         const SizedBox(height: 30),
         if (!GetIt.I<ChatUtils>().isCreatorsApp)
           if ((chatProvider.selectedChatUser?.metadata?["other_user_type"] == "brand" &&

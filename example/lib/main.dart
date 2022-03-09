@@ -2,11 +2,8 @@ import 'package:example/theme/style.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get_it/get_it.dart';
 import 'package:ttp_chat/config.dart';
 import 'package:ttp_chat/core/constants/constants.dart';
-import 'package:ttp_chat/global.dart';
-import 'package:ttp_chat/network/api_service.dart' as ttpchat;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +17,7 @@ void main() async {
         messagingSenderId: '296779630744',
         storageBucket: 'django-firebase-mvp-bd51b.appspot.com',
       ));
-  GetIt.I.registerSingleton<ttpchat.ApiService>(ttpchat.ApiService(url: BASE_URL));
+  // GetIt.I.registerSingleton<ttpchat.ApiService>(ttpchat.ApiService(url: BASE_URL));
   runApp(const MyApp());
 }
 

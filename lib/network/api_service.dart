@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import '../features/chat/domain/brand_firebase_token_model.dart';
 import '../features/chat/domain/search_user_model.dart';
 import '../features/chat/domain/user_firebase_token_model.dart';
-import '../global.dart';
 import '../models/base_model.dart';
 import '../models/server_error.dart';
 import '../utils/functions.dart';
@@ -13,9 +12,9 @@ class ApiService {
   late Dio dio;
   late ApiClient apiClient;
 
-  ApiService({String url = BASE_URL}) {
+  ApiService() {
     dio = Dio();
-    apiClient = ApiClient(dio, url);
+    apiClient = ApiClient(dio);
   }
 
   Future<BaseModel<UserFirebaseTokenModel>> getUserFirebaseToken(String accessToken) async {

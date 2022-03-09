@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:ttp_chat/core/services/cache_service.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
@@ -9,6 +10,7 @@ import '../../../features/chat/presentation/chat_provider.dart';
 import '../../../packages/chat_core/src/firebase_chat_core.dart';
 import '../../../utils/functions.dart';
 import '../chat_error_screen.dart';
+import '../chat_utils.dart';
 import '../loading_screen.dart';
 import '../search_page/search_page_screen.dart';
 import '../widgets/appbar.dart';
@@ -16,7 +18,6 @@ import '../widgets/start_chat_message.dart';
 import 'home_widgets/room_list_view.dart';
 
 class ChatHomeScreen extends StatelessWidget {
-  final bool isSwitchedAccount;
   final String? accessToken, refreshToken;
   final void Function()? onContactSupport;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
@@ -25,7 +26,6 @@ class ChatHomeScreen extends StatelessWidget {
     Key? key,
     this.onContactSupport,
     this.onViewOrderDetailsClick,
-    this.isSwitchedAccount = false,
     this.accessToken,
     this.refreshToken,
   }) : super(key: key);
@@ -33,21 +33,19 @@ class ChatHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ChatProvider>(
-      create: (context) => isSwitchedAccount
+      create: (context) => GetIt.I<ChatUtils>().isCreatorsApp
           ? ChatProvider.brandSignIn(accessToken!, refreshToken!)
           : ChatProvider.userSignIn(accessToken!, refreshToken!),
-      child: _ChatHomeScreen(isSwitchedAccount, accessToken, onViewOrderDetailsClick, onContactSupport),
+      child: _ChatHomeScreen(accessToken, onViewOrderDetailsClick, onContactSupport),
     );
   }
 }
 
 class _ChatHomeScreen extends StatefulWidget {
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
-
-  final bool isSwitchedAccount;
   final void Function()? onContactSupport;
   final String? accessToken;
-  const _ChatHomeScreen(this.isSwitchedAccount, this.accessToken, this.onViewOrderDetailsClick, this.onContactSupport);
+  const _ChatHomeScreen(this.accessToken, this.onViewOrderDetailsClick, this.onContactSupport);
 
   @override
   _ChatHomeScreenState createState() => _ChatHomeScreenState();
@@ -113,7 +111,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
             : RoomListView(
                 onTap: onTabTapped,
                 onViewOrderDetailsClick: widget.onViewOrderDetailsClick,
-                isSwitchedAccount: widget.isSwitchedAccount,
+                isSwitchedAccount: GetIt.I<ChatUtils>().isCreatorsApp,
                 selectedTabIndex: selectedTabIndex,
                 chatProvider: chatProvider,
                 stream: stream));

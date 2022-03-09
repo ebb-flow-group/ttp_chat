@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../../config.dart';
@@ -11,10 +12,10 @@ import '../../features/chat/presentation/chat_provider.dart';
 import '../../packages/chat_core/src/firebase_chat_core.dart';
 import '../../utils/functions.dart';
 import 'chat_page/chat_page.dart';
+import 'chat_utils.dart';
 import 'loading_screen.dart';
 
 class DirectChat extends StatefulWidget {
-  final bool isBrandUser;
   final String? otherUserId;
   final String? accessToken, refreshToken;
   final String firstName, lastName, profileImage;
@@ -31,7 +32,6 @@ class DirectChat extends StatefulWidget {
       this.lastName = "",
       this.profileImage = "",
       this.onViewOrderDetailsClick,
-      this.isBrandUser = false,
       Key? key})
       : super(key: key);
 
@@ -75,7 +75,7 @@ class _DirectChatState extends State<DirectChat> {
     }
     log(otherUserId);
     if (FirebaseAuth.instance.currentUser == null) {
-      widget.isBrandUser
+      GetIt.I<ChatUtils>().isCreatorsApp
           ? ChatProvider.brandSignIn(widget.accessToken, widget.refreshToken)
           : ChatProvider.userSignIn(widget.accessToken, widget.refreshToken);
       try {

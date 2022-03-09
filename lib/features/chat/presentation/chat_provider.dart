@@ -8,7 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
@@ -175,7 +174,7 @@ class ChatProvider extends ChangeNotifier {
 
   void getUserFirebaseToken(String accessToken) async {
     consoleLog('Access Token : $accessToken');
-    BaseModel<UserFirebaseTokenModel> response = await GetIt.I<ApiService>().getUserFirebaseToken(accessToken);
+    BaseModel<UserFirebaseTokenModel> response = await ApiService().getUserFirebaseToken(accessToken);
     if (response.data != null) {
       consoleLog('User Firebase Token : ${response.data!.firebaseToken!}');
       userCustomFirebaseTokenSignIn(response.data!.firebaseToken!);
@@ -188,7 +187,7 @@ class ChatProvider extends ChangeNotifier {
 
   void getBrandFirebaseToken(String accessToken) async {
     consoleLog('Access Token : $accessToken');
-    BaseModel<BrandFirebaseTokenModel> response = await GetIt.I<ApiService>().getBrandFirebaseToken(accessToken);
+    BaseModel<BrandFirebaseTokenModel> response = await ApiService().getBrandFirebaseToken(accessToken);
     if (response.data != null) {
       consoleLog('Brand Firebase Token : ${response.data!.toJson()}');
       if (response.data!.brandFirebaseTokenList!.isEmpty || response.data!.brandFirebaseTokenList!.length > 1) {
