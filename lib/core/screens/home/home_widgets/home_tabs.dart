@@ -26,10 +26,24 @@ class HomeTabs extends StatelessWidget {
         stream: stream,
         initialData: chatProvider.roomList,
         builder: (context, snapshot) {
-          int userCount =
-              snapshot.data?.where((element) => element.metadata!['other_user_type'] == ('user')).toList().length ?? 0;
-          int brandCount =
-              snapshot.data?.where((element) => element.metadata!['other_user_type'] == ('brand')).toList().length ?? 0;
+          int userUnreadMessageCount = 0;
+          int brandUnreadMessageCount = 0;
+          if (snapshot.hasData && snapshot.data != null) {
+            List<types.Room> userRooms =
+                snapshot.data?.where((element) => element.metadata?['other_user_type'] == ('user')).toList() ?? [];
+            List<types.Room> brandRooms =
+                snapshot.data?.where((element) => element.metadata?['other_user_type'] == ('brand')).toList() ?? [];
+
+            userUnreadMessageCount = userRooms.fold(
+                0,
+                (int previousValue, element) =>
+                    previousValue + (int.tryParse("${element.metadata?['unread_message_count'] ?? 0}") ?? 0));
+            brandUnreadMessageCount = brandRooms.fold(
+                0,
+                (int previousValue, element) =>
+                    previousValue + (int.tryParse("${element.metadata?['unread_message_count'] ?? 0}") ?? 0));
+          }
+
           return Column(
             children: [
               Row(
@@ -41,13 +55,13 @@ class HomeTabs extends StatelessWidget {
                             selectedTabIndex: selectedTabIndex,
                             index: 0,
                             title: 'People',
-                            count: userCount),
+                            count: userUnreadMessageCount),
                         HomeTab(
                             onTap: () => onTap(1),
                             selectedTabIndex: selectedTabIndex,
                             index: 1,
                             title: 'Brands',
-                            count: brandCount),
+                            count: brandUnreadMessageCount),
                       ]
                     : [
                         HomeTab(
@@ -55,19 +69,22 @@ class HomeTabs extends StatelessWidget {
                             selectedTabIndex: selectedTabIndex,
                             index: 0,
                             title: 'Brands',
-                            count: brandCount),
+                            count: brandUnreadMessageCount),
                         HomeTab(
                             onTap: () => onTap(1),
                             selectedTabIndex: selectedTabIndex,
                             index: 1,
                             title: 'People',
-                            count: userCount),
+                            count: userUnreadMessageCount),
                       ],
               ),
               Container(
                 height: 3,
                 color: Theme.of(context).primaryColor,
-              )
+                child: snapshot.connectionState == ConnectionState.waiting
+                    ? LinearProgressIndicator(color: Theme.of(context).primaryColor)
+                    : null,
+              ),
             ],
           );
         });

@@ -33,10 +33,12 @@ class _SearchPageState extends State<SearchPage> {
   List<Users> usersList = [];
   int selectedTabIndex = 0;
   List<types.Room> userRooms = [];
+  bool searching = false;
 
   @override
   void initState() {
     super.initState();
+    searchUser("");
   }
 
   @override
@@ -45,6 +47,22 @@ class _SearchPageState extends State<SearchPage> {
         appBar: AppBar(
           backgroundColor: const Color(0xFFFDFBEF).withOpacity(0.2),
           title: Text('Start a new chat', style: Theme.of(context).textTheme.headline6),
+          actions: [
+            if (searching && usersList.isEmpty && brandsList.isEmpty)
+              Padding(
+                padding: const EdgeInsets.only(right: 20),
+                child: Center(
+                  child: SizedBox(
+                    height: 15,
+                    width: 15,
+                    child: CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor,
+                      strokeWidth: 4,
+                    ),
+                  ),
+                ),
+              )
+          ],
         ),
         body: SingleChildScrollView(
           child: SizedBox(
@@ -87,27 +105,35 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void searchUser(String searchValue) async {
-    BaseModel<SearchUserModel> response = await ApiService().searchUser(widget.accessToken!, searchValue);
-    if (response.data != null) {
-      setState(() {
-        brandsList.clear();
-        usersList.clear();
-        brandsList.addAll(response.data!.brands!);
-        usersList.addAll(response.data!.users!);
+    setState(() {
+      searching = true;
+    });
+    try {
+      BaseModel<SearchUserModel> response = await ApiService().searchUser(widget.accessToken!, searchValue);
+      if (response.data != null) {
+        setState(() {
+          brandsList.clear();
+          usersList.clear();
+          brandsList.addAll(response.data!.brands!);
+          usersList.addAll(response.data!.users!);
 
-        if (brandsList.isEmpty) {
-          setState(() {
-            selectedTabIndex = 1;
-          });
-        }
+          if (brandsList.isEmpty) {
+            setState(() {
+              selectedTabIndex = 1;
+            });
+          }
 
-        if (usersList.isEmpty) {
-          setState(() {
-            selectedTabIndex = 0;
-          });
-        }
-      });
-    }
+          if (usersList.isEmpty) {
+            setState(() {
+              selectedTabIndex = 0;
+            });
+          }
+        });
+      }
+    } catch (e) {}
+    setState(() {
+      searching = false;
+    });
   }
 
   Widget _tabs() {
@@ -124,6 +150,7 @@ class _SearchPageState extends State<SearchPage> {
         Container(
           height: 3,
           color: Theme.of(context).primaryColor,
+          child: searching ? LinearProgressIndicator(color: Theme.of(context).primaryColor) : null,
         ),
         const SizedBox(height: 17),
       ],
