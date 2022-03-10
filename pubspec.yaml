@@ -85,6 +85,7 @@ flutter:
     - packages/ttp_chat/assets/icon/mic.svg
     - packages/ttp_chat/assets/icon/send.svg
     - packages/ttp_chat/assets/icon/delete.svg
+    - packages/ttp_chat/assets/icon/payment.svg
     - packages/ttp_chat/assets/icon/order_details.svg
     - packages/ttp_chat/assets/anim/loading_anim.riv
 

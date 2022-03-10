@@ -52,12 +52,13 @@ class ChatUtils {
     return await Future.wait(futures);
   }
 
-  String getOrderStatus(String status) {
+  static String getOrderStatus(String status) {
+    bool isCreatorsApp = GetIt.I<ChatUtils>().isCreatorsApp;
     switch (status) {
       case 'paid':
         return 'PAID';
       case 'checked_out':
-        return 'CHECKED OUT';
+        return isCreatorsApp ? 'CHECKED OUT' : 'TO PAY';
       case 'failed':
         return 'FAILED';
       case 'rejected':
@@ -77,7 +78,7 @@ class ChatUtils {
     }
   }
 
-  String getOrderType(Map<String, dynamic>? metadata) {
+  static String getOrderType(Map<String, dynamic>? metadata) {
     if (metadata == null) return "";
     log(metadata.toString());
     String orderType = metadata['type'];
