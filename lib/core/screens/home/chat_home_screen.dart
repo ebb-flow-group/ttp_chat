@@ -111,7 +111,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
 
     return Scaffold(
         appBar: chatAppBar(context,
-            viewOrdersPage: widget.viewOrdersPage,
+            viewOrdersPage: widget.onViewOrdersPage,
             goToSearch: () => pushTo(
                 SearchPage(accessToken: widget.accessToken, onViewOrderDetailsClick: widget.onViewOrderDetailsClick!),
                 context)),
