@@ -8,6 +8,7 @@ import 'package:ttp_chat/packages/chat_types/src/message.dart';
 import 'package:ttp_chat/theme/style.dart';
 
 import '../../../../config.dart';
+import '../../../services/routes.dart';
 
 class OrderMessageWidget extends StatelessWidget {
   const OrderMessageWidget(
@@ -113,7 +114,7 @@ class OrderMessageWidget extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: () => context
-                            .push(RouteParser('/orders/detail/:id').reverse({'id': "${message.metadata?['id']}"})),
+                            .push(RouteParser(Routes.orderDetailRoute).reverse({'id': "${message.metadata?['id']}"})),
                         child: Container(
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(

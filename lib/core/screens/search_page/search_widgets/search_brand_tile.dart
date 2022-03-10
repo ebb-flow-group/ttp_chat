@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../features/chat/domain/search_user_model.dart';
 import '../../../../utils/functions.dart';
+import '../../../services/routes.dart';
 import '../../chat_utils.dart';
 
 class SearchBrandTile extends StatelessWidget {
@@ -20,7 +21,7 @@ class SearchBrandTile extends StatelessWidget {
         : GestureDetector(
             onTap: () {
               if (!GetIt.I<ChatUtils>().isCreatorsApp && (brand.username?.isNotEmpty == true)) {
-                context.push('/home-brand', extra: brand.username);
+                context.push(Routes.homeOutletDetailPage, extra: brand.username);
               }
             },
             child: Padding(

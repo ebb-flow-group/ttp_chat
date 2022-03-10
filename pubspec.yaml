@@ -63,6 +63,7 @@ flutter:
     - assets/icons/search.svg
     - assets/images/
     - assets/welcome/
+    - packages/ttp_chat/assets/icon/
     - packages/ttp_chat/assets/icon-attachment.png
     - packages/ttp_chat/assets/icon-delivered.png
     - packages/ttp_chat/assets/icon-document.png
@@ -86,6 +87,7 @@ flutter:
     - packages/ttp_chat/assets/icon/send.svg
     - packages/ttp_chat/assets/icon/delete.svg
     - packages/ttp_chat/assets/icon/payment.svg
+    - packages/ttp_chat/assets/icon/orders.svg
     - packages/ttp_chat/assets/icon/order_details.svg
     - packages/ttp_chat/assets/anim/loading_anim.riv
 

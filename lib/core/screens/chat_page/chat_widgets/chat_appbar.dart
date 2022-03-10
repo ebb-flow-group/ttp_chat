@@ -7,6 +7,7 @@ import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/theme/style.dart';
 
 import '../../../../packages/chat_types/src/util.dart';
+import '../../../services/routes.dart';
 import '../../chat_utils.dart';
 import 'chat_avatar.dart';
 
@@ -29,7 +30,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
               String? userId = getChatUserId(chatProvider.selectedChatUser?.userIds);
               log("userId: $userId");
               if (userId != null) {
-                context.push('/home-brand', extra: userId);
+                context.push(Routes.homeOutletDetailPage, extra: userId);
               }
             }
           }

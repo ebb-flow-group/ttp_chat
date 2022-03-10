@@ -26,7 +26,7 @@ class ChatHomeScreen extends StatelessWidget {
   const ChatHomeScreen({
     Key? key,
     this.onContactSupport,
-    required this.onViewOrdersPage,
+    this.onViewOrdersPage,
     this.onViewOrderDetailsClick,
     this.accessToken,
     this.refreshToken,

@@ -14,9 +14,11 @@ AppBar chatAppBar(
         children: [
           //...
           IconButton(
-            onPressed: goToSearch,
+            onPressed: viewOrdersPage,
             icon: SvgPicture.asset(
-              'assets/icons/orders.svg',
+              'assets/icon/orders.svg',
+              package: 'ttp_chat',
+              color: Theme.of(context).primaryColor,
               width: 20,
               height: 20,
             ),
