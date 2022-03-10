@@ -42,7 +42,6 @@ class ChatHomeScreen extends StatelessWidget {
         accessToken,
         onViewOrderDetailsClick,
         onContactSupport,
-        onViewOrdersPage,
       ),
     );
   }
@@ -51,13 +50,11 @@ class ChatHomeScreen extends StatelessWidget {
 class _ChatHomeScreen extends StatefulWidget {
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
   final void Function()? onContactSupport;
-  final void Function()? onViewOrdersPage;
   final String? accessToken;
   const _ChatHomeScreen(
     this.accessToken,
     this.onViewOrderDetailsClick,
     this.onContactSupport,
-    this.onViewOrdersPage,
   );
 
   @override
@@ -111,7 +108,6 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
 
     return Scaffold(
         appBar: chatAppBar(context,
-            viewOrdersPage: widget.onViewOrdersPage,
             goToSearch: () => pushTo(
                 SearchPage(accessToken: widget.accessToken, onViewOrderDetailsClick: widget.onViewOrderDetailsClick!),
                 context)),
