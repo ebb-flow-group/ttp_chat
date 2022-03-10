@@ -34,11 +34,10 @@ class RoomListView extends StatelessWidget {
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 17.0),
           child: InputSearch(
-            hintText: 'Search a brand, user or mobile',
-            onChanged: (String value) {
-              chatProvider.searchUsers(value);
-            },
-          ),
+              hintText: 'Search a brand, user or mobile',
+              onChanged: (String value) {
+                chatProvider.searchUsers(value);
+              }),
         ),
         const SizedBox(height: 17),
         HomeTabs(
