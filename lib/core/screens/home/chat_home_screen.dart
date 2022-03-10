@@ -20,11 +20,13 @@ import 'home_widgets/room_list_view.dart';
 class ChatHomeScreen extends StatelessWidget {
   final String? accessToken, refreshToken;
   final void Function()? onContactSupport;
+  final void Function()? onViewOrdersPage;
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
   const ChatHomeScreen({
     Key? key,
     this.onContactSupport,
+    required this.onViewOrdersPage,
     this.onViewOrderDetailsClick,
     this.accessToken,
     this.refreshToken,
@@ -36,7 +38,12 @@ class ChatHomeScreen extends StatelessWidget {
       create: (context) => GetIt.I<ChatUtils>().isCreatorsApp
           ? ChatProvider.brandSignIn(accessToken!, refreshToken!)
           : ChatProvider.userSignIn(accessToken!, refreshToken!),
-      child: _ChatHomeScreen(accessToken, onViewOrderDetailsClick, onContactSupport),
+      child: _ChatHomeScreen(
+        accessToken,
+        onViewOrderDetailsClick,
+        onContactSupport,
+        onViewOrdersPage,
+      ),
     );
   }
 }
@@ -44,8 +51,14 @@ class ChatHomeScreen extends StatelessWidget {
 class _ChatHomeScreen extends StatefulWidget {
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
   final void Function()? onContactSupport;
+  final void Function()? onViewOrdersPage;
   final String? accessToken;
-  const _ChatHomeScreen(this.accessToken, this.onViewOrderDetailsClick, this.onContactSupport);
+  const _ChatHomeScreen(
+    this.accessToken,
+    this.onViewOrderDetailsClick,
+    this.onContactSupport,
+    this.onViewOrdersPage,
+  );
 
   @override
   _ChatHomeScreenState createState() => _ChatHomeScreenState();
@@ -98,6 +111,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
 
     return Scaffold(
         appBar: chatAppBar(context,
+            viewOrdersPage: widget.viewOrdersPage,
             goToSearch: () => pushTo(
                 SearchPage(accessToken: widget.accessToken, onViewOrderDetailsClick: widget.onViewOrderDetailsClick!),
                 context)),

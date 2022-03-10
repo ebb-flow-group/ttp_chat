@@ -1,9 +1,10 @@
-import 'package:example/theme/style.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ttp_chat/config.dart';
 import 'package:ttp_chat/core/constants/constants.dart';
+
+import 'theme/style.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
