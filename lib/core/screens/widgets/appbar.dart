@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ttp_chat/config.dart';
 
 import '../../services/routes.dart';
 
@@ -21,7 +22,7 @@ AppBar chatAppBar(
             icon: SvgPicture.asset(
               'lib/assets/orders.svg',
               package: 'ttp_chat',
-              color: Theme.of(context).primaryColor,
+              color: Config.mentaikoColor,
               width: 20,
               height: 20,
             ),
