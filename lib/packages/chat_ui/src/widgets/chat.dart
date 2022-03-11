@@ -49,11 +49,13 @@ class Chat extends StatefulWidget {
     required this.theme,
     this.timeFormat,
     this.usePreviewData = true,
+    this.hideInput = false,
     @required this.user,
   }) : super(key: key);
 
   /// See [Message.buildCustomMessage]
   final Widget Function(types.Message)? buildCustomMessage;
+  final bool hideInput;
 
   /// If [dateFormat], [dateLocale] and/or [timeFormat] is not enough to
   /// customize date headers in your case, use this to return an arbitrary
@@ -377,14 +379,14 @@ class _ChatState extends State<Chat> {
                         onSendPressed: widget.onSendPressed,
                         onTextChanged: widget.onTextChanged,
                       ),*/
-
-                      CustomInput(
-                        isAttachmentUploading: widget.isAttachmentUploading,
-                        onAttachmentPressed: widget.onAttachmentPressed,
-                        onVoiceMessagePressed: widget.onVoiceMessagePressed,
-                        onSendPressed: widget.onSendPressed,
-                        onTextChanged: widget.onTextChanged,
-                      ),
+                      if (!widget.hideInput)
+                        CustomInput(
+                          isAttachmentUploading: widget.isAttachmentUploading,
+                          onAttachmentPressed: widget.onAttachmentPressed,
+                          onVoiceMessagePressed: widget.onVoiceMessagePressed,
+                          onSendPressed: widget.onSendPressed,
+                          onTextChanged: widget.onTextChanged,
+                        ),
                     ],
                   ),
                 ),

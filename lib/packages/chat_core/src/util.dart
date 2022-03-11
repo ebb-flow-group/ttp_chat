@@ -23,7 +23,7 @@ Future<Map<String, dynamic>> fetchUser(String userId, {String? role}) async {
   if (userId.isEmpty) return {};
   final doc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
 
-  final data = doc.data();
+  final Map<String, dynamic>? data = doc.data();
 
   if (data != null) {
     data['createdAt'] = data['createdAt']?.millisecondsSinceEpoch;
@@ -62,32 +62,38 @@ Future<types.Room> processRoomDocument(
   data['updatedAt'] = data['updatedAt']?.millisecondsSinceEpoch;
 
   var imageUrl = data['imageUrl'] == null ? '' : data['imageUrl'] as String;
-  final type = data['type'] as String;
   final userIds = data['userIds'] as List<dynamic>;
   // final userRoles = data['userRoles'] == null ? {} : data['userRoles'] as Map<String, dynamic>;
-  data['name'] = await getOtherUserName(firebaseUser, userIds);
+  // data['name'] = await getOtherUserName(firebaseUser, userIds);
   var users = [];
   users = await Future.wait(
     userIds.map(
       (userId) => fetchUser(userId as String),
     ),
   );
+  String otherUserType = "";
+  String otherUserId = "";
 
-  if (type == types.RoomType.direct.toSShortString()) {
-    try {
-      final otherUser = users.firstWhere(
-        (u) => u['id'] != firebaseUser.uid,
-      );
-
-      imageUrl = otherUser['imageUrl'] as String;
-    } catch (e) {
-      // Do nothing if other user is not found, because he should be found.
-      // Consider falling back to some default values.
-    }
+  final e = userIds.where((element) => element != firebaseUser.uid).toList();
+  if (e.isNotEmpty && e.first.toString().isNotEmpty) {
+    otherUserId = e.first.toString();
   }
 
+  // if (type == types.RoomType.direct.toSShortString()) {
+  try {
+    final otherUser = users.firstWhere(
+      (u) => u['id'] != firebaseUser.uid,
+    );
+    imageUrl = otherUser['imageUrl'] as String;
+    data['name'] = '${otherUser['firstName'] ?? ''} ${otherUser['lastName'] ?? ''}';
+    otherUserType = otherUser['user_type'] as String;
+  } catch (e) {
+    // Do nothing if other user is not found, because he should be found.
+    // Consider falling back to some default values.
+  }
+  // }
+
   data['imageUrl'] = imageUrl;
-  // data['name'] = name;
   data['users'] = users;
   data['userIds'] = userIds;
 
@@ -110,10 +116,19 @@ Future<types.Room> processRoomDocument(
   }
 
   data['metadata'] = {
-    'other_user_type': await getOtherUserType(firebaseUser, userIds),
+    'other_user_type': otherUserType, //await getOtherUserType(firebaseUser, userIds),
     'last_messages': await getLastMessageOfRoom(doc.id),
     'unread_message_count': await getUnreadMessageCount(doc.id, firebaseUser)
   };
+
+  //For Deleted Accounts
+  if (otherUserId == "deleted-brand") {
+    data['name'] = "Deleted Account";
+    data['metadata']['other_user_type'] = "brand";
+  } else if (otherUserId == "deleted-user") {
+    data['name'] = "Deleted Account";
+    data['metadata']['other_user_type'] = "user";
+  }
 
   return types.Room.fromJson(data);
 }
@@ -124,6 +139,10 @@ Future<String> getOtherUserName(User firebaseUser, List<dynamic> userIds) async 
 
   final e = userIds.where((element) => element != firebaseUser.uid).toList();
   if (e.isNotEmpty && e.first.toString().isNotEmpty) {
+    //For Deleted Accounts
+    if (e.first == "deleted-brand" || e.first == "deleted-user") {
+      return "Deleted Account";
+    }
     final snapshot = await FirebaseFirestore.instance.collection('users').doc(e[0].toString()).get();
     final data = snapshot.data();
     return data == null ? '' : '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}';

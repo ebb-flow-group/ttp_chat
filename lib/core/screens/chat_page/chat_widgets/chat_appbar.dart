@@ -29,7 +29,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                 getChatUserId(chatProvider.selectedChatUser?.userIds) != null) {
               String? userId = getChatUserId(chatProvider.selectedChatUser?.userIds);
               log("userId: $userId");
-              if (userId != null) {
+              if (userId != null && userId != 'deleted-brand') {
                 context.push(Routes.homeOutletDetailPage, extra: userId);
               }
             }

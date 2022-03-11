@@ -102,6 +102,8 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                     onMessageTap: chatProvider.handleFBMessageTap,
                     onPreviewDataFetched: chatProvider.handleFBPreviewDataFetched,
                     onSendPressed: chatProvider.handleFBSendPressed,
+                    hideInput: chatProvider.selectedChatUser!.userIds
+                        .any((id) => (id == 'deleted-brand' || id == 'deleted-user')),
                     user: types.User(
                       id: FirebaseChatCore.instance.firebaseUser!.uid,
                     ),
