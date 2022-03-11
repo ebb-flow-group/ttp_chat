@@ -19,7 +19,7 @@ AppBar chatAppBar(
           IconButton(
             onPressed: viewOrdersPage ?? () => context.push(Routes.ordersRoute),
             icon: SvgPicture.asset(
-              'lib/assets/orders.svg',
+              'assets/icon/orders.svg',
               package: 'ttp_chat',
               color: Theme.of(context).primaryColor,
               width: 20,
