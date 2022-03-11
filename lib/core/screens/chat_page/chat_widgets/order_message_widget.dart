@@ -23,9 +23,9 @@ class OrderMessageWidget extends StatelessWidget {
 
   String get totalPrice {
     if (message.metadata?['total_price_db'] == null || message.metadata?['total_price_db'] == 'None') {
-      return message.metadata?['base_price_db'];
+      return "${message.metadata?['base_price_db']}";
     }
-    return message.metadata?['total_price_db'];
+    return "${message.metadata?['total_price_db']}";
   }
 
   String get orderStatus => getOrderStatus(message.metadata?['status']).toUpperCase();
