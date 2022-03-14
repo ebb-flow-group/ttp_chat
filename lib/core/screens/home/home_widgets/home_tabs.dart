@@ -79,7 +79,7 @@ class HomeTabs extends StatelessWidget {
           Container(
             height: 3,
             color: Theme.of(context).primaryColor,
-            child: stream.connectionState == ConnectionState.waiting
+            child: stream.connectionState == ConnectionState.waiting && stream.data == null
                 ? LinearProgressIndicator(color: Theme.of(context).primaryColor)
                 : null,
           ),

@@ -44,7 +44,7 @@ Future<List<types.Room>> processRoomsQuery(
   User firebaseUser,
   QuerySnapshot query,
 ) async {
-  log("************************* processRoomsQuery *************************");
+  // print("************************* processRoomsQuery *************************");
   final futures = query.docs.map(
     (doc) => processRoomDocument(doc, firebaseUser),
   );

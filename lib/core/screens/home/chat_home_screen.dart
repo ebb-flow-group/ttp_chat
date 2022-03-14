@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -112,7 +110,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
             initialData: chatProvider.roomList,
             builder: (context, snapshot) {
               if (FirebaseAuth.instance.currentUser != null && snapshot.connectionState != ConnectionState.waiting) {
-                log('****** Saving Room List to Cache ******');
+                // log('****** Saving Room List to Cache ******');
                 CacheService().saveRoomList(snapshot.data ?? [], chatProvider);
               }
               if (snapshot.hasData && snapshot.data?.isNotEmpty == true) {

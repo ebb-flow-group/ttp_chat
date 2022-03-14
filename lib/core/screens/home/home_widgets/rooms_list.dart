@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
@@ -47,7 +45,6 @@ class _RoomsListState extends State<RoomsList> {
               onTap: (room) async {
                 setState(() {});
                 var result = await pushTo(ChatPage(room, widget.onViewOrderDetailsClick), context);
-                log("result: $result");
                 if (result == null) {
                   // log('****** Updating Room List ******');
                   widget.provider.updateStream();
