@@ -45,7 +45,6 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
   late ChatProvider chatProvider;
   late AnimationController controller;
   late Animation<Offset> offset;
-  Stream<types.Room>? roomStream;
   Stream<List<types.Message>>? messageStream;
   bool showRecordingAnimation = false;
 
@@ -53,7 +52,6 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
   void initState() {
     super.initState();
     chatProvider = context.read<ChatProvider>();
-    roomStream = FirebaseChatCore.instance.room(chatProvider.selectedChatRoom!.id);
     messageStream = FirebaseChatCore.instance.messages(widget.selectedChatRoom);
     controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
     offset = Tween<Offset>(begin: const Offset(-2.0, 0.0), end: Offset.zero).animate(controller);
@@ -64,7 +62,6 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
   void dispose() {
     super.dispose();
     chatProvider.disposeTimer();
-    roomStream = null;
   }
 
   @override

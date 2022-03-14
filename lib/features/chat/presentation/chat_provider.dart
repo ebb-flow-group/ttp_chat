@@ -101,6 +101,11 @@ class ChatProvider extends ChangeNotifier {
     });
   }
 
+  updateRoomList(List<types.Room> list) {
+    roomList = list;
+    notifyListeners();
+  }
+
   ChatProvider.userSignIn(this.accessToken, this.refreshToken) {
     selectedTabIndex = 0;
     if (FirebaseAuth.instance.currentUser == null) {

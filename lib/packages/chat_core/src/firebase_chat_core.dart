@@ -197,6 +197,9 @@ class FirebaseChatCore {
   /// is `rooms`, field indexed are `userIds` (type Arrays) and `updatedAt`
   /// (type Descending), query scope is `Collection`
   Stream<List<types.Room>> rooms({bool orderByUpdatedAt = false}) {
+    log("********************");
+    log("Fetching Rooms");
+    log("********************");
     if (firebaseUser == null) return const Stream.empty();
 
     final collection = orderByUpdatedAt
