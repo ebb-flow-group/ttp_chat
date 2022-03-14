@@ -42,10 +42,17 @@ class ChatProvider extends ChangeNotifier {
   ScrollController controller = ScrollController();
   GlobalKey<AnimatedListState>? waveFormListKey;
 
-  ApiStatus apiStatus = ApiStatus.called;
-  types.Room? selectedChatUser;
+  Stream<List<types.Room>> roomsStream = FirebaseChatCore.instance.rooms(orderByUpdatedAt: true);
 
-  int selectedTabIndex = 0, brandListCount = 0, userListCount = 0;
+  updateStream() {
+    roomsStream = FirebaseChatCore.instance.rooms(orderByUpdatedAt: true);
+    notifyListeners();
+  }
+
+  ApiStatus apiStatus = ApiStatus.called;
+  types.Room? selectedChatRoom;
+
+  int selectedTabIndex = 0;
   bool isRoomListEmpty = false;
   String? accessToken, refreshToken;
 
@@ -101,7 +108,6 @@ class ChatProvider extends ChangeNotifier {
       getUserFirebaseToken(accessToken!);
     } else {
       // FirebaseAuth.instance.currentUser!.reload();
-      getCountData();
       apiStatus = ApiStatus.success;
       notifyListeners();
       consoleLog('User is signed in');
@@ -115,7 +121,6 @@ class ChatProvider extends ChangeNotifier {
       consoleLog('Brand is not signed in');
     } else {
       // FirebaseAuth.instance.currentUser!.reload();
-      getCountData();
       apiStatus = ApiStatus.success;
       notifyListeners();
       consoleLog('Brand is signed in');
@@ -143,7 +148,6 @@ class ChatProvider extends ChangeNotifier {
       UserCredential userCredential =
           await FirebaseAuth.instanceFor(app: Firebase.apps.first).signInWithCustomToken(firebaseToken);
       consoleLog('UserId: ${userCredential.user!.uid}');
-      getCountData();
       apiStatus = ApiStatus.success;
       notifyListeners();
     } catch (e, s) {
@@ -157,7 +161,6 @@ class ChatProvider extends ChangeNotifier {
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(brandsList[0].firebaseToken!);
       consoleLog('UserId: ${userCredential.user!.uid}');
-      getCountData();
       apiStatus = ApiStatus.success;
       notifyListeners();
     } catch (e, s) {
@@ -201,21 +204,6 @@ class ChatProvider extends ChangeNotifier {
       notifyListeners();
       consoleLog('SignIn Error: ${response.getException.getErrorMessage()}');
     }
-  }
-
-  void getCountData() {
-    notifyListeners();
-    FirebaseChatCore.instance.rooms().listen((event) {
-      notifyListeners();
-      if (event.isEmpty) {
-        isRoomListEmpty = true;
-        notifyListeners();
-      } else {
-        brandListCount = event.where((element) => element.metadata!['other_user_type'] == 'brand').toList().length;
-        userListCount = event.where((element) => element.metadata!['other_user_type'] == 'user').toList().length;
-        notifyListeners();
-      }
-    });
   }
 
   void startRecording() async {
@@ -351,7 +339,7 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  ChatProvider.initialiseAndLoadMessages(this.selectedChatUser) {
+  ChatProvider.initialiseAndLoadMessages(this.selectedChatRoom) {
     notifyListeners();
   }
 
@@ -361,7 +349,7 @@ class ChatProvider extends ChangeNotifier {
   }
 
   void handleFBSendPressed(types.PartialText message) {
-    FirebaseChatCore.instance.sendMessage(message, selectedChatUser!.id);
+    FirebaseChatCore.instance.sendMessage(message, selectedChatRoom!.id);
   }
 
   void handleFBMessageTap(types.Message message) async {
@@ -391,7 +379,7 @@ class ChatProvider extends ChangeNotifier {
 
   void handleFBPreviewDataFetched(types.TextMessage message, types.PreviewData previewData) {
     final updatedMessage = message.copyWith(previewData: previewData);
-    FirebaseChatCore.instance.updateMessage(updatedMessage, selectedChatUser!.id);
+    FirebaseChatCore.instance.updateMessage(updatedMessage, selectedChatRoom!.id);
   }
 
   void handleFBImageSelection() async {
@@ -413,7 +401,7 @@ class ChatProvider extends ChangeNotifier {
         final message = types.PartialImage(
             height: image.height.toDouble(), name: name, size: size, uri: uri, width: image.width.toDouble());
 
-        FirebaseChatCore.instance.sendMessage(message, selectedChatUser!.id);
+        FirebaseChatCore.instance.sendMessage(message, selectedChatRoom!.id);
         setAttachmentUploading(false);
       } on FirebaseException catch (e) {
         setAttachmentUploading(false);
@@ -445,7 +433,7 @@ class ChatProvider extends ChangeNotifier {
           uri: uri,
         );
 
-        FirebaseChatCore.instance.sendMessage(message, selectedChatUser!.id);
+        FirebaseChatCore.instance.sendMessage(message, selectedChatRoom!.id);
         setAttachmentUploading(false);
       } on FirebaseException catch (e) {
         setAttachmentUploading(false);
@@ -478,7 +466,7 @@ class ChatProvider extends ChangeNotifier {
             uri: uri,
             duration: audioMessageDuration.inSeconds);
 
-        FirebaseChatCore.instance.sendMessage(message, selectedChatUser!.id);
+        FirebaseChatCore.instance.sendMessage(message, selectedChatRoom!.id);
 
         voiceMessageFile = null;
         voiceMessageFilePath = '';

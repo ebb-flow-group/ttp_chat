@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../../../../features/chat/presentation/chat_provider.dart';
+import '../../../../packages/chat_types/src/room.dart';
 import '../../../widgets/input_search.dart';
 import '../../widgets/helpers.dart';
 import 'home_tabs.dart';
@@ -23,7 +23,7 @@ class RoomListView extends StatelessWidget {
   final ChatProvider chatProvider;
 
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
-  final Stream<List<types.Room>> stream;
+  final AsyncSnapshot<List<Room>> stream;
   final void Function(int) onTap;
 
   @override

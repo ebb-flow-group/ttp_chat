@@ -27,21 +27,21 @@ class EmptyMessage extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.normal, color: Theme.of(context).primaryColor),
         ),
         const SizedBox(height: 30),
-        ChatAvatar(chatProvider.selectedChatUser!, radius: 50),
+        ChatAvatar(chatProvider.selectedChatRoom!, radius: 50),
         const SizedBox(height: 14),
         Text(
-          chatProvider.selectedChatUser?.name ?? "",
+          chatProvider.selectedChatRoom?.name ?? "",
           style: appBarTitleStyle(context),
         ),
         //  const SizedBox(height: 4),
         // Text(
-        //   '@${getChatUserId(chatProvider.selectedChatUser?.userIds)}',
+        //   '@${getChatUserId(chatProvider.selectedChatRoom?.userIds)}',
         //   style: TextStyle(fontWeight: FontWeight.normal, color: Theme.of(context).primaryColor),
         // ),
         const SizedBox(height: 30),
         if (!GetIt.I<ChatUtils>().isCreatorsApp)
-          if ((chatProvider.selectedChatUser?.metadata?["other_user_type"] == "brand" &&
-              getChatUserId(chatProvider.selectedChatUser?.userIds) != null))
+          if ((chatProvider.selectedChatRoom?.metadata?["other_user_type"] == "brand" &&
+              getChatUserId(chatProvider.selectedChatRoom?.userIds) != null))
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   primary: Theme.of(context).primaryColor,
@@ -54,7 +54,7 @@ class EmptyMessage extends StatelessWidget {
                       .copyWith(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white),
                 ),
                 onPressed: () {
-                  String? userId = getChatUserId(chatProvider.selectedChatUser?.userIds);
+                  String? userId = getChatUserId(chatProvider.selectedChatRoom?.userIds);
                   log("userId: $userId");
                   if (userId != null && userId != 'deleted-brand') {
                     context.push(Routes.homeOutletDetailPage, extra: userId);

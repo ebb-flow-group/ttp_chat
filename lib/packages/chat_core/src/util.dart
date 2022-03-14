@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
@@ -84,10 +86,15 @@ Future<types.Room> processRoomDocument(
     final otherUser = users.firstWhere(
       (u) => u['id'] != firebaseUser.uid,
     );
-    imageUrl = otherUser['imageUrl'] as String;
+
+    imageUrl = otherUser['imageUrl'] ?? "";
     data['name'] = '${otherUser['firstName'] ?? ''} ${otherUser['lastName'] ?? ''}';
-    otherUserType = otherUser['user_type'] as String;
+
+    otherUserType = otherUser['user_type'] ?? "";
   } catch (e) {
+    log("********************************************");
+    log("processRoomDocument: $e");
+    log("********************************************");
     // Do nothing if other user is not found, because he should be found.
     // Consider falling back to some default values.
   }
@@ -116,7 +123,7 @@ Future<types.Room> processRoomDocument(
   }
 
   data['metadata'] = {
-    'other_user_type': otherUserType, //await getOtherUserType(firebaseUser, userIds),
+    'other_user_type': otherUserType.isEmpty ? await getOtherUserType(firebaseUser, userIds) : otherUserType,
     'last_messages': await getLastMessageOfRoom(doc.id),
     'unread_message_count': await getUnreadMessageCount(doc.id, firebaseUser)
   };
@@ -130,6 +137,7 @@ Future<types.Room> processRoomDocument(
     data['metadata']['other_user_type'] = "user";
   }
 
+  // log(data.toString());
   return types.Room.fromJson(data);
 }
 

@@ -7,7 +7,6 @@ import 'package:ttp_chat/core/services/cache_service.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../../../features/chat/presentation/chat_provider.dart';
-import '../../../packages/chat_core/src/firebase_chat_core.dart';
 import '../../../utils/functions.dart';
 import '../chat_error_screen.dart';
 import '../chat_utils.dart';
@@ -66,14 +65,9 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   int selectedTabIndex = 0;
   bool _error = false;
   bool _initialized = false;
-  bool isRoomListEmpty = false;
   bool isLoading = false;
 
   late ChatProvider chatProvider;
-
-  int brandListCount = 0, userListCount = 0;
-
-  late Stream<List<types.Room>> stream;
 
   @override
   void initState() {
@@ -111,20 +105,30 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
             goToSearch: () => pushTo(
                 SearchPage(accessToken: widget.accessToken, onViewOrderDetailsClick: widget.onViewOrderDetailsClick!),
                 context)),
-        body: chatProvider.isRoomListEmpty
-            ? StartChatMessage(
+        body: StreamBuilder<List<types.Room>>(
+            stream: chatProvider.roomsStream,
+            initialData: chatProvider.roomList,
+            builder: (context, snapshot) {
+              if (FirebaseAuth.instance.currentUser != null && snapshot.connectionState != ConnectionState.waiting) {
+                // log('****** Saving Room List to Cache ******');
+                CacheService().saveRoomList(snapshot.data ?? []);
+              }
+              if (snapshot.hasData && snapshot.data?.isNotEmpty == true) {
+                return RoomListView(
+                    onTap: onTabTapped,
+                    onViewOrderDetailsClick: widget.onViewOrderDetailsClick,
+                    isSwitchedAccount: GetIt.I<ChatUtils>().isCreatorsApp,
+                    selectedTabIndex: selectedTabIndex,
+                    chatProvider: chatProvider,
+                    stream: snapshot);
+              }
+              return StartChatMessage(
                 goToSearch: () => pushTo(
                     SearchPage(
                         accessToken: widget.accessToken, onViewOrderDetailsClick: widget.onViewOrderDetailsClick!),
                     context),
-              )
-            : RoomListView(
-                onTap: onTabTapped,
-                onViewOrderDetailsClick: widget.onViewOrderDetailsClick,
-                isSwitchedAccount: GetIt.I<ChatUtils>().isCreatorsApp,
-                selectedTabIndex: selectedTabIndex,
-                chatProvider: chatProvider,
-                stream: stream));
+              );
+            }));
   }
 
   onTabTapped(int index) {
@@ -137,9 +141,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
       await Firebase.initializeApp();
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if (mounted) {
-          if (FirebaseAuth.instance.currentUser != null) {
-            stream = FirebaseChatCore.instance.rooms(orderByUpdatedAt: true);
-          }
+          if (FirebaseAuth.instance.currentUser != null) {}
         }
       });
       setState(() {

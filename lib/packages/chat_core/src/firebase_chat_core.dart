@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -106,7 +108,7 @@ class FirebaseChatCore {
       'createdAt': FieldValue.serverTimestamp(),
       'imageUrl': otherUser.imageUrl,
       'metadata': metadata,
-      'name': '${otherUser.firstName} ${otherUser.lastName}',
+      'name': '${otherUser.firstName ?? ""} ${otherUser.lastName ?? ""}',
       'type': types.RoomType.direct.toSShortString(),
       'updatedAt': FieldValue.serverTimestamp(),
       'userIds': users.map((u) => u.id).toList(),
@@ -125,7 +127,7 @@ class FirebaseChatCore {
 
   /// Creates [types.User] in Firebase to store name and avatar used on
   /// rooms list
-  Future<void> createUserInFirestore(types.User user) async {
+  Future<void> createUserInFirestore(types.User user, {bool isBrand = false}) async {
     await FirebaseFirestore.instance.collection('users').doc(user.id).set({
       'createdAt': FieldValue.serverTimestamp(),
       'firstName': user.firstName,
@@ -135,6 +137,7 @@ class FirebaseChatCore {
       'metadata': user.metadata,
       'role': user.role?.toShortString(),
       'updatedAt': FieldValue.serverTimestamp(),
+      'user_type': isBrand ? 'brand' : 'user',
     });
   }
 
@@ -175,7 +178,7 @@ class FirebaseChatCore {
   /// Returns a stream of changes in a room from Firebase
   Stream<types.Room> room(String roomId) {
     if (firebaseUser == null) return const Stream.empty();
-
+    log('room: $roomId');
     return FirebaseFirestore.instance
         .collection('rooms')
         .doc(roomId)

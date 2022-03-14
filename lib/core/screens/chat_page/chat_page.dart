@@ -53,7 +53,7 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
   void initState() {
     super.initState();
     chatProvider = context.read<ChatProvider>();
-    roomStream = FirebaseChatCore.instance.room(chatProvider.selectedChatUser!.id);
+    roomStream = FirebaseChatCore.instance.room(chatProvider.selectedChatRoom!.id);
     messageStream = FirebaseChatCore.instance.messages(widget.selectedChatRoom);
     controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
     offset = Tween<Offset>(begin: const Offset(-2.0, 0.0), end: Offset.zero).animate(controller);
@@ -102,7 +102,7 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                     onMessageTap: chatProvider.handleFBMessageTap,
                     onPreviewDataFetched: chatProvider.handleFBPreviewDataFetched,
                     onSendPressed: chatProvider.handleFBSendPressed,
-                    hideInput: chatProvider.selectedChatUser!.userIds
+                    hideInput: chatProvider.selectedChatRoom!.userIds
                         .any((id) => (id == 'deleted-brand' || id == 'deleted-user')),
                     user: types.User(
                       id: FirebaseChatCore.instance.firebaseUser!.uid,

@@ -25,9 +25,9 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: GestureDetector(
         onTap: () {
           if (!GetIt.I<ChatUtils>().isCreatorsApp) {
-            if (chatProvider.selectedChatUser?.metadata?["other_user_type"] == "brand" &&
-                getChatUserId(chatProvider.selectedChatUser?.userIds) != null) {
-              String? userId = getChatUserId(chatProvider.selectedChatUser?.userIds);
+            if (chatProvider.selectedChatRoom?.metadata?["other_user_type"] == "brand" &&
+                getChatUserId(chatProvider.selectedChatRoom?.userIds) != null) {
+              String? userId = getChatUserId(chatProvider.selectedChatRoom?.userIds);
               log("userId: $userId");
               if (userId != null && userId != 'deleted-brand') {
                 context.push(Routes.homeOutletDetailPage, extra: userId);
@@ -37,12 +37,12 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         },
         child: Row(
           children: [
-            ChatAvatar(chatProvider.selectedChatUser!),
+            ChatAvatar(chatProvider.selectedChatRoom!),
             const SizedBox(
               width: 10,
             ),
             Text(
-              chatProvider.selectedChatUser?.name ?? "",
+              chatProvider.selectedChatRoom?.name ?? "",
               style: appBarTitleStyle(context),
             ),
           ],

@@ -53,7 +53,7 @@ class ChatUtils {
     try {
       final collection = await FirebaseFirestore.instance
           .collection('rooms')
-          .doc(provider.selectedChatUser!.id)
+          .doc(provider.selectedChatRoom!.id)
           .collection('messages')
           .where('authorId', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)
           .get();
@@ -61,7 +61,7 @@ class ChatUtils {
       for (QueryDocumentSnapshot<Map<String, dynamic>> singleMessage in collection.docs) {
         FirebaseFirestore.instance
             .collection('rooms')
-            .doc(provider.selectedChatUser!.id)
+            .doc(provider.selectedChatRoom!.id)
             .collection('messages')
             .doc(singleMessage.id)
             .update({'status': 'delivered'});
