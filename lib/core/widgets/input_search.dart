@@ -80,7 +80,7 @@ class _InputSearchState extends State<InputSearch> {
       );
     }
 
-    return Empty();
+    return const Empty();
   }
 
   OutlineInputBorder get _enabledBorder {

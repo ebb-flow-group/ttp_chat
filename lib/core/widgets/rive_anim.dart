@@ -34,7 +34,7 @@ class _RiveAnimState extends State<RiveAnim> {
         _artBoard = file.mainArtboard..addController(SimpleAnimation('Main'));
         // widget.animationController!.isActive = true;
       });
-    } catch (e, s) {
+    } catch (e) {
       consoleLog('Error loading Rive animation');
     }
   }

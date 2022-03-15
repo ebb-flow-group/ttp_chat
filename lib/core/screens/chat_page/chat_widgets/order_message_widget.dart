@@ -241,7 +241,6 @@ class OrderMessageWidget extends StatelessWidget {
           return '';
       }
     }
-    return "";
   }
 
   String getOrderDate(int orderDate) {
