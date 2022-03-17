@@ -107,7 +107,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                 context)),
         body: StreamBuilder<List<types.Room>>(
             stream: chatProvider.roomsStream,
-            initialData: chatProvider.roomList,
+            initialData: chatProvider.roomList.isEmpty ? null : chatProvider.roomList,
             builder: (context, snapshot) {
               if (FirebaseAuth.instance.currentUser != null && snapshot.connectionState != ConnectionState.waiting) {
                 // log('****** Saving Room List to Cache ******');

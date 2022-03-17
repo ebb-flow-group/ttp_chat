@@ -154,6 +154,7 @@ class ChatProvider extends ChangeNotifier {
           await FirebaseAuth.instanceFor(app: Firebase.apps.first).signInWithCustomToken(firebaseToken);
       consoleLog('UserId: ${userCredential.user!.uid}');
       apiStatus = ApiStatus.success;
+      updateStream();
       notifyListeners();
     } catch (e, s) {
       apiStatus = ApiStatus.failed;
@@ -167,6 +168,7 @@ class ChatProvider extends ChangeNotifier {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(brandsList[0].firebaseToken!);
       consoleLog('UserId: ${userCredential.user!.uid}');
       apiStatus = ApiStatus.success;
+      updateStream();
       notifyListeners();
     } catch (e, s) {
       apiStatus = ApiStatus.failed;
