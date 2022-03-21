@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../../../features/chat/domain/search_user_model.dart';
@@ -14,6 +15,7 @@ import '../../../packages/chat_core/src/util.dart';
 import '../../../utils/functions.dart';
 import '../../widgets/input_search.dart';
 import '../chat_page/chat_page.dart';
+import '../chat_utils.dart';
 import 'search_widgets/search_brand_tile.dart';
 import 'search_widgets/search_list_view.dart';
 import 'search_widgets/search_tab_bar.dart';
@@ -141,6 +143,12 @@ class _SearchPageState extends State<SearchPage> {
             usersList.addAll(response.data!.users!.sublist(0, 500));
           } else {
             usersList.addAll(response.data!.users!);
+          }
+          //removing current user from the list
+          if (GetIt.I<ChatUtils>().isCreatorsApp) {
+            brandsList.removeWhere((element) => element.username == FirebaseAuth.instance.currentUser!.uid);
+          } else {
+            usersList.removeWhere((element) => element.phoneNumber == FirebaseAuth.instance.currentUser!.uid);
           }
 
           if (brandsList.isEmpty) {
