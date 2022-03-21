@@ -32,15 +32,15 @@ class User extends Equatable {
 
   /// Creates user from a map (decoded JSON).
   User.fromJson(dynamic json)
-      : createdAt = json['createdAt'] as int?,
-        firstName = json['firstName'] as String?,
+      : createdAt = json['createdAt'],
+        firstName = json['firstName'] ?? "",
         id = json['id'] as String? ?? '',
         imageUrl = json['imageUrl'] as String?,
-        lastName = json['lastName'] as String?,
-        lastSeen = json['lastSeen'] as int?,
+        lastName = json['lastName'] ?? "",
+        lastSeen = json['lastSeen'],
         metadata = json['metadata'] as Map<String, dynamic>?,
         role = getRoleFromString(json['role'] as String?),
-        updatedAt = json['updatedAt'] as int?;
+        updatedAt = json['updatedAt'];
 
   /// Converts user to the map representation, encodable to JSON.
   Map<String, dynamic> toJson() => {
@@ -68,7 +68,7 @@ class User extends Equatable {
     int? lastSeen,
     Map<String, dynamic>? metadata,
     Role? role,
-    int? updatedAt,
+    dynamic updatedAt,
   }) {
     return User(
       firstName: firstName,
@@ -92,7 +92,7 @@ class User extends Equatable {
   List<Object?> get props => [createdAt, firstName, id, imageUrl, lastName, lastSeen, metadata, role, updatedAt];
 
   /// Created user timestamp, in ms
-  final int? createdAt;
+  final dynamic createdAt;
 
   /// First name of the user
   final String? firstName;
@@ -107,7 +107,7 @@ class User extends Equatable {
   final String? lastName;
 
   /// Timestamp when user was last visible, in ms
-  final int? lastSeen;
+  final dynamic lastSeen;
 
   /// Additional custom metadata or attributes related to the user
   final Map<String, dynamic>? metadata;
@@ -116,5 +116,5 @@ class User extends Equatable {
   final Role? role;
 
   /// Updated user timestamp, in ms
-  final int? updatedAt;
+  final dynamic? updatedAt;
 }

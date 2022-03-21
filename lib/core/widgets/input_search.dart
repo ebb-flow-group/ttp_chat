@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../config.dart';
@@ -109,6 +108,7 @@ class _InputSearchState extends State<InputSearch> {
         enableInteractiveSelection: widget.enableInteractiveSelection,
         cursorColor: Config.primaryColor,
         onChanged: _onChanged,
+        autofocus: widget.autofocus,
         decoration: InputDecoration(
           filled: true,
           fillColor: Config.grayG5Color,

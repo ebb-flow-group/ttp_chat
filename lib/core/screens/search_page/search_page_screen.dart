@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -34,11 +35,13 @@ class _SearchPageState extends State<SearchPage> {
   int selectedTabIndex = 0;
   List<types.Room> userRooms = [];
   bool searching = false;
+  bool init = true;
+  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
-    searchUser("");
+    // searchUser("");
   }
 
   @override
@@ -73,13 +76,17 @@ class _SearchPageState extends State<SearchPage> {
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 17.0),
                   child: InputSearch(
+                      autofocus: true,
                       hintText: 'Search a brand, user or mobile',
                       onChanged: (String value) {
-                        searchUser(value);
+                        if (_debounce?.isActive ?? false) _debounce?.cancel();
+                        _debounce = Timer(const Duration(milliseconds: 500), () {
+                          searchUser(value);
+                        });
                       }),
                 ),
                 const SizedBox(height: 20),
-                brandsList.isEmpty && usersList.isEmpty
+                init
                     ? const Text(
                         'Search for someone on Tabletop',
                         style: TextStyle(
@@ -91,12 +98,14 @@ class _SearchPageState extends State<SearchPage> {
                         textAlign: TextAlign.center,
                       )
                     : const SizedBox(),
-                brandsList.isNotEmpty || usersList.isNotEmpty ? _tabs() : const SizedBox(),
-                brandsList.isNotEmpty || usersList.isNotEmpty
-                    ? selectedTabIndex == 0
-                        ? brandsListWidget()
-                        : usersListWidget()
-                    : const SizedBox(),
+                init
+                    ? const SizedBox()
+                    : Column(
+                        children: [
+                          _tabs(),
+                          selectedTabIndex == 0 ? brandsListWidget() : usersListWidget(),
+                        ],
+                      ),
                 const SizedBox(height: 17),
               ],
             ),
@@ -105,17 +114,34 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void searchUser(String searchValue) async {
+    if (searchValue.trim().isEmpty) {
+      setState(() {
+        searching = false;
+      });
+      return;
+    }
     setState(() {
       searching = true;
     });
     try {
       BaseModel<SearchUserModel> response = await ApiService().searchUser(widget.accessToken!, searchValue);
       if (response.data != null) {
+        init = false;
+
         setState(() {
+          searching = false;
           brandsList.clear();
           usersList.clear();
-          brandsList.addAll(response.data!.brands!);
-          usersList.addAll(response.data!.users!);
+          if (response.data?.brands != null && response.data!.brands!.length > 500) {
+            brandsList.addAll(response.data!.brands!.sublist(0, 500));
+          } else {
+            brandsList.addAll(response.data!.brands!);
+          }
+          if (response.data?.users != null && response.data!.users!.length > 500) {
+            usersList.addAll(response.data!.users!.sublist(0, 500));
+          } else {
+            usersList.addAll(response.data!.users!);
+          }
 
           if (brandsList.isEmpty) {
             setState(() {
@@ -132,6 +158,7 @@ class _SearchPageState extends State<SearchPage> {
       }
     } catch (e) {}
     setState(() {
+      init = false;
       searching = false;
     });
   }

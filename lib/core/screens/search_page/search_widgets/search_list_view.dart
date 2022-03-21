@@ -5,9 +5,7 @@ import '../../../widgets/no_search_results.dart';
 class SearchListView extends StatelessWidget {
   final List list;
   final Widget Function(BuildContext, int) itemBuilder;
-  const SearchListView(
-      {required this.list, required this.itemBuilder, Key? key})
-      : super(key: key);
+  const SearchListView({required this.list, required this.itemBuilder, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

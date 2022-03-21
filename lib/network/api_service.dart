@@ -43,7 +43,7 @@ class ApiService {
     SearchUserModel response;
     try {
       response = await apiClient.searchChatUser('Bearer $token', searchValue);
-      consoleLog('SEARCH USER RESP: ${response.toJson()}');
+      //    consoleLog('SEARCH USER RESP: ${response.toJson()}');
     } catch (error) {
       consoleLog('ERRPRRRR: $error');
       return BaseModel()..setException(ServerError.withError(error: error as DioError));
