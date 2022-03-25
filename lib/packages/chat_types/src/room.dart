@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+
 import 'message.dart';
 import 'user.dart';
 import 'util.dart';
@@ -19,37 +20,32 @@ extension RoomTypeToShortString on RoomType {
 @immutable
 class Room extends Equatable {
   /// Creates a [Room]
-  const Room({
-    this.createdAt,
-    required this.id,
-    this.imageUrl,
-    this.lastMessages,
-    this.metadata,
-    this.name,
-    required this.type,
-    this.updatedAt,
-    required this.users,
-    required this.userIds
-  });
+  const Room(
+      {this.createdAt,
+      required this.id,
+      this.imageUrl,
+      this.lastMessages,
+      this.metadata,
+      this.name,
+      this.owner,
+      required this.type,
+      this.updatedAt,
+      required this.users,
+      required this.userIds});
 
   /// Creates room from a map (decoded JSON).
   Room.fromJson(Map<String, dynamic> json)
       : createdAt = json['createdAt'] as int?,
+        owner = json['owner'],
         id = json['id'] as String,
         imageUrl = json['imageUrl'] as String?,
-        lastMessages = (json['lastMessages'] as List<Map<String, dynamic>>?)
-            ?.map((e) => Message.fromJson(e))
-            .toList(),
+        lastMessages = (json['lastMessages'] as List<Map<String, dynamic>>?)?.map((e) => Message.fromJson(e)).toList(),
         metadata = json['metadata'] as Map<String, dynamic>?,
         name = json['name'] as String?,
         type = getRoomTypeFromString(json['type'] as String),
         updatedAt = json['updatedAt'] as int?,
-        users = (json['users'] as List<dynamic>)
-            .map((e) => User.fromJson(e))
-            .toList(),
-        userIds = (json['userIds'] as List<dynamic>)
-            .map((e) => e)
-            .toList();
+        users = (json['users'] as List<dynamic>).map((e) => User.fromJson(e)).toList(),
+        userIds = (json['userIds'] as List<dynamic>).map((e) => e).toList();
 
   /// Converts room to the map representation, encodable to JSON.
   Map<String, dynamic> toJson() => {
@@ -61,6 +57,7 @@ class Room extends Equatable {
         'name': name,
         'type': type.toSShortString(),
         'updatedAt': updatedAt,
+        'owner': owner,
         'users': users.map((e) => e.toJson()).toList(),
         'userIds': userIds.map((e) => e).toList(),
       };
@@ -100,21 +97,13 @@ class Room extends Equatable {
 
   /// Equatable props
   @override
-  List<Object?> get props => [
-        createdAt,
-        id,
-        imageUrl,
-        lastMessages,
-        metadata,
-        name,
-        type,
-        updatedAt,
-        users,
-        userIds
-      ];
+  List<Object?> get props => [createdAt, id, imageUrl, lastMessages, metadata, name, type, updatedAt, users, userIds];
 
   /// Created room timestamp, in ms
   final int? createdAt;
+
+  /// Owner Id Of Chat Room is the room is channel
+  final String? owner;
 
   /// Room's unique ID
   final String id;

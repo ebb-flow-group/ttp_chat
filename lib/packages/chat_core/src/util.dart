@@ -48,6 +48,7 @@ Future<List<types.Room>> processRoomsQuery(
   final futures = query.docs.map(
     (doc) => processRoomDocument(doc, firebaseUser),
   );
+  log("processRoomsQuery ${futures.length.toString()}");
 
   return await Future.wait(futures);
 }
@@ -58,87 +59,174 @@ Future<types.Room> processRoomDocument(
   User firebaseUser,
 ) async {
   final data = doc.data() as Map<String, dynamic>;
-
-  data['createdAt'] = data['createdAt']?.millisecondsSinceEpoch;
-  data['id'] = doc.id;
-  data['updatedAt'] = data['updatedAt']?.millisecondsSinceEpoch;
-
-  var imageUrl = data['imageUrl'] == null ? '' : data['imageUrl'] as String;
-  final userIds = data['userIds'] as List<dynamic>;
-  // final userRoles = data['userRoles'] == null ? {} : data['userRoles'] as Map<String, dynamic>;
-  // data['name'] = await getOtherUserName(firebaseUser, userIds);
-  var users = [];
-  users = await Future.wait(
-    userIds.map(
-      (userId) => fetchUser(userId as String),
-    ),
-  );
-  String otherUserType = "";
-  String otherUserId = "";
-
-  final e = userIds.where((element) => element != firebaseUser.uid).toList();
-  if (e.isNotEmpty && e.first.toString().isNotEmpty) {
-    otherUserId = e.first.toString();
+  String type = data['type'] as String;
+  if (type == "channel") {
+    return processChannelRoomDocument(doc, firebaseUser);
+  } else {
+    return processDirectRoomDocument(doc, firebaseUser);
   }
+}
 
-  // if (type == types.RoomType.direct.toSShortString()) {
+types.Room defaultRoom = const types.Room(
+  id: '',
+  users: [],
+  type: types.RoomType.direct,
+  userIds: [],
+);
+
+/// Returns a [types.Room] created from Firebase document
+Future<types.Room> processDirectRoomDocument(
+  DocumentSnapshot doc,
+  User firebaseUser,
+) async {
   try {
-    final otherUser = users.firstWhere(
-      (u) => u['id'] != firebaseUser.uid,
+    final data = doc.data() as Map<String, dynamic>;
+
+    data['createdAt'] = data['createdAt']?.millisecondsSinceEpoch;
+    data['id'] = doc.id;
+    data['updatedAt'] = data['updatedAt']?.millisecondsSinceEpoch;
+
+    var imageUrl = data['imageUrl'] == null ? '' : data['imageUrl'] as String;
+    final userIds = data['userIds'] as List<dynamic>;
+    // final userRoles = data['userRoles'] == null ? {} : data['userRoles'] as Map<String, dynamic>;
+    // data['name'] = await getOtherUserName(firebaseUser, userIds);
+    var users = [];
+    users = await Future.wait(
+      userIds.map(
+        (userId) => fetchUser(userId as String),
+      ),
     );
+    String otherUserType = "";
+    String otherUserId = "";
 
-    imageUrl = otherUser['imageUrl'] ?? "";
-    data['name'] = '${otherUser['firstName'] ?? ''} ${otherUser['lastName'] ?? ''}';
-
-    otherUserType = otherUser['user_type'] ?? "";
-  } catch (e) {
-    log("********************************************");
-    log("processRoomDocument: $e");
-    log("********************************************");
-    // Do nothing if other user is not found, because he should be found.
-    // Consider falling back to some default values.
-  }
-  // }
-
-  data['imageUrl'] = imageUrl;
-  data['users'] = users;
-  data['userIds'] = userIds;
-
-  if (data['lastMessages'] != null) {
-    final lastMessages = data['lastMessages'].map((lm) {
-      final author = users.firstWhere(
-        (u) => u['id'] == lm['authorId'],
-        orElse: () => {'id': lm['authorId'] as String},
+    final e = userIds.where((element) => element != firebaseUser.uid).toList();
+    if (e.isNotEmpty && e.first.toString().isNotEmpty) {
+      otherUserId = e.first.toString();
+    }
+    try {
+      final otherUser = users.firstWhere(
+        (u) => u['id'] != firebaseUser.uid,
       );
 
-      lm['author'] = author;
-      lm['createdAt'] = lm['createdAt']?.millisecondsSinceEpoch;
-      lm['id'] = lm['id'] ?? '';
-      lm['updatedAt'] = lm['updatedAt']?.millisecondsSinceEpoch;
-
-      return lm;
-    }).toList();
-
-    data['lastMessages'] = lastMessages;
+      imageUrl = otherUser['imageUrl'] ?? "";
+      data['name'] = '${otherUser['firstName'] ?? ''} ${otherUser['lastName'] ?? ''}';
+      otherUserType = otherUser['user_type'] ?? "";
+    } catch (e) {
+      log("********************************************");
+      log("processRoomDocument: $e");
+      log("********************************************");
+      // Do nothing if other user is not found, because he should be found.
+      // Consider falling back to some default values.
+    }
+    data['imageUrl'] = imageUrl;
+    data['users'] = users;
+    data['userIds'] = userIds;
+    if (data['lastMessages'] != null) {
+      final lastMessages = data['lastMessages'].map((lm) {
+        final author = users.firstWhere(
+          (u) => u['id'] == lm['authorId'],
+          orElse: () => {'id': lm['authorId'] as String},
+        );
+        lm['author'] = author;
+        lm['createdAt'] = lm['createdAt']?.millisecondsSinceEpoch;
+        lm['id'] = lm['id'] ?? '';
+        lm['updatedAt'] = lm['updatedAt']?.millisecondsSinceEpoch;
+        return lm;
+      }).toList();
+      data['lastMessages'] = lastMessages;
+    }
+    data['metadata'] = {
+      'other_user_type': otherUserType.isEmpty ? await getOtherUserType(firebaseUser, userIds) : otherUserType,
+      'last_messages': await getLastMessageOfRoom(doc.id),
+      'unread_message_count': await getUnreadMessageCount(doc.id, firebaseUser)
+    };
+    //For Deleted Accounts
+    if (otherUserId == "deleted-brand") {
+      data['name'] = "Deleted Account";
+      data['metadata']['other_user_type'] = "brand";
+    } else if (otherUserId == "deleted-user") {
+      data['name'] = "Deleted Account";
+      data['metadata']['other_user_type'] = "user";
+    }
+    return types.Room.fromJson(data);
+  } catch (e) {
+    log("********************************************");
+    log("processDirectRoomDocument: $e");
+    log("********************************************");
+    return defaultRoom;
   }
+}
 
-  data['metadata'] = {
-    'other_user_type': otherUserType.isEmpty ? await getOtherUserType(firebaseUser, userIds) : otherUserType,
-    'last_messages': await getLastMessageOfRoom(doc.id),
-    'unread_message_count': await getUnreadMessageCount(doc.id, firebaseUser)
-  };
+/// Returns a  channel [types.Room] created from Firebase document
+Future<types.Room> processChannelRoomDocument(
+  DocumentSnapshot doc,
+  User firebaseUser,
+) async {
+  try {
+    final data = doc.data() as Map<String, dynamic>;
+    data['createdAt'] = data['createdAt']?.millisecondsSinceEpoch;
+    data['id'] = doc.id;
+    data['updatedAt'] = data['updatedAt']?.millisecondsSinceEpoch;
+    var imageUrl = data['imageUrl'] == null ? '' : data['imageUrl'] as String;
+    final userIds = data['userIds'] as List<dynamic>;
+    String otherUserType = "";
+    String ownerId = data["owner"];
+    Map<String, dynamic> otherUser = await fetchUser(data["owner"]);
+    try {
+      imageUrl = otherUser['imageUrl'] ?? "";
+      data['name'] = '${otherUser['firstName'] ?? ''} ${otherUser['lastName'] ?? ''}';
+      otherUserType = otherUser['user_type'] ?? "";
+    } catch (e) {
+      log("********************************************");
+      log("processRoomDocument: $e");
+      log("********************************************");
+      // Do nothing if other user is not found, because he should be found.
+      // Consider falling back to some default values.
+    }
+    data['imageUrl'] = imageUrl;
+    data['users'] = [];
+    data['userIds'] = userIds;
+    if (data['lastMessages'] != null) {
+      final lastMessages = data['lastMessages'].map((lm) {
+        // final author = [].firstWhere(
+        //   (u) => u['id'] == lm['authorId'],
+        //   orElse: () => {'id': lm['authorId'] as String},
+        // );
 
-  //For Deleted Accounts
-  if (otherUserId == "deleted-brand") {
-    data['name'] = "Deleted Account";
-    data['metadata']['other_user_type'] = "brand";
-  } else if (otherUserId == "deleted-user") {
-    data['name'] = "Deleted Account";
-    data['metadata']['other_user_type'] = "user";
+        // lm['author'] = author;
+        lm['createdAt'] = lm['createdAt']?.millisecondsSinceEpoch;
+        lm['id'] = lm['id'] ?? '';
+        lm['updatedAt'] = lm['updatedAt']?.millisecondsSinceEpoch;
+
+        return lm;
+      }).toList();
+
+      data['lastMessages'] = lastMessages;
+    }
+
+    data['metadata'] = {
+      'other_user_type': otherUserType.isEmpty ? await getOtherUserType(firebaseUser, userIds) : otherUserType,
+      'last_messages': await getLastMessageOfRoom(doc.id),
+      'unread_message_count': await getUnreadMessageCount(doc.id, firebaseUser)
+    };
+
+    //For Deleted Accounts
+    if (ownerId == "deleted-brand") {
+      data['name'] = "Deleted Account";
+      data['metadata']['other_user_type'] = "brand";
+    } else if (ownerId == "deleted-user") {
+      data['name'] = "Deleted Account";
+      data['metadata']['other_user_type'] = "user";
+    }
+
+    // log(data.toString());
+    return types.Room.fromJson(data);
+  } catch (e) {
+    log("********************************************");
+    log("processChannelRoomDocument: $e");
+    log("********************************************");
+    return defaultRoom;
   }
-
-  // log(data.toString());
-  return types.Room.fromJson(data);
 }
 
 Future<String> getOtherUserName(User firebaseUser, List<dynamic> userIds) async {

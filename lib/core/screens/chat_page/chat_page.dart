@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -99,8 +100,13 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                     onMessageTap: chatProvider.handleFBMessageTap,
                     onPreviewDataFetched: chatProvider.handleFBPreviewDataFetched,
                     onSendPressed: chatProvider.handleFBSendPressed,
-                    hideInput: chatProvider.selectedChatRoom!.userIds
-                        .any((id) => (id == 'deleted-brand' || id == 'deleted-user')),
+                    //hiding Input in two cases
+                    //1. If The Account is Deleted from firebase
+                    //2. If the Room is Channel and the current user is not the owner of room
+                    hideInput: (chatProvider.selectedChatRoom!.userIds
+                            .any((id) => (id == 'deleted-brand' || id == 'deleted-user')) ||
+                        (chatProvider.selectedChatRoom?.type == types.RoomType.channel &&
+                            chatProvider.selectedChatRoom?.owner != FirebaseAuth.instance.currentUser?.uid)),
                     user: types.User(
                       id: FirebaseChatCore.instance.firebaseUser!.uid,
                     ),

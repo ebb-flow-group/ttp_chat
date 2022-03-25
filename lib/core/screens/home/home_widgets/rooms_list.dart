@@ -93,7 +93,7 @@ class RoomListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<types.Room> rooms = snapshot.data
-            ?.where((element) => element.metadata!['other_user_type'] == (list == view.brands ? 'brand' : 'user'))
+            ?.where((element) => element.metadata?['other_user_type'] == (list == view.brands ? 'brand' : 'user'))
             .toList() ??
         [];
 
@@ -104,29 +104,41 @@ class RoomListView extends StatelessWidget {
               (element.name?.toLowerCase().contains(context.read<ChatProvider>().searchString.toLowerCase()) == true))
           .toList();
     }
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 17),
-      padding: const EdgeInsets.only(top: 17),
-      child: rooms.isEmpty
-          ? const NoResults()
-          : ListView.separated(
-              shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
-              itemCount: rooms.length,
-              itemBuilder: (context, index) {
-                var room = rooms[index];
+    return RefreshIndicator(
+      backgroundColor: Theme.of(context).primaryColor,
+      onRefresh: () {
+        context.read<ChatProvider>().updateStream();
+        return Future.delayed(
+          const Duration(seconds: 1),
+        );
+      },
+      child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 17),
+          padding: const EdgeInsets.only(top: 17),
+          child: ListView(
+            children: [
+              rooms.isEmpty
+                  ? const NoResults()
+                  : ListView.separated(
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: rooms.length,
+                      itemBuilder: (context, index) {
+                        var room = rooms[index];
 
-                return ChatTile(
-                  room,
-                  onTap: () {
-                    onTap(room);
-                  },
-                );
-              },
-              separatorBuilder: (context, index) {
-                return const SizedBox(height: 17);
-              },
-            ),
+                        return ChatTile(
+                          room,
+                          onTap: () {
+                            onTap(room);
+                          },
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return const SizedBox(height: 17);
+                      },
+                    ),
+            ],
+          )),
     );
   }
 }
