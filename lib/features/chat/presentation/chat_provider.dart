@@ -115,7 +115,7 @@ class ChatProvider extends ChangeNotifier {
       // FirebaseAuth.instance.currentUser!.reload();
       apiStatus = ApiStatus.success;
       notifyListeners();
-      consoleLog('User is signed in');
+      consoleLog('User is signed in ${FirebaseAuth.instance.currentUser!.uid}');
     }
   }
 
@@ -128,7 +128,7 @@ class ChatProvider extends ChangeNotifier {
       // FirebaseAuth.instance.currentUser!.reload();
       apiStatus = ApiStatus.success;
       notifyListeners();
-      consoleLog('Brand is signed in');
+      consoleLog('Brand is signed in ${FirebaseAuth.instance.currentUser!.uid}');
     }
   }
 

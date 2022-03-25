@@ -49,7 +49,7 @@ Future<List<types.Room>> processRoomsQuery(
   final futures = query.docs.map(
     (doc) => processRoomDocument(doc, firebaseUser),
   );
-  log("processRoomsQuery ${futures.length.toString()}");
+  //log("processRoomsQuery ${futures.length.toString()}");
 
   return await Future.wait(futures);
 }
@@ -173,7 +173,7 @@ Future<types.Room> processChannelRoomDocument(
     String otherUserType = "";
     String ownerId = data["owner"];
     Map<String, dynamic> otherUser = await fetchUser(data["owner"]);
-    log("processChannelRoomDocument: ${otherUser.toString()}");
+    //log("processChannelRoomDocument: ${otherUser.toString()}");
     try {
       imageUrl = data['imageUrl'] ?? otherUser['imageUrl'] ?? "";
       otherUserType = otherUser['user_type'] ?? "";
