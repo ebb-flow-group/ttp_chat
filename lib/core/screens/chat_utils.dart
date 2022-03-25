@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -54,27 +52,23 @@ class ChatUtils {
 
   static Future updateUnreadMessageStatus(ChatProvider provider) async {
     if (provider.selectedChatRoom?.type == RoomType.channel) {
-      log("updateUnreadMessageStatus: channel");
+      //log("updateUnreadMessageStatus: channel");
       final collection = await FirebaseFirestore.instance
           .collection('rooms')
           .doc(provider.selectedChatRoom!.id)
           .collection('messages')
           .where('authorId', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)
-          .limit(maxUnreadMessageCount)
+          .where('unreadUserIds', arrayContains: FirebaseAuth.instance.currentUser!.uid)
           .get();
       for (QueryDocumentSnapshot<Map<String, dynamic>> singleMessage in collection.docs) {
-        Map data = singleMessage.data();
-        List readUsers = data['readUserIds'] ?? [];
-        if (!readUsers.contains(FirebaseAuth.instance.currentUser!.uid)) {
-          FirebaseFirestore.instance
-              .collection('rooms')
-              .doc(provider.selectedChatRoom!.id)
-              .collection('messages')
-              .doc(singleMessage.id)
-              .update({
-            'readUserIds': FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid]),
-          });
-        }
+        FirebaseFirestore.instance
+            .collection('rooms')
+            .doc(provider.selectedChatRoom!.id)
+            .collection('messages')
+            .doc(singleMessage.id)
+            .update({
+          'unreadUserIds': FieldValue.arrayRemove([FirebaseAuth.instance.currentUser!.uid]),
+        });
       }
     } else {
       try {
@@ -83,8 +77,7 @@ class ChatUtils {
             .doc(provider.selectedChatRoom!.id)
             .collection('messages')
             .where('authorId', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)
-            .where("status", isNotEqualTo: "delivered")
-            .limit(maxUnreadMessageCount)
+            .where("status", isEqualTo: "sent")
             .get();
         for (QueryDocumentSnapshot<Map<String, dynamic>> singleMessage in collection.docs) {
           FirebaseFirestore.instance

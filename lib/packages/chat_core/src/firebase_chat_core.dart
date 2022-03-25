@@ -249,11 +249,11 @@ class FirebaseChatCore {
     messageMap['authorId'] = firebaseUser?.uid;
     messageMap['createdAt'] = FieldValue.serverTimestamp();
     messageMap['updatedAt'] = FieldValue.serverTimestamp();
-    //! UNUSED For checking unread messages in a channel
-    // if (room.type == types.RoomType.channel) {
-    //   room.userIds.removeWhere((element) => element == firebaseUser?.uid);
-    //   messageMap['unreadUserIds'] = room.userIds;
-    // }
+    // For checking unread messages in a channel
+    if (room.type == types.RoomType.channel) {
+      room.userIds.removeWhere((element) => element == firebaseUser?.uid);
+      messageMap['unreadUserIds'] = room.userIds;
+    }
     await FirebaseFirestore.instance.collection('rooms/$roomId/messages').add(messageMap);
 
     FirebaseFirestore.instance.collection('rooms').doc(roomId).update({'updatedAt': FieldValue.serverTimestamp()});

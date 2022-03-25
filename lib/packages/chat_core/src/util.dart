@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ttp_chat/global.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 /// Extension with one [toShortString] method
@@ -293,7 +292,6 @@ Future<int> getUnreadMessageCount(DocumentSnapshot<Object?> room, User firebaseU
         .collection('messages')
         .where('authorId', isNotEqualTo: firebaseUser.uid)
         .where('status', isEqualTo: 'sent')
-        .limit(maxUnreadMessageCount)
         .get();
     return collection.docs.length;
   }
@@ -305,14 +303,7 @@ Future<int> getUnreadChannelMessageCount(String roomId, User firebaseUser) async
       .doc(roomId)
       .collection('messages')
       .where('authorId', isNotEqualTo: firebaseUser.uid)
-      .limit(maxUnreadMessageCount)
+      .where('unreadUserIds', arrayContains: firebaseUser.uid)
       .get();
-  List unreadMessages = [];
-  for (var element in collection.docs) {
-    final data = element.data();
-    if (data['readUserIds'] == null || !data['readUserIds']?.contains(firebaseUser.uid)) {
-      unreadMessages.add(data);
-    }
-  }
-  return unreadMessages.length;
+  return collection.docs.length;
 }
