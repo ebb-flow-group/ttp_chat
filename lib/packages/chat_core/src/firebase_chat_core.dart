@@ -215,8 +215,9 @@ class FirebaseChatCore {
   /// Sends a message to the Firestore. Accepts any partial message and a
   /// room ID. If arbitraty data is provided in the [partialMessage]
   /// does nothing.
-  void sendMessage(dynamic partialMessage, String roomId) async {
-    if (firebaseUser == null) return;
+  void sendMessage(dynamic partialMessage, types.Room? room) async {
+    if (firebaseUser == null || room == null) return;
+    String roomId = room.id;
 
     types.Message message;
 
@@ -248,7 +249,11 @@ class FirebaseChatCore {
     messageMap['authorId'] = firebaseUser?.uid;
     messageMap['createdAt'] = FieldValue.serverTimestamp();
     messageMap['updatedAt'] = FieldValue.serverTimestamp();
-
+    //! UNUSED For checking unread messages in a channel
+    // if (room.type == types.RoomType.channel) {
+    //   room.userIds.removeWhere((element) => element == firebaseUser?.uid);
+    //   messageMap['unreadUserIds'] = room.userIds;
+    // }
     await FirebaseFirestore.instance.collection('rooms/$roomId/messages').add(messageMap);
 
     FirebaseFirestore.instance.collection('rooms').doc(roomId).update({'updatedAt': FieldValue.serverTimestamp()});

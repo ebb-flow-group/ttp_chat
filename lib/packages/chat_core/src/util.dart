@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ttp_chat/global.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 /// Extension with one [toShortString] method
@@ -138,7 +139,7 @@ Future<types.Room> processDirectRoomDocument(
     data['metadata'] = {
       'other_user_type': otherUserType.isEmpty ? await getOtherUserType(firebaseUser, userIds) : otherUserType,
       'last_messages': await getLastMessageOfRoom(doc.id),
-      'unread_message_count': await getUnreadMessageCount(doc.id, firebaseUser)
+      'unread_message_count': await getUnreadMessageCount(doc, firebaseUser)
     };
     //For Deleted Accounts
     if (otherUserId == "deleted-brand") {
@@ -167,14 +168,14 @@ Future<types.Room> processChannelRoomDocument(
     data['createdAt'] = data['createdAt']?.millisecondsSinceEpoch;
     data['id'] = doc.id;
     data['updatedAt'] = data['updatedAt']?.millisecondsSinceEpoch;
-    var imageUrl = data['imageUrl'] == null ? '' : data['imageUrl'] as String;
+    String? imageUrl;
     final userIds = data['userIds'] as List<dynamic>;
     String otherUserType = "";
     String ownerId = data["owner"];
     Map<String, dynamic> otherUser = await fetchUser(data["owner"]);
+    log("processChannelRoomDocument: ${otherUser.toString()}");
     try {
-      imageUrl = otherUser['imageUrl'] ?? "";
-      data['name'] = '${otherUser['firstName'] ?? ''} ${otherUser['lastName'] ?? ''}';
+      imageUrl = data['imageUrl'] ?? otherUser['imageUrl'] ?? "";
       otherUserType = otherUser['user_type'] ?? "";
     } catch (e) {
       log("********************************************");
@@ -207,7 +208,7 @@ Future<types.Room> processChannelRoomDocument(
     data['metadata'] = {
       'other_user_type': otherUserType.isEmpty ? await getOtherUserType(firebaseUser, userIds) : otherUserType,
       'last_messages': await getLastMessageOfRoom(doc.id),
-      'unread_message_count': await getUnreadMessageCount(doc.id, firebaseUser)
+      'unread_message_count': await getUnreadMessageCount(doc, firebaseUser)
     };
 
     //For Deleted Accounts
@@ -279,14 +280,39 @@ Future<Map<String, dynamic>> getLastMessageOfRoom(String roomId) async {
   return collection.docs.isNotEmpty ? collection.docs[0].data() : {};
 }
 
-Future<int> getUnreadMessageCount(String roomId, User firebaseUser) async {
+Future<int> getUnreadMessageCount(DocumentSnapshot<Object?> room, User firebaseUser) async {
+  final roomId = room.id;
+  final Map roomData = room.data() as Map<String, dynamic>;
+  final String type = roomData['type'] ?? "";
+  if (type == "channel") {
+    return getUnreadChannelMessageCount(roomId, firebaseUser);
+  } else {
+    final collection = await FirebaseFirestore.instance
+        .collection('rooms')
+        .doc(roomId)
+        .collection('messages')
+        .where('authorId', isNotEqualTo: firebaseUser.uid)
+        .where('status', isEqualTo: 'sent')
+        .limit(maxUnreadMessageCount)
+        .get();
+    return collection.docs.length;
+  }
+}
+
+Future<int> getUnreadChannelMessageCount(String roomId, User firebaseUser) async {
   final collection = await FirebaseFirestore.instance
       .collection('rooms')
       .doc(roomId)
       .collection('messages')
       .where('authorId', isNotEqualTo: firebaseUser.uid)
-      .where('status', isEqualTo: 'sent')
+      .limit(maxUnreadMessageCount)
       .get();
-
-  return collection.docs.length;
+  List unreadMessages = [];
+  for (var element in collection.docs) {
+    final data = element.data();
+    if (data['readUserIds'] == null || !data['readUserIds']?.contains(firebaseUser.uid)) {
+      unreadMessages.add(data);
+    }
+  }
+  return unreadMessages.length;
 }

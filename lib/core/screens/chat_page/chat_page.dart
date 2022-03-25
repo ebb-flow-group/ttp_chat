@@ -56,7 +56,7 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
     messageStream = FirebaseChatCore.instance.messages(widget.selectedChatRoom);
     controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
     offset = Tween<Offset>(begin: const Offset(-2.0, 0.0), end: Offset.zero).animate(controller);
-    ChatUtils().updateUnreadMessageStatus(chatProvider);
+    ChatUtils.updateUnreadMessageStatus(chatProvider);
   }
 
   @override

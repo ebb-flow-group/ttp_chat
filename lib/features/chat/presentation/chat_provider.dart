@@ -356,7 +356,7 @@ class ChatProvider extends ChangeNotifier {
   }
 
   void handleFBSendPressed(types.PartialText message) {
-    FirebaseChatCore.instance.sendMessage(message, selectedChatRoom!.id);
+    FirebaseChatCore.instance.sendMessage(message, selectedChatRoom);
   }
 
   void handleFBMessageTap(types.Message message) async {
@@ -408,7 +408,7 @@ class ChatProvider extends ChangeNotifier {
         final message = types.PartialImage(
             height: image.height.toDouble(), name: name, size: size, uri: uri, width: image.width.toDouble());
 
-        FirebaseChatCore.instance.sendMessage(message, selectedChatRoom!.id);
+        FirebaseChatCore.instance.sendMessage(message, selectedChatRoom);
         setAttachmentUploading(false);
       } on FirebaseException catch (e) {
         setAttachmentUploading(false);
@@ -440,7 +440,7 @@ class ChatProvider extends ChangeNotifier {
           uri: uri,
         );
 
-        FirebaseChatCore.instance.sendMessage(message, selectedChatRoom!.id);
+        FirebaseChatCore.instance.sendMessage(message, selectedChatRoom);
         setAttachmentUploading(false);
       } on FirebaseException catch (e) {
         setAttachmentUploading(false);
@@ -473,7 +473,7 @@ class ChatProvider extends ChangeNotifier {
             uri: uri,
             duration: audioMessageDuration.inSeconds);
 
-        FirebaseChatCore.instance.sendMessage(message, selectedChatRoom!.id);
+        FirebaseChatCore.instance.sendMessage(message, selectedChatRoom);
 
         voiceMessageFile = null;
         voiceMessageFilePath = '';

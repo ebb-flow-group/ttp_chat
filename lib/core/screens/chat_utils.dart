@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/global.dart';
+import 'package:ttp_chat/packages/chat_types/src/room.dart';
 import 'package:ttp_chat/utils/functions.dart';
 
 import '../../packages/chat_core/src/util.dart';
@@ -45,29 +48,55 @@ class ChatUtils {
   Future<List<int>> processChatsQuery(
     QuerySnapshot query,
   ) async {
-    final futures = query.docs.map((doc) => getUnreadMessageCount(doc.id, FirebaseAuth.instance.currentUser!));
+    final futures = query.docs.map((doc) => getUnreadMessageCount(doc, FirebaseAuth.instance.currentUser!));
     return await Future.wait(futures);
   }
 
-  Future updateUnreadMessageStatus(ChatProvider provider) async {
-    try {
+  static Future updateUnreadMessageStatus(ChatProvider provider) async {
+    if (provider.selectedChatRoom?.type == RoomType.channel) {
+      log("updateUnreadMessageStatus: channel");
       final collection = await FirebaseFirestore.instance
           .collection('rooms')
           .doc(provider.selectedChatRoom!.id)
           .collection('messages')
           .where('authorId', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)
+          .limit(maxUnreadMessageCount)
           .get();
-
       for (QueryDocumentSnapshot<Map<String, dynamic>> singleMessage in collection.docs) {
-        FirebaseFirestore.instance
+        Map data = singleMessage.data();
+        List readUsers = data['readUserIds'] ?? [];
+        if (!readUsers.contains(FirebaseAuth.instance.currentUser!.uid)) {
+          FirebaseFirestore.instance
+              .collection('rooms')
+              .doc(provider.selectedChatRoom!.id)
+              .collection('messages')
+              .doc(singleMessage.id)
+              .update({
+            'readUserIds': FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid]),
+          });
+        }
+      }
+    } else {
+      try {
+        final collection = await FirebaseFirestore.instance
             .collection('rooms')
             .doc(provider.selectedChatRoom!.id)
             .collection('messages')
-            .doc(singleMessage.id)
-            .update({'status': 'delivered'});
+            .where('authorId', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)
+            .where("status", isNotEqualTo: "delivered")
+            .limit(maxUnreadMessageCount)
+            .get();
+        for (QueryDocumentSnapshot<Map<String, dynamic>> singleMessage in collection.docs) {
+          FirebaseFirestore.instance
+              .collection('rooms')
+              .doc(provider.selectedChatRoom!.id)
+              .collection('messages')
+              .doc(singleMessage.id)
+              .update({'status': 'delivered'});
+        }
+      } catch (e, s) {
+        consoleLog('Error in updateUnreadMessageStatus: $e\n $s');
       }
-    } catch (e, s) {
-      consoleLog('Error in updateUnreadMessageStatus: $e\n $s');
     }
   }
 }
