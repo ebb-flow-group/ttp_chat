@@ -1,10 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/theme/style.dart';
+import 'package:ttp_chat/utils/functions.dart';
 
 import '../../../../packages/chat_types/src/util.dart';
 import '../../../services/routes.dart';
@@ -26,9 +25,9 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         onTap: () {
           if (!GetIt.I<ChatUtils>().isCreatorsApp) {
             if (chatProvider.selectedChatRoom?.metadata?["other_user_type"] == "brand" &&
-                getChatUserId(chatProvider.selectedChatRoom?.userIds) != null) {
-              String? userId = getChatUserId(chatProvider.selectedChatRoom?.userIds);
-              log("userId: $userId");
+                getChatUserId(chatProvider.selectedChatRoom) != null) {
+              String? userId = getChatUserId(chatProvider.selectedChatRoom);
+              consoleLog("userId: $userId");
               if (userId != null && userId != 'deleted-brand') {
                 context.push(Routes.homeOutletDetailPage, extra: userId);
               }

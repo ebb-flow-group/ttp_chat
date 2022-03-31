@@ -102,7 +102,7 @@ class _DirectChatState extends State<DirectChat> {
   findChat(String otherUserId) async {
     types.Room? chatRoom = await checkIfRoomExists(otherUserId);
     if (chatRoom != null) {
-      log("Room Exists");
+      consoleLog("Room Exists");
       room = chatRoom;
       setState(() {});
     } else {

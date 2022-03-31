@@ -73,7 +73,7 @@ Future<types.User?> getUserFromFireStore(String userId,
 
 consoleLog(String? string) {
   if (kDebugMode) {
-    log(string ?? 'Null string');
+    print(string ?? 'Null string');
   }
 }
 
@@ -92,10 +92,10 @@ Future<types.Room?> checkIfRoomExists(String userId) async {
           return room;
         }
       }
-      log("Room Doesn't Exist");
+      consoleLog("Room Doesn't Exist");
       return null;
     } else {
-      log("Room Doesn't Exist");
+      consoleLog("Room Doesn't Exist");
       return null;
     }
   } catch (e) {

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
@@ -11,6 +9,7 @@ import 'package:ttp_chat/packages/chat_types/src/message.dart';
 import 'package:ttp_chat/theme/style.dart';
 
 import '../../../../config.dart';
+import '../../../../utils/functions.dart';
 import '../../../services/routes.dart';
 
 class OrderMessageWidget extends StatelessWidget {
@@ -212,7 +211,7 @@ class OrderMessageWidget extends StatelessWidget {
 
   static String getOrderType(Map<String, dynamic>? metadata) {
     if (metadata == null) return "";
-    log(metadata.toString());
+    consoleLog(metadata.toString());
     String orderType = metadata['type'];
     if (metadata["message_type"] == "home_order_update" || metadata["message_type"] == "home_order_create") {
       switch (orderType) {

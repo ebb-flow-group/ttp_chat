@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -278,7 +277,7 @@ class _SearchPageState extends State<SearchPage> {
         consoleLog("checking from list");
         //?checking whether user is sending message to himself
         if (docId == FirebaseAuth.instance.currentUser?.uid) {
-          log("Checking if user has room with himself");
+          consoleLog("Checking if user has room with himself");
           for (var room in userRooms) {
             bool isUser = areItemsEqual(room.userIds);
             if (isUser) {
@@ -290,7 +289,7 @@ class _SearchPageState extends State<SearchPage> {
         }
         for (var room in userRooms) {
           if (room.userIds.contains(docId)) {
-            log(room.userIds.toString());
+            consoleLog(room.userIds.toString());
             consoleLog('Room Exists $room');
             return room;
           }

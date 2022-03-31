@@ -1,15 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'message.dart' show Status;
-import 'room.dart' show RoomType;
+import 'room.dart';
 import 'user.dart' show Role;
 
-String? getChatUserId(List? ids) {
+/// Get User Id Of The Other User
+///
+/// If room is Channel then it returns owner Id of the room
+/// If room is Direct : Returns the other user Id from [userIds]
+String? getChatUserId(Room? room) {
+  List ids = room?.userIds ?? [];
+  if (room?.type == RoomType.channel) return room?.owner;
   String? chatUserId;
-  if (ids == null && (ids?.isEmpty == true)) {
+  if (ids.isEmpty == true) {
     return null;
   }
-  for (var id in ids!) {
+  for (var id in ids) {
     if (id != FirebaseAuth.instance.currentUser?.uid) {
       chatUserId = id;
     }
