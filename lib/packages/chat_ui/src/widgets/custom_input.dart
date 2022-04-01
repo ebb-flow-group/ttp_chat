@@ -180,7 +180,7 @@ class _CustomInputState extends State<CustomInput> {
     if (widget.isAttachmentUploading == true) {
       return Container(
         height: 24,
-        margin: const EdgeInsets.only(right: 16),
+        margin: const EdgeInsets.only(left: 16, right: 16),
         width: 24,
         child: CircularProgressIndicator(
           backgroundColor: Colors.transparent,

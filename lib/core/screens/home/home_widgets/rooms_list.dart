@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
+import '../../../../config.dart';
 import '../../../../features/chat/presentation/chat_provider.dart';
 import '../../../../packages/chat_types/src/room.dart';
 import '../../../../utils/functions.dart';
@@ -106,6 +107,7 @@ class RoomListView extends StatelessWidget {
     }
     return RefreshIndicator(
       backgroundColor: Theme.of(context).primaryColor,
+      color: Config.mentaikoColor,
       onRefresh: () {
         context.read<ChatProvider>().updateStream();
         return Future.delayed(
