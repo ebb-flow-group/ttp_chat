@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
@@ -31,20 +33,29 @@ class User extends Equatable {
   });
 
   /// Creates user from a map (decoded JSON).
-  User.fromJson(dynamic json)
-      : createdAt = json['createdAt'],
-        firstName = json['firstName'] ?? "",
-        id = json['id'] as String? ?? '',
-        imageUrl = json['imageUrl'] as String?,
-        lastName = json['lastName'] ?? "",
-        lastSeen = json['lastSeen'],
-        metadata = json['metadata'] as Map<String, dynamic>?,
-        role = getRoleFromString(json['role'] as String?),
-        updatedAt = json['updatedAt'];
+  static User fromJson(dynamic json) {
+    try {
+      User user = User(
+        createdAt: json['createdAt'],
+        firstName: json['firstName'] ?? "",
+        id: json['id'] as String? ?? '',
+        imageUrl: json['imageUrl'] as String?,
+        lastName: json['lastName'] ?? "",
+        lastSeen: json['lastSeen'],
+        metadata: json['metadata'] as Map<String, dynamic>?,
+        role: getRoleFromString(json['role'] ?? ""),
+        updatedAt: json['updatedAt'],
+      );
+      return user;
+    } catch (e) {
+      log("User.fromJson: $e");
+      return const User(id: "deleted_user");
+    }
+  }
 
   /// Converts user to the map representation, encodable to JSON.
   Map<String, dynamic> toJson() => {
-        'createdAt': createdAt,
+        'createdAt': createdAt?.toString(),
         'firstName': firstName,
         'id': id,
         'imageUrl': imageUrl,
@@ -52,7 +63,7 @@ class User extends Equatable {
         'lastSeen': lastSeen,
         'metadata': metadata,
         'role': role?.toShortString(),
-        'updatedAt': updatedAt,
+        'updatedAt': updatedAt?.toString(),
       };
 
   /// Creates a copy of the user with an updated data.

@@ -59,7 +59,13 @@ class Room extends Equatable {
         'updatedAt': updatedAt,
         'owner': owner,
         'users': users.map((e) => e.toJson()).toList(),
-        'userIds': userIds.map((e) => e).toList(),
+        'userIds': userIds.map((e) {
+          if (e is User) {
+            return e.id;
+          } else {
+            return e;
+          }
+        }).toList(),
       };
 
   /// Creates a copy of the room with an updated data.

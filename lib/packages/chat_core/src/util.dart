@@ -25,17 +25,16 @@ Future<Map<String, dynamic>> fetchUser(String userId, {String? role}) async {
   if (userId.isEmpty) return {};
   final doc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
 
-  final Map<String, dynamic>? data = doc.data();
+  final Map<String, dynamic> data = doc.data() ?? {};
+  data['id'] = doc.id;
 
-  if (data != null) {
-    data['createdAt'] = data['createdAt']?.millisecondsSinceEpoch;
-    data['id'] = doc.id;
-    data['lastSeen'] = data['lastSeen']?.millisecondsSinceEpoch;
-    data['updatedAt'] = data['updatedAt']?.millisecondsSinceEpoch;
-    data['role'] = role;
-  }
+  data['createdAt'] = data['createdAt']?.millisecondsSinceEpoch;
+  data['id'] = doc.id;
+  data['lastSeen'] = data['lastSeen']?.millisecondsSinceEpoch;
+  data['updatedAt'] = data['updatedAt']?.millisecondsSinceEpoch;
+  data['role'] = role;
 
-  return data ?? {};
+  return data;
 }
 
 /// Returns a list of [types.Room] created from Firebase query.
@@ -118,6 +117,7 @@ Future<types.Room> processDirectRoomDocument(
       // Do nothing if other user is not found, because he should be found.
       // Consider falling back to some default values.
     }
+
     data['imageUrl'] = imageUrl;
     data['users'] = users;
     data['userIds'] = userIds;
@@ -135,11 +135,13 @@ Future<types.Room> processDirectRoomDocument(
       }).toList();
       data['lastMessages'] = lastMessages;
     }
+
     data['metadata'] = {
       'other_user_type': otherUserType.isEmpty ? await getOtherUserType(firebaseUser, userIds) : otherUserType,
       'last_messages': await getLastMessageOfRoom(doc.id),
       'unread_message_count': await getUnreadMessageCount(doc, firebaseUser)
     };
+
     //For Deleted Accounts
     if (otherUserId == "deleted-brand") {
       data['name'] = "Deleted Account";
@@ -147,6 +149,12 @@ Future<types.Room> processDirectRoomDocument(
     } else if (otherUserId == "deleted-user") {
       data['name'] = "Deleted Account";
       data['metadata']['other_user_type'] = "user";
+    } else if (data['metadata']['other_user_type'] == null ||
+        data['metadata']['other_user_type'] == "null" ||
+        data['metadata']['other_user_type']?.isEmpty) {
+      data['name'] = "Deleted Account";
+      data['metadata']['other_user_type'] = "brand";
+      data['userIds'] = [firebaseUser, "deleted-brand"];
     }
     return types.Room.fromJson(data);
   } catch (e) {

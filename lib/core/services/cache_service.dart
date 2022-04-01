@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -13,26 +14,32 @@ class CacheService {
     SharedPreferences.getInstance().then((prefs) {
       try {
         List rooms = roomList.map((room) {
-          var createdAt = room.metadata?['last_messages']['createdAt'];
-          DateTime? d = createdAt is Timestamp ? createdAt.toDate() : DateTime.tryParse(createdAt?.toString() ?? "");
-          var formattedDate = d != null ? DateFormat('hh:mm a').format(d) : createdAt;
-          room.metadata?['last_messages']["createdAt"] = formattedDate;
-          room.metadata?['last_messages']["updatedAt"] = formattedDate;
           try {
-            json.encode(room.toJson());
-          } catch (e) {
-            room.metadata?['last_messages']["metadata"] = {};
+            var createdAt = room.metadata?['last_messages']['createdAt'];
+            DateTime? d = createdAt is Timestamp ? createdAt.toDate() : DateTime.tryParse(createdAt?.toString() ?? "");
+            var formattedDate = d != null ? DateFormat('hh:mm a').format(d) : createdAt;
+            room.metadata?['last_messages']["createdAt"] = formattedDate;
+            room.metadata?['last_messages']["updatedAt"] = formattedDate;
             try {
               json.encode(room.toJson());
             } catch (e) {
-              room.metadata?['last_messages'] = {};
+              room.metadata?['last_messages']["metadata"] = {};
+              try {
+                json.encode(room.toJson());
+              } catch (e) {
+                room.metadata?['last_messages'] = {};
+              }
             }
+            return room.toJson();
+          } catch (e) {
+            log(room.toJson().toString());
+            consoleLog("Error while encoding room: $e");
+            consoleLog(e.toString());
           }
-          return room.toJson();
         }).toList();
         prefs.setString("roomList", json.encode(rooms));
       } catch (e) {
-        consoleLog("Error");
+        consoleLog("Error in saving room list: $e");
         consoleLog(e.toString());
       }
     });
