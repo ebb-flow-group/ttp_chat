@@ -3,12 +3,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../config.dart';
 import '../../../../features/chat/domain/search_user_model.dart';
 import '../../../../utils/functions.dart';
 import '../../../services/routes.dart';
 import '../../chat_utils.dart';
-import '../../widgets/helpers.dart';
+import 'search_tile_avatar.dart';
 
 class SearchBrandTile extends StatelessWidget {
   const SearchBrandTile({Key? key, required this.brand, this.onChatClick}) : super(key: key);
@@ -30,13 +29,7 @@ class SearchBrandTile extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 8.5),
               child: Row(
                 children: [
-                  Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle, color: Colors.grey[200], gradient: Config.tabletopGradient),
-                      child: Center(
-                          child: Text(getInitials(brand.name ?? ""), style: const TextStyle(color: Colors.white)))),
+                  SearchTileAvatar(brand.logo, radius: 30, name: brand.name),
                   const SizedBox(width: 17),
                   Expanded(
                     child: Row(

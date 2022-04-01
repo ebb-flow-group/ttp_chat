@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart';
 
 import '../../../config.dart';
+import '../../../utils/cached_network_image.dart';
 import '../../../utils/util.dart';
 import 'helpers.dart';
 
@@ -37,7 +38,7 @@ class ChatAvatar extends StatelessWidget {
       width: radius * 2,
       decoration: BoxDecoration(
           color: color,
-          image: !hasImage ? null : DecorationImage(image: NetworkImage(room.imageUrl!), fit: BoxFit.cover),
+          image: !hasImage ? null : DecorationImage(image: cachedImageProvider(room.imageUrl), fit: BoxFit.cover),
           shape: BoxShape.circle,
           gradient: Config.tabletopGradient),
       child: !hasImage

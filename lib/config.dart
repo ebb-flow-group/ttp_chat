@@ -50,6 +50,8 @@ class Config {
   static const Color positive200Color = Color(0XFF97E3B3);
   static const Color positive100Color = Color(0XFFCBF1D9);
 
+  static String kPlaceholderImg = 'https://i.ibb.co/d4XzKHD/Tabletop-Support-Profile-Icon.png';
+
   static const Gradient tabletopGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,

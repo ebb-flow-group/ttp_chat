@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:ttp_chat/core/screens/widgets/helpers.dart';
 
-import '../../../../config.dart';
 import '../../../../features/chat/domain/search_user_model.dart';
 import '../../../../utils/functions.dart';
+import 'search_tile_avatar.dart';
 
 class SearchUserTile extends StatelessWidget {
   const SearchUserTile({Key? key, required this.singleUser, this.onChatClick}) : super(key: key);
@@ -20,14 +19,8 @@ class SearchUserTile extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8.5),
             child: Row(
               children: [
-                Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.grey[200], gradient: Config.tabletopGradient),
-                    child: Center(
-                        child: Text(getInitials('${singleUser.firstName ?? ""} ${singleUser.lastName ?? ""}'),
-                            style: const TextStyle(color: Colors.white)))),
+                SearchTileAvatar(singleUser.avatar,
+                    radius: 30, name: '${singleUser.firstName ?? ""} ${singleUser.lastName ?? ""}'),
                 const SizedBox(width: 17),
                 Expanded(
                   child: Row(

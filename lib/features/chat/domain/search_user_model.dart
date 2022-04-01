@@ -37,6 +37,7 @@ class Brands {
   int? id;
   String? name;
   String? username;
+  String? logo;
 
   Brands({this.id, this.name, this.username});
 
@@ -44,6 +45,7 @@ class Brands {
     id = json['id'];
     name = json['name'];
     username = json['username'];
+    logo = json['logo'];
   }
 
   Map<String, dynamic> toJson() {
@@ -51,6 +53,7 @@ class Brands {
     data['id'] = id;
     data['name'] = name;
     data['username'] = username;
+    data['logo'] = logo;
     return data;
   }
 }
@@ -60,6 +63,7 @@ class Users {
   String? firstName;
   String? lastName;
   String? email;
+  String? avatar;
   String? phoneNumber;
 
   Users({this.id, this.firstName, this.lastName, this.email, this.phoneNumber});
@@ -70,6 +74,7 @@ class Users {
     lastName = json['last_name'];
     email = json['email'];
     phoneNumber = json['phone_number'];
+    avatar = json['avatar'];
   }
 
   Map<String, dynamic> toJson() {
@@ -79,6 +84,7 @@ class Users {
     data['last_name'] = lastName;
     data['email'] = email;
     data['phone_number'] = phoneNumber;
+    data['avatar'] = avatar;
     return data;
   }
 }
