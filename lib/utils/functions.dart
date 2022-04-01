@@ -87,7 +87,9 @@ Future<types.Room?> checkIfRoomExists(String userId) async {
     List<types.Room> rooms = await processRoomsQuery(FirebaseAuth.instance.currentUser!, snapshot);
     if (rooms.isNotEmpty) {
       for (var room in rooms) {
-        if (room.userIds.contains(userId)) {
+        // Checking if room type is Direct
+        if (room.userIds.contains(userId) &&
+            (room.type != types.RoomType.channel || room.type != types.RoomType.group)) {
           consoleLog('Room Exists $room');
           return room;
         }

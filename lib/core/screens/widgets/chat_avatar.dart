@@ -31,26 +31,23 @@ class ChatAvatar extends StatelessWidget {
     final hasImage = room.imageUrl != null && room.imageUrl != '';
     final name = room.name ?? '';
 
-    return Hero(
-      tag: room.id,
-      child: Container(
-        margin: hasMargin ? const EdgeInsets.only(right: 16) : null,
-        height: radius * 2,
-        width: radius * 2,
-        decoration: BoxDecoration(
-            color: color,
-            image: !hasImage ? null : DecorationImage(image: NetworkImage(room.imageUrl!), fit: BoxFit.cover),
-            shape: BoxShape.circle,
-            gradient: Config.tabletopGradient),
-        child: !hasImage
-            ? Center(
-                child: Text(
-                  getInitials(name).toUpperCase(),
-                  style: const TextStyle(color: Colors.white),
-                ),
-              )
-            : null,
-      ),
+    return Container(
+      margin: hasMargin ? const EdgeInsets.only(right: 16) : null,
+      height: radius * 2,
+      width: radius * 2,
+      decoration: BoxDecoration(
+          color: color,
+          image: !hasImage ? null : DecorationImage(image: NetworkImage(room.imageUrl!), fit: BoxFit.cover),
+          shape: BoxShape.circle,
+          gradient: Config.tabletopGradient),
+      child: !hasImage
+          ? Center(
+              child: Text(
+                getInitials(name).toUpperCase(),
+                style: const TextStyle(color: Colors.white),
+              ),
+            )
+          : null,
     );
   }
 }

@@ -305,6 +305,9 @@ class _SearchPageState extends State<SearchPage> {
 
         if (snapshot.docs.isNotEmpty) {
           List<types.Room> rooms = await processRoomsQuery(FirebaseAuth.instance.currentUser!, snapshot);
+          //removing rooms that are group or channels
+          rooms.removeWhere(
+              (element) => (element.type == types.RoomType.channel || element.type == types.RoomType.group));
           userRooms.addAll(rooms);
           consoleLog(userRooms.toString());
           //Check Room Again
