@@ -5,7 +5,6 @@ enum view { users, brands }
 
 String getLastMessageDateTime(Object? lastMessageData) {
   String formattedDate = '';
-  // log(lastMessageData.toString());
 
   if (lastMessageData is Map<String, dynamic> && lastMessageData.isNotEmpty && lastMessageData['createdAt'] != null) {
     if (lastMessageData['createdAt'] is Timestamp) {
@@ -19,4 +18,4 @@ String getLastMessageDateTime(Object? lastMessageData) {
   return formattedDate;
 }
 
-String getInitials(String text) => text.isNotEmpty ? text.trim().split(' ').map((l) => l[0]).take(2).join() : '';
+getInitials(String text) => text.isNotEmpty ? text.trim().split(RegExp(' +')).map((s) => s[0]).take(2).join() : '';

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:ttp_chat/core/screens/widgets/helpers.dart';
 
+import '../../../../config.dart';
 import '../../../../features/chat/domain/search_user_model.dart';
 import '../../../../utils/functions.dart';
 
@@ -19,11 +21,13 @@ class SearchUserTile extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.grey[200]),
-                  child: Icon(Icons.person, color: Theme.of(context).primaryColor.withOpacity(0.2)),
-                ),
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.grey[200], gradient: Config.tabletopGradient),
+                    child: Center(
+                        child: Text(getInitials('${singleUser.firstName ?? ""} ${singleUser.lastName ?? ""}'),
+                            style: const TextStyle(color: Colors.white)))),
                 const SizedBox(width: 17),
                 Expanded(
                   child: Row(
