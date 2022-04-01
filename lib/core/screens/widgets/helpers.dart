@@ -9,12 +9,20 @@ String getLastMessageDateTime(Object? lastMessageData) {
   if (lastMessageData is Map<String, dynamic> && lastMessageData.isNotEmpty && lastMessageData['createdAt'] != null) {
     if (lastMessageData['createdAt'] is Timestamp) {
       Timestamp timestamp = lastMessageData['createdAt'] as Timestamp;
-      DateTime d = timestamp.toDate();
-      formattedDate = DateFormat('hh:mm a').format(d);
+      DateTime date = timestamp.toDate();
+      DateTime now = DateTime.now();
+      if (date.day == now.day && date.month == now.month && date.year == now.year) {
+        formattedDate = DateFormat('hh:mm a').format(date);
+      } else if (date.year == now.year - 1) {
+        formattedDate = DateFormat('MMM dd').format(date);
+      } else {
+        formattedDate = DateFormat('d MMM').format(date);
+      }
     } else if (lastMessageData['createdAt'] is String) {
       formattedDate = lastMessageData['createdAt'];
     }
   }
+
   return formattedDate;
 }
 

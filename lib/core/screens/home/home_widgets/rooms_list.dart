@@ -112,33 +112,25 @@ class RoomListView extends StatelessWidget {
           const Duration(seconds: 1),
         );
       },
-      child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 17),
-          padding: const EdgeInsets.only(top: 17),
-          child: ListView(
-            children: [
-              rooms.isEmpty
-                  ? const NoResults()
-                  : ListView.separated(
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: rooms.length,
-                      itemBuilder: (context, index) {
-                        var room = rooms[index];
-
-                        return ChatTile(
-                          room,
-                          onTap: () {
-                            onTap(room);
-                          },
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const SizedBox(height: 17);
-                      },
-                    ),
-            ],
-          )),
+      child: ListView(
+        children: [
+          rooms.isEmpty
+              ? const NoResults()
+              : ListView.separated(
+                  padding: const EdgeInsets.only(bottom: 50, top: 15),
+                  shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: rooms.length,
+                  itemBuilder: (context, index) {
+                    var room = rooms[index];
+                    return ChatTile(room, onTap: () => onTap(room));
+                  },
+                  separatorBuilder: (context, index) {
+                    return const SizedBox();
+                  },
+                ),
+        ],
+      ),
     );
   }
 }
