@@ -386,6 +386,10 @@ class _ChatState extends State<Chat> {
                           onVoiceMessagePressed: widget.onVoiceMessagePressed,
                           onSendPressed: widget.onSendPressed,
                           onTextChanged: widget.onTextChanged,
+                        )
+                      else
+                        Container(
+                          height: 80,
                         ),
                     ],
                   ),
