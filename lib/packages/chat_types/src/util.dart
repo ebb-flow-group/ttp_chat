@@ -17,7 +17,7 @@ String? getChatUserId(Room? room) {
   }
   for (var id in ids) {
     if (id != FirebaseAuth.instance.currentUser?.uid) {
-      chatUserId = id;
+      chatUserId = id.toString();
     }
   }
   return chatUserId;

@@ -154,7 +154,7 @@ Future<types.Room> processDirectRoomDocument(
         data['metadata']['other_user_type']?.isEmpty) {
       data['name'] = "Deleted Account";
       data['metadata']['other_user_type'] = "brand";
-      data['userIds'] = [firebaseUser, "deleted-brand"];
+      data['userIds'] = [firebaseUser.uid, "deleted-brand"];
     }
     return types.Room.fromJson(data);
   } catch (e) {
