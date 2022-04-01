@@ -48,4 +48,13 @@ class Config {
   static const Color positive400Color = Color(0XFF34C369);
   static const Color positive200Color = Color(0XFF97E3B3);
   static const Color positive100Color = Color(0XFFCBF1D9);
+
+  static const Gradient tabletopGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xff024B63),
+      Color.fromRGBO(232, 58, 99, 0.9),
+    ],
+  );
 }

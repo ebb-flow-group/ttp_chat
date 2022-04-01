@@ -92,10 +92,10 @@ class RoomListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<types.Room> rooms = snapshot.data ?? [];
-    //     ?.where((element) => element.metadata?['other_user_type'] == (list == view.brands ? 'brand' : 'user'))
-    //     .toList() ??
-    // [];
+    List<types.Room> rooms = snapshot.data
+            ?.where((element) => element.metadata?['other_user_type'] == (list == view.brands ? 'brand' : 'user'))
+            .toList() ??
+        [];
 
     //For Searching Users
     if (context.read<ChatProvider>().searchString.isNotEmpty) {

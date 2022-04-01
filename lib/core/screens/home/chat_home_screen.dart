@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
-import 'package:ttp_chat/core/services/cache_service.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../../../features/chat/presentation/chat_provider.dart';
@@ -74,11 +73,12 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     chatProvider = context.read<ChatProvider>();
     initializeFlutterFire();
     super.initState();
-    if (FirebaseAuth.instance.currentUser == null) {
-      CacheService().clearRoomList();
-    } else {
-      chatProvider.getLocalRoomList();
-    }
+    //Not using cache Service now
+    // if (FirebaseAuth.instance.currentUser == null) {
+    //   CacheService().clearRoomList();
+    // } else {
+    //   chatProvider.getLocalRoomList();
+    // }
   }
 
   @override
@@ -107,11 +107,12 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                 context)),
         body: StreamBuilder<List<types.Room>>(
             stream: chatProvider.roomsStream,
-            initialData: chatProvider.roomList.isEmpty ? null : chatProvider.roomList,
+            initialData: GetIt.I<ChatUtils>().roomList.isEmpty ? null : GetIt.I<ChatUtils>().roomList,
             builder: (context, snapshot) {
               if (FirebaseAuth.instance.currentUser != null && snapshot.connectionState != ConnectionState.waiting) {
                 // log('****** Saving Room List to Cache ******');
-                CacheService().saveRoomList(snapshot.data ?? [], chatProvider);
+                GetIt.I<ChatUtils>().updateRoomList(snapshot.data ?? []);
+                //  CacheService().saveRoomList(snapshot.data ?? [], chatProvider);
               }
               if (snapshot.hasData && snapshot.data?.isNotEmpty == true) {
                 return RoomListView(

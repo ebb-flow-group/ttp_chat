@@ -17,7 +17,7 @@ class ChatTile extends StatelessWidget {
       onTap: onTap,
       child: Row(
         children: [
-          ChatAvatar(room),
+          ChatAvatar(room, hasMargin: true),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -2,11 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart';
 
+import '../../../config.dart';
 import '../../../utils/util.dart';
+import 'helpers.dart';
 
 class ChatAvatar extends StatelessWidget {
+  final double radius;
+  final bool hasMargin;
   final Room room;
-  const ChatAvatar(this.room, {Key? key}) : super(key: key);
+  const ChatAvatar(this.room, {this.radius = 20, this.hasMargin = false, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +31,23 @@ class ChatAvatar extends StatelessWidget {
     final hasImage = room.imageUrl != null && room.imageUrl != '';
     final name = room.name ?? '';
 
-    return Container(
-      margin: const EdgeInsets.only(right: 16),
-      child: CircleAvatar(
-        backgroundColor: color,
-        backgroundImage: hasImage ? NetworkImage(room.imageUrl!) : null,
-        radius: 20,
+    return Hero(
+      tag: room.id,
+      child: Container(
+        margin: hasMargin ? const EdgeInsets.only(right: 16) : null,
+        height: radius * 2,
+        width: radius * 2,
+        decoration: BoxDecoration(
+            color: color,
+            image: !hasImage ? null : DecorationImage(image: NetworkImage(room.imageUrl!), fit: BoxFit.cover),
+            shape: BoxShape.circle,
+            gradient: Config.tabletopGradient),
         child: !hasImage
-            ? Text(
-                name.isEmpty ? '' : name[0].toUpperCase(),
-                style: const TextStyle(color: Colors.white),
+            ? Center(
+                child: Text(
+                  getInitials(name).toUpperCase(),
+                  style: const TextStyle(color: Colors.white),
+                ),
               )
             : null,
       ),

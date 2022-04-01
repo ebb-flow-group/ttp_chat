@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -14,7 +13,6 @@ import 'package:mime/mime.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:uuid/uuid.dart';
 
@@ -56,8 +54,6 @@ class ChatProvider extends ChangeNotifier {
   bool isRoomListEmpty = false;
   String? accessToken, refreshToken;
 
-  List<types.Room> roomList = [];
-
   searchUsers(String s) {
     searchString = s;
     notifyListeners();
@@ -90,21 +86,22 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  getLocalRoomList() {
-    SharedPreferences.getInstance().then((prefs) {
-      var data = prefs.getString("roomList");
-      if (data != null) {
-        List roomListCache = json.decode(data);
-        roomList = roomListCache.map((e) => types.Room.fromJson(e)).toList();
-        notifyListeners();
-      }
-    });
-  }
+//Not Used Now: Getting Rooms List from local storage
+  // getLocalRoomList() {
+  //   SharedPreferences.getInstance().then((prefs) {
+  //     var data = prefs.getString("roomList");
+  //     if (data != null) {
+  //       List roomListCache = json.decode(data);
+  //       roomList = roomListCache.map((e) => types.Room.fromJson(e)).toList();
+  //       notifyListeners();
+  //     }
+  //   });
+  // }
 
-  updateRoomList(List<types.Room> list) {
-    roomList = list;
-    notifyListeners();
-  }
+  // updateRoomList(List<types.Room> list) {
+  //   roomList = list;
+  //   notifyListeners();
+  // }
 
   ChatProvider.userSignIn(this.accessToken, this.refreshToken) {
     selectedTabIndex = 0;

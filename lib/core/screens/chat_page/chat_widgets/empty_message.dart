@@ -8,7 +8,7 @@ import 'package:ttp_chat/utils/functions.dart';
 import '../../../../packages/chat_types/src/util.dart';
 import '../../../services/routes.dart';
 import '../../chat_utils.dart';
-import 'chat_avatar.dart';
+import '../../widgets/chat_avatar.dart';
 
 class EmptyMessage extends StatelessWidget {
   const EmptyMessage({Key? key, required this.chatProvider}) : super(key: key);

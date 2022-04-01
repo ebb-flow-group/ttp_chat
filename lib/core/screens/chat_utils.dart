@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/global.dart';
 import 'package:ttp_chat/packages/chat_types/src/room.dart';
+import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:ttp_chat/utils/functions.dart';
 
 import '../../packages/chat_core/src/util.dart';
@@ -13,6 +14,13 @@ class ChatUtils {
   final bool isCreatorsApp;
   final String baseUrl;
   ChatUtils({this.isCreatorsApp = false, this.baseUrl = BASE_URL});
+
+  List<types.Room> roomList = [];
+
+  /// Used to store room list as cache while the app is running
+  updateRoomList(List<types.Room> roomList) {
+    this.roomList = roomList;
+  }
 
   static initFirebaseApp({required String accessToken, required String refreshToken, void Function()? onInit}) async {
     await Firebase.initializeApp();
