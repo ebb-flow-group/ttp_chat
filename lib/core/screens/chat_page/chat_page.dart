@@ -81,6 +81,7 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const LinearProgressIndicator(color: Config.primaryColor);
               }
+
               return Stack(
                 children: [
                   Chat(
@@ -100,13 +101,7 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                     onMessageTap: chatProvider.handleFBMessageTap,
                     onPreviewDataFetched: chatProvider.handleFBPreviewDataFetched,
                     onSendPressed: chatProvider.handleFBSendPressed,
-                    //hiding Input in two cases
-                    //1. If The Account is Deleted from firebase
-                    //2. If the Room is Channel and the current user is not the owner of room
-                    hideInput: (chatProvider.selectedChatRoom!.userIds
-                            .any((id) => (id == 'deleted-brand' || id == 'deleted-user')) ||
-                        (chatProvider.selectedChatRoom?.type == types.RoomType.channel &&
-                            chatProvider.selectedChatRoom?.owner != FirebaseAuth.instance.currentUser?.uid)),
+                    hideInput: hideInput,
                     user: types.User(
                       id: FirebaseChatCore.instance.firebaseUser!.uid,
                     ),
@@ -147,6 +142,17 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
         ),
       ),
     );
+  }
+
+  /// hiding Input in two cases:
+  /// 1. If The Account is Deleted from firebase
+  /// 2. If the Room is Channel and the current user is not the owner of room
+  bool get hideInput {
+    if (chatProvider.selectedChatRoom?.type == types.RoomType.channel) {
+      return chatProvider.selectedChatRoom?.owner != FirebaseAuth.instance.currentUser?.uid;
+    } else {
+      return (chatProvider.selectedChatRoom!.userIds.any((id) => (id == 'deleted-brand' || id == 'deleted-user')));
+    }
   }
 
   _handleVoiceMessagePressed() {

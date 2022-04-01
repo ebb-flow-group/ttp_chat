@@ -48,10 +48,18 @@ class OrderMessageWidget extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-              decoration: BoxDecoration(color: checkedOut ? Config.mentaikoColor : Theme.of(context).primaryColor),
+              decoration: BoxDecoration(
+                  color: message.metadata?['status'] == "expired"
+                      ? Config.lightGrey
+                      : checkedOut
+                          ? Config.mentaikoColor
+                          : Theme.of(context).primaryColor),
               child: Text(
                 orderStatus,
-                style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),
+                style: TextStyle(
+                    color: message.metadata?['status'] == "expired" ? Config.mentaikoColor : Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700),
               ),
             ),
             const SizedBox(height: 8),
@@ -174,7 +182,7 @@ class OrderMessageWidget extends StatelessWidget {
       case 'pending_completion':
         return isCreatorsApp ? btnText : 'Mark as Received';
       case 'expired':
-        return isCreatorsApp ? btnText : 'Reorder';
+        return isCreatorsApp ? btnText : 'View to Reorder';
       default:
         return btnText;
     }

@@ -21,6 +21,7 @@ class Config {
   static const Color grayG4Color = Color(0XFFE6E3DC);
   static const Color grayG5Color = Color(0XFFF2F2F2);
   static const Color grayG7Color = Color(0XFFF9F9F9);
+  static const Color lightGrey = Color(0XFFE5E3DC);
   static const Color ivoryColor = Color(0XFFFCFCFE);
 
   // Accents

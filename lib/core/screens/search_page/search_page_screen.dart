@@ -133,6 +133,8 @@ class _SearchPageState extends State<SearchPage> {
           searching = false;
           brandsList.clear();
           usersList.clear();
+          // usersList = response.data?.users??[];
+          // brandsList = response.data?.brands??[];
           if (response.data?.brands != null && response.data!.brands!.length > 500) {
             brandsList.addAll(response.data!.brands!.sublist(0, 500));
           } else {
@@ -212,23 +214,28 @@ class _SearchPageState extends State<SearchPage> {
                 displaySnackBar("Error, This user has no username", context);
                 return;
               }
-              types.Room? chatRoom = await checkExist(brand.username!);
-              if (chatRoom != null) {
-                pushTo(ChatPage(chatRoom, widget.onViewOrderDetailsClick), context);
-              } else {
-                types.User? user = await getUserFromFireStore(
-                  brand.username!,
-                  firstName: brand.name,
-                );
-                if (user != null) {
-                  consoleLog("Creating New Room for ${brand.username}");
-                  final room = await FirebaseChatCore.instance.createRoom(user);
-                  consoleLog('Room Name: ${room.name} \nId: ${room.name} \nUsers: ${room.userIds}');
-                  userRooms.add(room);
-                  pushTo(ChatPage(room, widget.onViewOrderDetailsClick), context);
+              setState(() => searching = true);
+              try {
+                types.Room? chatRoom = await checkExist(brand.username!);
+                if (chatRoom != null) {
+                  pushTo(ChatPage(chatRoom, widget.onViewOrderDetailsClick), context);
                 } else {
-                  displaySnackBar("Error, User Not Found", context);
+                  types.User? user = await getUserFromFireStore(
+                    brand.username!,
+                    firstName: brand.name,
+                  );
+                  if (user != null) {
+                    consoleLog("Creating New Room for ${brand.username}");
+                    final room = await FirebaseChatCore.instance.createRoom(user);
+                    consoleLog('Room Name: ${room.name} \nId: ${room.name} \nUsers: ${room.userIds}');
+                    userRooms.add(room);
+                    pushTo(ChatPage(room, widget.onViewOrderDetailsClick), context);
+                  } else {
+                    displaySnackBar("Error, User Not Found", context);
+                  }
                 }
+              } finally {
+                setState(() => searching = false);
               }
             },
           );
@@ -247,21 +254,26 @@ class _SearchPageState extends State<SearchPage> {
               displaySnackBar("Error, This user has no phone number", context);
               return;
             }
+            setState(() => searching = true);
             types.Room? chatRoom = await checkExist(singleUser.phoneNumber!);
-            if (chatRoom != null) {
-              pushTo(ChatPage(chatRoom, widget.onViewOrderDetailsClick), context);
-            } else {
-              types.User? user = await getUserFromFireStore(singleUser.phoneNumber!,
-                  firstName: singleUser.firstName, lastName: singleUser.lastName);
-              if (user != null) {
-                consoleLog("Creating New Room");
-                final room = await FirebaseChatCore.instance.createRoom(user);
-                consoleLog('Room Name: ${room.name} \nId: ${room.name} \nUsers: ${room.userIds}');
-                userRooms.add(room);
-                pushTo(ChatPage(room, widget.onViewOrderDetailsClick), context);
+            try {
+              if (chatRoom != null) {
+                pushTo(ChatPage(chatRoom, widget.onViewOrderDetailsClick), context);
               } else {
-                displaySnackBar("Error, User Not Found", context);
+                types.User? user = await getUserFromFireStore(singleUser.phoneNumber!,
+                    firstName: singleUser.firstName, lastName: singleUser.lastName);
+                if (user != null) {
+                  consoleLog("Creating New Room");
+                  final room = await FirebaseChatCore.instance.createRoom(user);
+                  consoleLog('Room Name: ${room.name} \nId: ${room.name} \nUsers: ${room.userIds}');
+                  userRooms.add(room);
+                  pushTo(ChatPage(room, widget.onViewOrderDetailsClick), context);
+                } else {
+                  displaySnackBar("Error, User Not Found", context);
+                }
               }
+            } finally {
+              setState(() => searching = false);
             }
           },
         );
