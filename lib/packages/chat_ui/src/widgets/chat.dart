@@ -388,8 +388,22 @@ class _ChatState extends State<Chat> {
                           onTextChanged: widget.onTextChanged,
                         )
                       else
-                        Container(
-                          height: 80,
+                        SizedBox(
+                          height: 100,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Divider(
+                                  thickness: 1.5,
+                                  color: Colors.grey[300],
+                                  indent: 20,
+                                  endIndent: 20,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                     ],
                   ),

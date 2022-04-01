@@ -18,4 +18,5 @@ String getLastMessageDateTime(Object? lastMessageData) {
   return formattedDate;
 }
 
-getInitials(String text) => text.isNotEmpty ? text.trim().split(RegExp(' +')).map((s) => s[0]).take(2).join() : '';
+getInitials(String text) =>
+    (text.isNotEmpty ? text.trim().split(RegExp(' +')).map((s) => s[0]).take(2).join() : '').toUpperCase();

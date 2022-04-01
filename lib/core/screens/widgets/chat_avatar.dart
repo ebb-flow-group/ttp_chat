@@ -43,8 +43,12 @@ class ChatAvatar extends StatelessWidget {
       child: !hasImage
           ? Center(
               child: Text(
-                getInitials(name).toUpperCase(),
-                style: const TextStyle(color: Colors.white),
+                getInitials(name),
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
             )
           : null,
