@@ -199,7 +199,7 @@ class OrderMessageWidget extends StatelessWidget {
       case 'scheduled':
         return 'SCHEDULED';
       case 'pending_completion':
-        return 'PENDING COMPLETION';
+        return 'FULFILLED';
       case 'completed':
         return 'COMPLETED';
       case 'dispute':
@@ -260,7 +260,7 @@ class OrderMessageWidget extends StatelessWidget {
         return TextColor(bgColor: Config.lightGrey, textColor: Config.grayG1Color);
       case 'DISPUTED':
         return TextColor(bgColor: Config.lightGrey, textColor: Config.mentaikoColor);
-      case 'PENDING COMPLETION':
+      case 'FULFILLED':
         return TextColor(bgColor: Config.lightGrey, textColor: Config.successColor);
       case 'EXPIRED':
         return TextColor(bgColor: Config.lightGrey, textColor: Config.mentaikoColor);
