@@ -10,6 +10,7 @@ import 'package:ttp_chat/theme/style.dart';
 
 import '../../../../config.dart';
 import '../../../services/routes.dart';
+import 'models/color_model.dart';
 
 class OrderMessageWidget extends StatelessWidget {
   const OrderMessageWidget(
@@ -34,6 +35,8 @@ class OrderMessageWidget extends StatelessWidget {
 
   bool get isCreatorsApp => GetIt.I.get<ChatUtils>().isCreatorsApp;
 
+  TextColor get statusColor => getStatusBannerColor(orderStatus);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -49,17 +52,11 @@ class OrderMessageWidget extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
               decoration: BoxDecoration(
-                  color: message.metadata?['status'] == "expired"
-                      ? Config.lightGrey
-                      : checkedOut
-                          ? Config.mentaikoColor
-                          : Theme.of(context).primaryColor),
+                color: statusColor.bgColor,
+              ),
               child: Text(
                 orderStatus,
-                style: TextStyle(
-                    color: message.metadata?['status'] == "expired" ? Config.mentaikoColor : Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700),
+                style: TextStyle(color: statusColor.textColor, fontSize: 12, fontWeight: FontWeight.w700),
               ),
             ),
             const SizedBox(height: 8),
@@ -110,8 +107,6 @@ class OrderMessageWidget extends StatelessWidget {
                             softWrap: true,
                           ),
                           Text(
-                            //TODO Show correct order type based on HomeOrder/HomeBrand, with old Order/Brand
-                            //!https://www.notion.so/tabletophq/Take-Away-Pickup-rename-b9ce98007a5145c88853bcb8ad2817be?d=b8f06bdfb9024354bf33f5b54183f956
                             ' \u2022 ${getOrderType(message.metadata)}',
                             style: const TextStyle(
                               color: Colors.grey,
@@ -192,9 +187,9 @@ class OrderMessageWidget extends StatelessWidget {
     bool isCreatorsApp = GetIt.I<ChatUtils>().isCreatorsApp;
     switch (status) {
       case 'paid':
-        return isCreatorsApp ? 'New' : 'Pending';
+        return isCreatorsApp ? 'NEW' : 'PENDING';
       case 'checked_out':
-        return 'Pending Payment';
+        return 'PENDING PAYMENT';
       case 'failed':
         return 'FAILED';
       case 'rejected':
@@ -208,9 +203,9 @@ class OrderMessageWidget extends StatelessWidget {
       case 'completed':
         return 'COMPLETED';
       case 'dispute':
-        return 'Disputed';
+        return 'DISPUTED';
       case 'expired':
-        return 'Expired';
+        return 'EXPIRED';
       default:
         return '';
     }
@@ -245,6 +240,32 @@ class OrderMessageWidget extends StatelessWidget {
         default:
           return '';
       }
+    }
+  }
+
+  static TextColor getStatusBannerColor(String status) {
+    TextColor color = TextColor();
+    switch (status) {
+      case 'PENDING PAYMENT':
+        return color..bgColor = Config.mentaikoColor;
+      case 'FAILED':
+        return TextColor(bgColor: Config.lightGrey, textColor: Config.mentaikoColor);
+      case 'PENDING':
+        return TextColor(bgColor: Config.yellowColor, textColor: Config.primaryColor);
+      case 'REJECTED':
+        return TextColor(bgColor: Config.lightGrey, textColor: Config.mentaikoColor);
+      case 'ACCEPTED':
+        return color..bgColor = Config.successColor;
+      case 'COMPLETED':
+        return TextColor(bgColor: Config.lightGrey, textColor: Config.grayG1Color);
+      case 'DISPUTED':
+        return TextColor(bgColor: Config.lightGrey, textColor: Config.mentaikoColor);
+      case 'PENDING COMPLETION':
+        return TextColor(bgColor: Config.lightGrey, textColor: Config.successColor);
+      case 'EXPIRED':
+        return TextColor(bgColor: Config.lightGrey, textColor: Config.mentaikoColor);
+      default:
+        return color;
     }
   }
 

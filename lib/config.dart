@@ -37,6 +37,7 @@ class Config {
 
   static const Color warning600Color = Color(0XFF775E0D);
   static const Color warning400Color = Color(0XFFE7B820);
+  static const Color yellowColor = Color(0XFFFFCC32);
   static const Color warning200Color = Color(0XFFF3DB90);
   static const Color warning100Color = Color(0XFFF9EDC7);
 
@@ -47,8 +48,10 @@ class Config {
 
   static const Color positive600Color = Color(0XFF1A6234);
   static const Color positive400Color = Color(0XFF34C369);
+
   static const Color positive200Color = Color(0XFF97E3B3);
   static const Color positive100Color = Color(0XFFCBF1D9);
+  static const Color successColor = Color(0XFF1BC4B0);
 
   static String kPlaceholderImg = 'https://i.ibb.co/d4XzKHD/Tabletop-Support-Profile-Icon.png';
 
