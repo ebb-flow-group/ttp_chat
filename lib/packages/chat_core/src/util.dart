@@ -172,6 +172,7 @@ Future<types.Room> processChannelRoomDocument(
 ) async {
   try {
     final data = doc.data() as Map<String, dynamic>;
+
     data['createdAt'] = data['createdAt']?.millisecondsSinceEpoch;
     data['id'] = doc.id;
     data['updatedAt'] = data['updatedAt']?.millisecondsSinceEpoch;
@@ -289,7 +290,7 @@ Future<Map<String, dynamic>> getLastMessageOfRoom(String roomId) async {
 
 Future<int> getUnreadMessageCount(DocumentSnapshot<Object?> room, User firebaseUser) async {
   final roomId = room.id;
-  final Map roomData = room.data() as Map<String, dynamic>;
+  final Map<String, dynamic> roomData = room.data() as Map<String, dynamic>;
   final String type = roomData['type'] ?? "";
   if (type == "channel") {
     return getUnreadChannelMessageCount(roomId, firebaseUser);

@@ -9,6 +9,7 @@ import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:ttp_chat/utils/functions.dart';
 
 import '../../packages/chat_core/src/util.dart';
+import '../services/notification_service.dart';
 
 class ChatUtils {
   final bool isCreatorsApp;
@@ -54,13 +55,20 @@ class ChatUtils {
   Future<List<int>> processChatsQuery(
     QuerySnapshot query,
   ) async {
-    final futures = query.docs.map((doc) => getUnreadMessageCount(doc, FirebaseAuth.instance.currentUser!));
+    final futures = query.docs.map((doc) {
+      final Map<String, dynamic> room = doc.data() as Map<String, dynamic>;
+      if (room['type'] == "channel") {
+        //Subscribing to channel
+        NotificationService.subscribeToChannel(room);
+      }
+      return getUnreadMessageCount(doc, FirebaseAuth.instance.currentUser!);
+    });
     return await Future.wait(futures);
   }
 
   static Future updateUnreadMessageStatus(ChatProvider provider) async {
+    // Handling the Room Types
     if (provider.selectedChatRoom?.type == RoomType.channel) {
-      //log("updateUnreadMessageStatus: channel");
       final collection = await FirebaseFirestore.instance
           .collection('rooms')
           .doc(provider.selectedChatRoom!.id)

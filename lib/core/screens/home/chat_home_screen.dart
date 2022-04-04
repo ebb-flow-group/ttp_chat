@@ -89,11 +89,12 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   @override
   Widget build(BuildContext context) {
     chatProvider = context.watch<ChatProvider>();
+    if (_error) {
+      return ChatErrorScreen(onContactSupport: widget.onContactSupport);
+    }
+
     if (!_initialized || chatProvider.apiStatus == ApiStatus.called) {
       return const Scaffold(body: LoadingScreen());
-    }
-    if (_error) {
-      return Container();
     }
 
     if (chatProvider.apiStatus == ApiStatus.failed) {
@@ -145,16 +146,15 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
       await Firebase.initializeApp();
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if (mounted) {
-          if (FirebaseAuth.instance.currentUser != null) {}
+          if (FirebaseAuth.instance.currentUser != null) {
+            setState(() => _initialized = true);
+          }
         }
-      });
-      setState(() {
-        _initialized = true;
+      }).onError((error) {
+        setState(() => _error = true);
       });
     } catch (e) {
-      setState(() {
-        _error = true;
-      });
+      setState(() => _error = true);
     }
   }
 }
