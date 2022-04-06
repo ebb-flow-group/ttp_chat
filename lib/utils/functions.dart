@@ -77,7 +77,7 @@ consoleLog(String? string) {
   }
 }
 
-Future<types.Room?> checkIfRoomExists(String userId) async {
+Future<types.Room?> checkIfRoomExists(String userId, {bool isChannel = false}) async {
   log(userId);
   try {
     QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -87,11 +87,16 @@ Future<types.Room?> checkIfRoomExists(String userId) async {
     List<types.Room> rooms = await processRoomsQuery(FirebaseAuth.instance.currentUser!, snapshot);
     if (rooms.isNotEmpty) {
       for (var room in rooms) {
-        // Checking if room type is Direct
-        if (room.userIds.contains(userId) &&
-            (room.type != types.RoomType.channel || room.type != types.RoomType.group)) {
-          consoleLog('Room Exists $room');
-          return room;
+        if (room.userIds.contains(userId)) {
+          // Checking if room type is Direct or channel
+          if (isChannel) {
+            if (room.type == types.RoomType.channel) {
+              return room;
+            }
+          } else if ((room.type != types.RoomType.channel && room.type != types.RoomType.group)) {
+            consoleLog('Room Exists $room');
+            return room;
+          }
         }
       }
       consoleLog("Room Doesn't Exist");

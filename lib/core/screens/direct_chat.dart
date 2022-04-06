@@ -17,6 +17,9 @@ import 'loading_screen.dart';
 
 class DirectChat extends StatefulWidget {
   final String? otherUserId;
+
+  /// Whether the Direct chat is with Channel Or User
+  final bool isChannel;
   final String? accessToken, refreshToken;
   final String firstName, lastName, profileImage;
   @Deprecated('Use otherUserId instead')
@@ -31,6 +34,7 @@ class DirectChat extends StatefulWidget {
       this.firstName = "",
       this.lastName = "",
       this.profileImage = "",
+      this.isChannel = false,
       this.onViewOrderDetailsClick,
       Key? key})
       : super(key: key);
@@ -100,7 +104,7 @@ class _DirectChatState extends State<DirectChat> {
   }
 
   findChat(String otherUserId) async {
-    types.Room? chatRoom = await checkIfRoomExists(otherUserId);
+    types.Room? chatRoom = await checkIfRoomExists(otherUserId, isChannel: widget.isChannel);
     if (chatRoom != null) {
       consoleLog("Room Exists");
       room = chatRoom;
