@@ -19,6 +19,7 @@ class ChatHomeScreen extends StatelessWidget {
   final String? accessToken, refreshToken;
   final void Function()? onContactSupport;
   final void Function()? onViewOrdersPage;
+  @Deprecated('Using Go Router for navigation Now, this can be removed')
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
   const ChatHomeScreen({
@@ -38,7 +39,6 @@ class ChatHomeScreen extends StatelessWidget {
           : ChatProvider.userSignIn(accessToken!, refreshToken!),
       child: _ChatHomeScreen(
         accessToken,
-        onViewOrderDetailsClick,
         onContactSupport,
       ),
     );
@@ -46,12 +46,10 @@ class ChatHomeScreen extends StatelessWidget {
 }
 
 class _ChatHomeScreen extends StatefulWidget {
-  final Function(int?, String?, String?)? onViewOrderDetailsClick;
   final void Function()? onContactSupport;
   final String? accessToken;
   const _ChatHomeScreen(
     this.accessToken,
-    this.onViewOrderDetailsClick,
     this.onContactSupport,
   );
 
@@ -102,10 +100,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     }
 
     return Scaffold(
-        appBar: chatAppBar(context,
-            goToSearch: () => pushTo(
-                SearchPage(accessToken: widget.accessToken, onViewOrderDetailsClick: widget.onViewOrderDetailsClick!),
-                context)),
+        appBar: chatAppBar(context, goToSearch: () => pushTo(SearchPage(accessToken: widget.accessToken), context)),
         body: StreamBuilder<List<types.Room>>(
             stream: chatProvider.roomsStream,
             initialData: GetIt.I<ChatUtils>().roomList.isEmpty ? null : GetIt.I<ChatUtils>().roomList,
@@ -118,7 +113,6 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
               if (snapshot.hasData && snapshot.data?.isNotEmpty == true) {
                 return RoomListView(
                     onTap: onTabTapped,
-                    onViewOrderDetailsClick: widget.onViewOrderDetailsClick,
                     isSwitchedAccount: GetIt.I<ChatUtils>().isCreatorsApp,
                     selectedTabIndex: selectedTabIndex,
                     chatProvider: chatProvider,
@@ -128,10 +122,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                 return const LoadingScreen();
               }
               return StartChatMessage(
-                goToSearch: () => pushTo(
-                    SearchPage(
-                        accessToken: widget.accessToken, onViewOrderDetailsClick: widget.onViewOrderDetailsClick!),
-                    context),
+                goToSearch: () => pushTo(SearchPage(accessToken: widget.accessToken), context),
               );
             }));
   }

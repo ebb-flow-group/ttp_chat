@@ -8,21 +8,19 @@ import 'home_tabs.dart';
 import 'rooms_list.dart';
 
 class RoomListView extends StatelessWidget {
-  const RoomListView(
-      {Key? key,
-      required this.selectedTabIndex,
-      required this.isSwitchedAccount,
-      required this.chatProvider,
-      required this.stream,
-      required this.onTap,
-      this.onViewOrderDetailsClick})
-      : super(key: key);
+  const RoomListView({
+    Key? key,
+    required this.selectedTabIndex,
+    required this.isSwitchedAccount,
+    required this.chatProvider,
+    required this.stream,
+    required this.onTap,
+  }) : super(key: key);
 
   final int selectedTabIndex;
   final bool isSwitchedAccount;
   final ChatProvider chatProvider;
 
-  final Function(int?, String?, String?)? onViewOrderDetailsClick;
   final AsyncSnapshot<List<Room>> stream;
   final void Function(int) onTap;
 
@@ -48,11 +46,11 @@ class RoomListView extends StatelessWidget {
             stream: stream),
         isSwitchedAccount
             ? Expanded(
-                child: RoomsList(stream, isSwitchedAccount, onViewOrderDetailsClick,
+                child: RoomsList(stream, isSwitchedAccount,
                     provider: chatProvider, list: chatProvider.selectedTabIndex == 0 ? view.users : view.brands),
               )
             : Expanded(
-                child: RoomsList(stream, isSwitchedAccount, onViewOrderDetailsClick,
+                child: RoomsList(stream, isSwitchedAccount,
                     provider: chatProvider, list: chatProvider.selectedTabIndex == 0 ? view.brands : view.users),
               )
       ],

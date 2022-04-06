@@ -22,9 +22,8 @@ import 'search_widgets/search_user_tile.dart';
 
 class SearchPage extends StatefulWidget {
   final String? accessToken;
-  final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const SearchPage({Key? key, this.accessToken, this.onViewOrderDetailsClick}) : super(key: key);
+  const SearchPage({Key? key, this.accessToken}) : super(key: key);
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -218,7 +217,7 @@ class _SearchPageState extends State<SearchPage> {
               try {
                 types.Room? chatRoom = await checkExist(brand.username!);
                 if (chatRoom != null) {
-                  pushTo(ChatPage(chatRoom, widget.onViewOrderDetailsClick), context);
+                  pushTo(ChatPage(chatRoom), context);
                 } else {
                   types.User? user = await getUserFromFireStore(
                     brand.username!,
@@ -229,7 +228,7 @@ class _SearchPageState extends State<SearchPage> {
                     final room = await FirebaseChatCore.instance.createRoom(user);
                     consoleLog('Room Name: ${room.name} \nId: ${room.name} \nUsers: ${room.userIds}');
                     userRooms.add(room);
-                    pushTo(ChatPage(room, widget.onViewOrderDetailsClick), context);
+                    pushTo(ChatPage(room), context);
                   } else {
                     displaySnackBar("Error, User Not Found", context);
                   }
@@ -258,7 +257,7 @@ class _SearchPageState extends State<SearchPage> {
             types.Room? chatRoom = await checkExist(singleUser.phoneNumber!);
             try {
               if (chatRoom != null) {
-                pushTo(ChatPage(chatRoom, widget.onViewOrderDetailsClick), context);
+                pushTo(ChatPage(chatRoom), context);
               } else {
                 types.User? user = await getUserFromFireStore(singleUser.phoneNumber!,
                     firstName: singleUser.firstName, lastName: singleUser.lastName);
@@ -267,7 +266,7 @@ class _SearchPageState extends State<SearchPage> {
                   final room = await FirebaseChatCore.instance.createRoom(user);
                   consoleLog('Room Name: ${room.name} \nId: ${room.name} \nUsers: ${room.userIds}');
                   userRooms.add(room);
-                  pushTo(ChatPage(room, widget.onViewOrderDetailsClick), context);
+                  pushTo(ChatPage(room), context);
                 } else {
                   displaySnackBar("Error, User Not Found", context);
                 }

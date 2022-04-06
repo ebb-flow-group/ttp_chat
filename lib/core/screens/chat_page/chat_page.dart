@@ -19,24 +19,21 @@ import 'chat_widgets/order_message_widget.dart';
 class ChatPage extends StatelessWidget {
   final types.Room selectedChatRoom;
 
-  final Function(int?, String?, String?)? onViewOrderDetailsClick;
-
-  const ChatPage(this.selectedChatRoom, this.onViewOrderDetailsClick, {Key? key}) : super(key: key);
+  const ChatPage(this.selectedChatRoom, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ChatProvider>(
       create: (context) => ChatProvider.initialiseAndLoadMessages(selectedChatRoom),
-      child: _ChatPage(selectedChatRoom, onViewOrderDetailsClick),
+      child: _ChatPage(selectedChatRoom),
     );
   }
 }
 
 class _ChatPage extends StatefulWidget {
   final types.Room selectedChatRoom;
-  final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const _ChatPage(this.selectedChatRoom, this.onViewOrderDetailsClick);
+  const _ChatPage(this.selectedChatRoom);
 
   @override
   _ChatPageState createState() => _ChatPageState();

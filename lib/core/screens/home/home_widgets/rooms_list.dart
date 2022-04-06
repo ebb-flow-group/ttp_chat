@@ -18,10 +18,8 @@ class RoomsList extends StatefulWidget {
   final ChatProvider provider;
 
   final view list;
-  final Function(int?, String?, String?)? onViewOrderDetailsClick;
 
-  const RoomsList(this.snapshot, this.isSwitchedAccount, this.onViewOrderDetailsClick,
-      {this.list = view.brands, required this.provider, Key? key})
+  const RoomsList(this.snapshot, this.isSwitchedAccount, {this.list = view.brands, required this.provider, Key? key})
       : super(key: key);
 
   @override
@@ -45,7 +43,7 @@ class _RoomsListState extends State<RoomsList> {
               list: widget.list,
               onTap: (room) async {
                 setState(() {});
-                var result = await pushTo(ChatPage(room, widget.onViewOrderDetailsClick), context);
+                var result = await pushTo(ChatPage(room), context);
                 if (result == null) {
                   // log('****** Updating Room List ******');
                   widget.provider.updateStream();

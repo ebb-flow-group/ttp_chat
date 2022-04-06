@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
-
-import '../../services/routes.dart';
 
 AppBar chatAppBar(
   BuildContext context, {
@@ -16,16 +13,16 @@ AppBar chatAppBar(
       Row(
         children: [
           //...
-          IconButton(
-            onPressed: viewOrdersPage ?? () => context.push(Routes.ordersRoute),
-            icon: SvgPicture.asset(
-              'assets/icon/orders.svg',
-              package: 'ttp_chat',
-              color: Theme.of(context).primaryColor,
-              width: 20,
-              height: 20,
-            ),
-          ),
+          // IconButton(
+          //   onPressed: viewOrdersPage ?? () => context.push(Routes.ordersRoute),
+          //   icon: SvgPicture.asset(
+          //     'assets/icon/orders.svg',
+          //     package: 'ttp_chat',
+          //     color: Theme.of(context).primaryColor,
+          //     width: 20,
+          //     height: 20,
+          //   ),
+          // ),
 
           //...
           IconButton(

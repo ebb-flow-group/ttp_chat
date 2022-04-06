@@ -24,6 +24,7 @@ class DirectChat extends StatefulWidget {
   final String firstName, lastName, profileImage;
   @Deprecated('Use otherUserId instead')
   final String username, phoneNumber;
+  @Deprecated('Using Go Router for navigation Now, this can be removed')
   final Function(int?, String?, String?)? onViewOrderDetailsClick;
   const DirectChat(
       {required this.accessToken,
@@ -134,6 +135,6 @@ class _DirectChatState extends State<DirectChat> {
             backgroundColor: Config.creameryColor,
             body: LoadingScreen(),
           )
-        : ChatPage(room!, widget.onViewOrderDetailsClick);
+        : ChatPage(room!);
   }
 }
