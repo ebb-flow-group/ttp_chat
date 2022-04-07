@@ -36,6 +36,7 @@ AppBar chatAppBar(
         ],
       ),
     ],
+    automaticallyImplyLeading: false,
     centerTitle: false,
   );
 }
