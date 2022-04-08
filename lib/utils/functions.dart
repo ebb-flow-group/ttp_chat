@@ -1,12 +1,10 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:ttp_chat/config.dart';
+import 'package:ttp_chat/core/services/ts.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
-
-import '../packages/chat_core/src/util.dart';
 
 Future pushTo(Widget page, BuildContext context) {
   return Navigator.of(context).push(MaterialPageRoute(builder: (context) => page));
@@ -14,24 +12,22 @@ Future pushTo(Widget page, BuildContext context) {
 
 displaySnackBar(String message, BuildContext context) {
   var snackBar = SnackBar(
-    content: Text(message),
+    content: Text(
+      message,
+      textAlign: TextAlign.center,
+      style: Ts.demi12(Colors.white),
+    ),
     elevation: 0.0,
+    backgroundColor: Config.mentaikoColor,
     behavior: SnackBarBehavior.floating,
     duration: const Duration(seconds: 2),
-    action: SnackBarAction(
-      textColor: const Color(0xFFFAF2FB),
-      label: 'OK',
-      onPressed: () {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      },
-    ),
   );
 
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
 
 Future<types.User?> getUserFromFireStore(String userId,
-    {String? firstName, String? imageUrl = "", String? lastName = ""}) async {
+    {bool createUser = true, String? firstName, String? imageUrl = "", String? lastName = ""}) async {
   try {
     DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
     if (snapshot.exists) {
@@ -74,40 +70,6 @@ Future<types.User?> getUserFromFireStore(String userId,
 consoleLog(String? string) {
   if (kDebugMode) {
     print(string ?? 'Null string');
-  }
-}
-
-Future<types.Room?> checkIfRoomExists(String userId, {bool isChannel = false}) async {
-  log(userId);
-  try {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('rooms')
-        .where('userIds', arrayContains: FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    List<types.Room> rooms = await processRoomsQuery(FirebaseAuth.instance.currentUser!, snapshot);
-    if (rooms.isNotEmpty) {
-      for (var room in rooms) {
-        if (room.userIds.contains(userId)) {
-          // Checking if room type is Direct or channel
-          if (isChannel) {
-            if (room.type == types.RoomType.channel) {
-              return room;
-            }
-          } else if ((room.type != types.RoomType.channel && room.type != types.RoomType.group)) {
-            consoleLog('Room Exists $room');
-            return room;
-          }
-        }
-      }
-      consoleLog("Room Doesn't Exist");
-      return null;
-    } else {
-      consoleLog("Room Doesn't Exist");
-      return null;
-    }
-  } catch (e) {
-    consoleLog(e.toString());
-    return null;
   }
 }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -25,14 +27,18 @@ class ChatUtils {
 
   static initFirebaseApp({required String accessToken, required String refreshToken, void Function()? onInit}) async {
     await Firebase.initializeApp();
+    StreamSubscription<User?>? userStream;
     if (FirebaseAuth.instance.currentUser == null) {
       GetIt.I<ChatUtils>().isCreatorsApp
           ? ChatProvider.brandSignIn(accessToken, refreshToken)
           : ChatProvider.userSignIn(accessToken, refreshToken);
       try {
-        FirebaseAuth.instance.authStateChanges().listen((User? user) {
+        userStream = FirebaseAuth.instance.authStateChanges().listen((User? user) {
           if (user != null) {
             onInit?.call();
+            if (userStream != null) {
+              userStream.cancel();
+            }
           }
         });
       } catch (e) {
