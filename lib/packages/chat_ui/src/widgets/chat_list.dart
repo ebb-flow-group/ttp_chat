@@ -168,7 +168,6 @@ class _ChatListState extends State<ChatList> with SingleTickerProviderStateMixin
   Widget _buildNewMessage(int index, Animation<double> animation) {
     try {
       final item = _oldData[index];
-
       return SizeTransition(
         axisAlignment: -1,
         sizeFactor: animation.drive(CurveTween(curve: Curves.easeOutQuad)),

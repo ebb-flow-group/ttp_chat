@@ -23,6 +23,7 @@ class DirectChat extends StatefulWidget {
   final String? accessToken, refreshToken;
 
   /// If The user doen't exist in firebase, this name and image will be added when the user is created
+  @Deprecated('Not using these fields, better to remove from Navigation')
   final String firstName, lastName, profileImage;
   @Deprecated('Use otherUserId instead')
   final String username, phoneNumber;

@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
+import '../../../../config.dart';
+import '../../../../core/screens/widgets/helpers.dart';
 import '../util.dart';
 import 'file_message.dart';
 import 'image_message.dart';
@@ -25,7 +27,7 @@ class Message extends StatelessWidget {
     this.onMessageTap,
     this.onPreviewDataFetched,
     @required this.roundBorder,
-    @required this.showAvatar,
+    this.showAvatar = false,
     @required this.showName,
     @required this.showStatus,
     @required this.showUserAvatars,
@@ -54,7 +56,7 @@ class Message extends StatelessWidget {
   final bool? roundBorder;
 
   /// Show user avatar for the received message. Useful for a group chat.
-  final bool? showAvatar;
+  final bool showAvatar;
 
   /// See [TextMessage.showName]
   final bool? showName;
@@ -73,20 +75,29 @@ class Message extends StatelessWidget {
     final hasImage = message!.author.imageUrl != null;
     final name = getUserName(message!.author);
 
-    return showAvatar!
+    return showAvatar
         ? Container(
-            margin: const EdgeInsets.only(right: 8),
-            child: CircleAvatar(
-              backgroundImage: hasImage ? NetworkImage(message!.author.imageUrl!) : null,
-              backgroundColor: color,
-              radius: 16,
-              child: !hasImage
-                  ? Text(
-                      name.isEmpty ? '' : name[0].toUpperCase(),
-                      style: InheritedChatTheme.of(context)!.theme!.userAvatarTextStyle,
-                    )
-                  : null,
-            ),
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+                color: Config.primaryColor,
+                image: !hasImage
+                    ? null
+                    : DecorationImage(image: NetworkImage(message!.author.imageUrl!), fit: BoxFit.cover),
+                shape: BoxShape.circle,
+                gradient: Config.tabletopGradient),
+            child: !hasImage
+                ? Center(
+                    child: Text(
+                      getInitials(name),
+                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  )
+                : null,
           )
         : Container(
             margin: const EdgeInsets.only(right: 40),
@@ -180,43 +191,53 @@ class Message extends StatelessWidget {
       topRight: Radius.circular(_messageBorderRadius),
     );
     final _currentUserIsAuthor = _user.id == message!.author.id;
+    bool showSenderImage =
+        (!_currentUserIsAuthor && showUserAvatars!) && showAvatar && (message!.type == types.MessageType.text);
 
     return Container(
       alignment: _user.id == message!.author.id ? Alignment.centerRight : Alignment.centerLeft,
-      margin: const EdgeInsets.only(
+      margin: EdgeInsets.only(
         bottom: 4,
-        left: 20,
+        left: showSenderImage ? 5 : 25,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (!_currentUserIsAuthor && showUserAvatars!) _buildAvatar(context),
-          ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: messageWidth!.toDouble(),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                GestureDetector(
-                  onLongPress: () => onMessageLongPress?.call(message!),
-                  onTap: () => onMessageTap?.call(message!),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: _borderRadius,
-                      color: !_currentUserIsAuthor || message!.type == types.MessageType.image
-                          ? InheritedChatTheme.of(context)!.theme!.secondaryColor // primaryColor
-                          : InheritedChatTheme.of(context)!.theme!.primaryColor, // accentColor
-                    ),
-                    child: ClipRRect(
-                      borderRadius: _borderRadius,
-                      child: _buildMessage(_currentUserIsAuthor),
-                    ),
+          Stack(
+            children: [
+              Container(
+                margin: showSenderImage ? const EdgeInsets.only(left: 20) : null,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: messageWidth!.toDouble(),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onLongPress: () => onMessageLongPress?.call(message!),
+                        onTap: () => onMessageTap?.call(message!),
+                        child: Container(
+                          padding: showSenderImage ? const EdgeInsets.only(left: 5) : null,
+                          decoration: BoxDecoration(
+                            borderRadius: _borderRadius,
+                            color: !_currentUserIsAuthor || message!.type == types.MessageType.image
+                                ? InheritedChatTheme.of(context)!.theme!.secondaryColor // primaryColor
+                                : InheritedChatTheme.of(context)!.theme!.primaryColor, // accentColor
+                          ),
+                          child: ClipRRect(
+                            borderRadius: _borderRadius,
+                            child: _buildMessage(_currentUserIsAuthor),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+              if (showSenderImage) Positioned(top: 0, bottom: 0, child: _buildAvatar(context)),
+            ],
           ),
           if (_currentUserIsAuthor)
             Padding(

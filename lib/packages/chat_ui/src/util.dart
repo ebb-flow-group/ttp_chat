@@ -76,17 +76,16 @@ List<Object> calculateChatMessages(
     var nextMessageDateThreshold = false;
     var nextMessageDifferentDay = false;
     var nextMessageInGroup = false;
+
     var showName = false;
+    final previousMessage = isFirst ? null : messages[i + 1];
+    final isFirstInGroup = notMyMessage &&
+        ((message.author.id != previousMessage?.author.id) ||
+            (message.createdAt != null &&
+                previousMessage?.createdAt != null &&
+                message.createdAt! - previousMessage!.createdAt! > 60000));
 
-    if (showUserNames!) {
-      final previousMessage = isFirst ? null : messages[i + 1];
-
-      final isFirstInGroup = notMyMessage &&
-          ((message.author.id != previousMessage?.author.id) ||
-              (message.createdAt != null &&
-                  previousMessage?.createdAt != null &&
-                  message.createdAt! - previousMessage!.createdAt! > 60000));
-
+    if (showUserNames == true) {
       if (isFirstInGroup) {
         shouldShowName = false;
         if (message.type == types.MessageType.text) {
@@ -134,7 +133,8 @@ List<Object> calculateChatMessages(
     chatMessages.insert(0, {
       'message': message,
       'nextMessageInGroup': nextMessageInGroup,
-      'showName': notMyMessage && showUserNames && showName && getUserName(message.author).isNotEmpty,
+      'isFirstInGroup': isFirstInGroup,
+      'showName': notMyMessage && (showUserNames == true) && showName && getUserName(message.author).isNotEmpty,
       'showStatus': true,
     });
 

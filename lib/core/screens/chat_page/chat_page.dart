@@ -104,7 +104,7 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                     ),
                     buildCustomMessage: (message) => OrderMessageWidget(message),
                     onMessageLongPress: (message) {},
-                    showUserAvatars: false,
+                    showUserAvatars: true,
                     theme: DefaultChatTheme(
                       messageBorderRadius: 0.0,
                       backgroundColor: ThemeUtils.defaultAppThemeData.scaffoldBackgroundColor,
