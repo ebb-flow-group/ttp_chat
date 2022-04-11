@@ -108,9 +108,7 @@ class _DirectChatState extends State<DirectChat> {
       room = chatRoom;
       setState(() {});
     } else {
-      //TODO: remove fields firstname , lastname and show error intead of creating new user
-      types.User? user = await getUserFromFireStore(otherUserId,
-          firstName: widget.firstName, lastName: widget.lastName, imageUrl: widget.profileImage);
+      types.User? user = await getUserFromFireStore(otherUserId, createUser: false);
       if (user != null) {
         consoleLog("Creating New Room for $otherUserId");
         room = await FirebaseChatCore.instance.createRoom(user);

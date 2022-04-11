@@ -238,7 +238,7 @@ class FirebaseChatCore {
           author: types.User(id: firebaseUser!.uid), id: '', partialText: partialMessage, status: types.Status.sent);
     } else {
       message = types.TextMessage.fromPartial(
-          author: const types.User(id: ''),
+          author: types.User(id: ''),
           id: '',
           partialText: const types.PartialText(text: ''),
           status: types.Status.sent);

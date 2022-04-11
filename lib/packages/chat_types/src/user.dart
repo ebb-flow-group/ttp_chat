@@ -20,7 +20,7 @@ extension RoleToShortString on Role {
 @immutable
 class User extends Equatable {
   /// Creates a user.
-  const User({
+  User({
     this.createdAt,
     this.firstName,
     required this.id,
@@ -38,18 +38,18 @@ class User extends Equatable {
       User user = User(
         createdAt: json['createdAt'],
         firstName: json['firstName'] ?? "",
-        id: json['id'] as String? ?? '',
+        id: json['id']?.toString() ?? '',
         imageUrl: json['imageUrl'] as String?,
         lastName: json['lastName'] ?? "",
         lastSeen: json['lastSeen'],
-        metadata: json['metadata'] as Map<String, dynamic>?,
+        metadata: json['metadata'],
         role: getRoleFromString(json['role'] ?? ""),
         updatedAt: json['updatedAt'],
       );
       return user;
     } catch (e) {
       log("User.fromJson: $e");
-      return const User(id: "deleted_user");
+      return User(id: "deleted_user", firstName: "Deleted User", lastName: "");
     }
   }
 
@@ -109,7 +109,7 @@ class User extends Equatable {
   final String? firstName;
 
   /// Unique ID of the user
-  final String id;
+  String id;
 
   /// Remote image URL representing user's avatar
   final String? imageUrl;

@@ -32,14 +32,10 @@ Future<types.User?> getUserFromFireStore(String userId,
     DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
     if (snapshot.exists) {
       var data = snapshot.data() as Map<String, dynamic>;
-      types.User result = types.User(
-        id: snapshot.id,
-        firstName: data['firstName'],
-        lastName: data['lastName'],
-        imageUrl: data['imageUrl'],
-      );
+      types.User result = types.User.fromJson(data)..id = snapshot.id;
+
       return result;
-    } else {
+    } else if (createUser) {
       var user = types.User(
         firstName: firstName ?? "Guest",
         id: userId,
@@ -65,6 +61,7 @@ Future<types.User?> getUserFromFireStore(String userId,
     consoleLog('GET USER ERROR $e');
     return null;
   }
+  return null;
 }
 
 consoleLog(String? string) {
