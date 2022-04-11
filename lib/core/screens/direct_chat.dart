@@ -79,7 +79,7 @@ class _DirectChatState extends State<DirectChat> {
       return;
     }
     if (otherUserId.isEmpty && widget.roomId == null) {
-      consoleLog("other UserId is null");
+      consoleLog("other UserId is null ");
       _showChatRoomError();
       return;
     }

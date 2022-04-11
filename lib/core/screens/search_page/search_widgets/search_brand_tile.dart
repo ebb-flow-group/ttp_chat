@@ -60,7 +60,8 @@ class SearchBrandTile extends StatelessWidget {
                         IconButton(
                           onPressed: onChatClick,
                           icon: SvgPicture.asset(
-                            'assets/chat_icons/chat.svg',
+                            'assets/icon/chat.svg',
+                            package: 'ttp_chat',
                             width: 20,
                             height: 20,
                           ),

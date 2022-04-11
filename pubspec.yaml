@@ -90,7 +90,9 @@ flutter:
     - packages/ttp_chat/assets/icon/payment.svg
     - packages/ttp_chat/assets/icon/orders.svg
     - packages/ttp_chat/assets/icon/order_details.svg
+    - packages/ttp_chat/assets/icon/chat.svg
     - packages/ttp_chat/assets/anim/loading_anim.riv
+
 
   fonts:
     - family: AvenirNextLTPro
