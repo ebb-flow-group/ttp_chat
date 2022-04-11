@@ -4,7 +4,6 @@ import '../../../../features/chat/presentation/chat_provider.dart';
 import '../../../../packages/chat_types/src/room.dart';
 import '../../../widgets/input_search.dart';
 import '../../widgets/helpers.dart';
-import 'home_tabs.dart';
 import 'rooms_list.dart';
 
 class RoomListView extends StatelessWidget {
@@ -37,13 +36,13 @@ class RoomListView extends StatelessWidget {
                 chatProvider.searchUsers(value);
               }),
         ),
-        const SizedBox(height: 17),
-        HomeTabs(
-            isSwitchedAccount: isSwitchedAccount,
-            selectedTabIndex: selectedTabIndex,
-            chatProvider: chatProvider,
-            onTap: onTap,
-            stream: stream),
+        const SizedBox(height: 10),
+        // HomeTabs(
+        //     isSwitchedAccount: isSwitchedAccount,
+        //     selectedTabIndex: selectedTabIndex,
+        //     chatProvider: chatProvider,
+        //     onTap: onTap,
+        //     stream: stream),
         isSwitchedAccount
             ? Expanded(
                 child: RoomsList(stream, isSwitchedAccount,

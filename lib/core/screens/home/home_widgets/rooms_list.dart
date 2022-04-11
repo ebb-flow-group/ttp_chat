@@ -64,19 +64,6 @@ class _RoomsListState extends State<RoomsList> {
   }
 }
 
-// class RoomsList extends StatefulWidget {
-
-//   @override
-//   _RoomsListState createState() => _RoomsListState();
-// }
-
-// class _RoomsListState extends State<RoomsList> with AutomaticKeepAliveClientMixin {
-//   // Setting to true will force the tab to never be disposed. This could be dangerous.
-//   @override
-//   bool get wantKeepAlive => true;
-
-//  }
-
 class RoomListView extends StatelessWidget {
   const RoomListView({
     Key? key,
@@ -91,10 +78,10 @@ class RoomListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<types.Room> rooms = snapshot.data
-            ?.where((element) => element.metadata?['other_user_type'] == (list == view.brands ? 'brand' : 'user'))
-            .toList() ??
-        [];
+    List<types.Room> rooms = snapshot.data ?? [];
+    //     ?.where((element) => element.metadata?['other_user_type'] == (list == view.brands ? 'brand' : 'user'))
+    //     .toList() ??
+    // [];
 
     //For Searching Users
     if (context.read<ChatProvider>().searchString.isNotEmpty) {
@@ -117,7 +104,7 @@ class RoomListView extends StatelessWidget {
           rooms.isEmpty
               ? const NoResults()
               : ListView.separated(
-                  padding: const EdgeInsets.only(bottom: 50, top: 15),
+                  padding: const EdgeInsets.only(bottom: 50),
                   shrinkWrap: true,
                   physics: const BouncingScrollPhysics(),
                   itemCount: rooms.length,

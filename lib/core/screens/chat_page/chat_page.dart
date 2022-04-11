@@ -108,10 +108,11 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                     theme: DefaultChatTheme(
                       messageBorderRadius: 0.0,
                       backgroundColor: ThemeUtils.defaultAppThemeData.scaffoldBackgroundColor,
-                      primaryColor: Theme.of(context).colorScheme.secondary,
+                      primaryColor: Config.lightGrey,
                       secondaryColor: Theme.of(context).primaryColor,
                       inputTextColor: Theme.of(context).primaryColor,
-                      sentMessageBodyTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+                      sentMessageBodyTextStyle:
+                          const TextStyle(color: Config.primaryColor, fontWeight: FontWeight.normal),
                       sentMessageCaptionTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
                       sentMessageLinkTitleTextStyle: const TextStyle(color: Colors.white),
                       sentMessageLinkDescriptionTextStyle:
@@ -127,7 +128,7 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                     ),
                     emptyState: EmptyMessage(chatProvider: chatProvider),
                     customDateHeaderText: (DateTime dateTime) {
-                      return DateFormat('dd MMM | hh:mm a').format(dateTime).toUpperCase();
+                      return DateFormat('dd MMM  •  hh:mm a').format(dateTime).toUpperCase();
                     },
                   ),
                   if (showRecordingAnimation)

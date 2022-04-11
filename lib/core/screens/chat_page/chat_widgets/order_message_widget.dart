@@ -10,6 +10,7 @@ import 'package:ttp_chat/theme/style.dart';
 
 import '../../../../config.dart';
 import '../../../services/routes.dart';
+import '../../widgets/helpers.dart';
 import 'models/color_model.dart';
 
 class OrderMessageWidget extends StatelessWidget {
@@ -49,15 +50,24 @@ class OrderMessageWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-              decoration: BoxDecoration(
-                color: statusColor.bgColor,
-              ),
-              child: Text(
-                orderStatus,
-                style: TextStyle(color: statusColor.textColor, fontSize: 12, fontWeight: FontWeight.w700),
-              ),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                  decoration: BoxDecoration(
+                    color: statusColor.bgColor,
+                  ),
+                  child: Text(
+                    orderStatus,
+                    style: TextStyle(color: statusColor.textColor, fontSize: 12, fontWeight: FontWeight.w700),
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  getLastMessageDateTime({"createdAt": message.createdAt}),
+                  style: const TextStyle(color: Config.grayG1Color, fontSize: 11, fontWeight: FontWeight.w600),
+                )
+              ],
             ),
             const SizedBox(height: 8),
             Divider(color: Colors.grey[300]!),

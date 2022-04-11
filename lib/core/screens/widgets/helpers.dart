@@ -7,8 +7,13 @@ String getLastMessageDateTime(Object? lastMessageData) {
   String formattedDate = '';
 
   if (lastMessageData is Map<String, dynamic> && lastMessageData.isNotEmpty && lastMessageData['createdAt'] != null) {
-    if (lastMessageData['createdAt'] is Timestamp) {
-      Timestamp timestamp = lastMessageData['createdAt'] as Timestamp;
+    if (lastMessageData['createdAt'] is Timestamp || lastMessageData['createdAt'] is int) {
+      Timestamp? timestamp;
+      if (lastMessageData['createdAt'] is Timestamp) {
+        timestamp = lastMessageData['createdAt'] as Timestamp;
+      } else {
+        timestamp = Timestamp.fromMillisecondsSinceEpoch(lastMessageData['createdAt'] as int);
+      }
       DateTime date = timestamp.toDate();
       DateTime now = DateTime.now();
       if (date.day == now.day && date.month == now.month && date.year == now.year) {

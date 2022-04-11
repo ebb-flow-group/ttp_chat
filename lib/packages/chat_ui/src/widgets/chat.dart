@@ -246,12 +246,20 @@ class _ChatState extends State<Chat> {
               child: Divider(
                 thickness: 1.5,
                 color: Colors.grey[300],
-                endIndent: 20,
               ),
             ),
-            Text(
-              object.text!,
-              style: widget.theme.dateDividerTextStyle,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                object.text!,
+                style: widget.theme.dateDividerTextStyle,
+              ),
+            ),
+            Expanded(
+              child: Divider(
+                thickness: 1.5,
+                color: Colors.grey[300],
+              ),
             ),
           ],
         ),
