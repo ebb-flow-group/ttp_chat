@@ -174,7 +174,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget _tabs() {
     return Column(
       children: [
-        const SizedBox(height: 17),
+        //  const SizedBox(height: 17),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
