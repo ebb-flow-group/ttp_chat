@@ -70,12 +70,15 @@ class Message extends StatelessWidget {
   /// See [TextMessage.usePreviewData]
   final bool? usePreviewData;
 
+  bool get viewAvatar =>
+      message?.author.firstName != null && (message!.author.firstName?.isNotEmpty == true) && showAvatar;
+
   Widget _buildAvatar(BuildContext context) {
     final color = getUserAvatarNameColor(message!.author, InheritedChatTheme.of(context)!.theme!.userAvatarNameColors!);
     final hasImage = message!.author.imageUrl != null;
     final name = getUserName(message!.author);
 
-    return showAvatar
+    return viewAvatar
         ? Container(
             height: 40,
             width: 40,
@@ -192,7 +195,7 @@ class Message extends StatelessWidget {
     );
     final _currentUserIsAuthor = _user.id == message!.author.id;
     bool showSenderImage =
-        (!_currentUserIsAuthor && showUserAvatars!) && showAvatar && (message!.type == types.MessageType.text);
+        (!_currentUserIsAuthor && showUserAvatars!) && viewAvatar && (message!.type == types.MessageType.text);
 
     return Container(
       alignment: _user.id == message!.author.id ? Alignment.centerRight : Alignment.centerLeft,
