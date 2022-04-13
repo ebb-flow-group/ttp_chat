@@ -14,13 +14,11 @@ import '../../widgets/helpers.dart';
 
 class RoomsList extends StatefulWidget {
   final AsyncSnapshot<List<Room>> snapshot;
-  final bool isSwitchedAccount;
   final ChatProvider provider;
 
   final view list;
 
-  const RoomsList(this.snapshot, this.isSwitchedAccount, {this.list = view.brands, required this.provider, Key? key})
-      : super(key: key);
+  const RoomsList(this.snapshot, {this.list = view.brands, required this.provider, Key? key}) : super(key: key);
 
   @override
   State<RoomsList> createState() => _RoomsListState();

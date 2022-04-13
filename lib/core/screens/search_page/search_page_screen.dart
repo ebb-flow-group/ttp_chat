@@ -15,6 +15,7 @@ import '../../../packages/chat_core/src/util.dart';
 import '../../../utils/functions.dart';
 import '../../services/routes.dart';
 import '../../widgets/input_search.dart';
+import '../widgets/helpers.dart';
 import 'search_widgets/search_user_tile.dart';
 
 class SearchPage extends StatefulWidget {
@@ -126,13 +127,6 @@ class _SearchPageState extends State<SearchPage> {
             ],
           ),
         ));
-  }
-
-  void hideKeyboard(BuildContext context) {
-    FocusScopeNode curFocus = FocusScope.of(context);
-    if (!curFocus.hasPrimaryFocus && curFocus.focusedChild != null) {
-      FocusManager.instance.primaryFocus!.unfocus();
-    }
   }
 
   void searchUser({bool paginate = false}) async {

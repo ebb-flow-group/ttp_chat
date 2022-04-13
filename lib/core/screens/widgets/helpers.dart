@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 enum view { users, brands }
@@ -34,4 +35,11 @@ String getLastMessageDateTime(Object? lastMessageData) {
 getInitials(String text) {
   text = text.trim();
   return (text.isNotEmpty ? text.trim().split(RegExp(' +')).map((s) => s[0]).take(2).join() : '').toUpperCase();
+}
+
+void hideKeyboard(BuildContext context) {
+  FocusScopeNode curFocus = FocusScope.of(context);
+  if (!curFocus.hasPrimaryFocus && curFocus.focusedChild != null) {
+    FocusManager.instance.primaryFocus!.unfocus();
+  }
 }

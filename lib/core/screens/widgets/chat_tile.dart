@@ -15,7 +15,10 @@ class ChatTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       splashColor: Theme.of(context).primaryColor.withOpacity(0.1),
-      onTap: onTap,
+      onTap: () {
+        onTap?.call();
+        hideKeyboard(context);
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.5, horizontal: 16),
         child: Row(
