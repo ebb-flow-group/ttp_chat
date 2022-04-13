@@ -132,8 +132,7 @@ class _DirectChatState extends State<DirectChat> {
 
   _showChatRoomError() {
     displaySnackBar(
-        "This store isn’t enabled for chat. You could give them a call, or reach out to Tabletop Support for assistance.",
-        context);
+        "This user isn’t enabled for chat. You could reach out to Tabletop Support for assistance.", context);
     Navigator.pop(context);
   }
 }

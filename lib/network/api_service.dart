@@ -39,11 +39,11 @@ class ApiService {
     return BaseModel()..data = response;
   }
 
-  Future<BaseModel<SearchUserModel>> searchUser(String token, String searchValue) async {
+  Future<BaseModel<SearchUserModel>> searchUser(String token, String searchValue,
+      {int limit = 15, int offset = 0}) async {
     SearchUserModel response;
     try {
-      response = await apiClient.searchChatUser('Bearer $token', searchValue);
-      //    consoleLog('SEARCH USER RESP: ${response.toJson()}');
+      response = await apiClient.searchChatUser('Bearer $token', searchValue, limit, offset);
     } catch (error) {
       consoleLog('ERRPRRRR: $error');
       return BaseModel()..setException(ServerError.withError(error: error as DioError));

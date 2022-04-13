@@ -11,6 +11,7 @@ class InputSearch extends StatefulWidget {
   final ValueChanged<String> onChanged;
   final bool autofocus;
   final String hintText;
+  final TextEditingController? controller;
   final TextInputAction? textInputAction;
   final TextInputType? keyboardType;
   final bool enableInteractiveSelection;
@@ -19,6 +20,7 @@ class InputSearch extends StatefulWidget {
   const InputSearch({
     Key? key,
     required this.onChanged,
+    this.controller,
     this.autofocus = false,
     this.hintText = '',
     this.textInputAction,
@@ -32,11 +34,9 @@ class InputSearch extends StatefulWidget {
 }
 
 class _InputSearchState extends State<InputSearch> {
-  final _controller = TextEditingController();
-
   @override
   void dispose() {
-    _controller.dispose();
+    widget.controller?.dispose();
     super.dispose();
   }
 
@@ -45,8 +45,8 @@ class _InputSearchState extends State<InputSearch> {
   }
 
   void _onChanged(String value) {
-    TextSelection prevSelection = _controller.selection;
-    _controller.selection = prevSelection;
+    TextSelection prevSelection = widget.controller?.selection ?? const TextSelection.collapsed(offset: 0);
+    widget.controller?.selection = prevSelection;
 
     widget.onChanged(value);
     setState(() {});
@@ -66,11 +66,11 @@ class _InputSearchState extends State<InputSearch> {
   }
 
   Widget _wSuffix() {
-    if (_controller.text.isNotEmpty) {
+    if (widget.controller?.text.isNotEmpty == true) {
       return IconButton(
         constraints: const BoxConstraints(),
         onPressed: () {
-          _controller.clear();
+          widget.controller?.clear();
           _onChanged('');
         },
         iconSize: kBaseSize,
@@ -99,7 +99,7 @@ class _InputSearchState extends State<InputSearch> {
     return SizedBox(
       height: L.v(35),
       child: TextFormField(
-        controller: _controller,
+        controller: widget.controller,
         maxLines: 1,
         scrollPadding: EdgeInsets.all(kBaseSize * 2),
         textInputAction: widget.textInputAction,

@@ -44,9 +44,9 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<SearchUserModel> searchChatUser(authorization, searchValue) async {
+  Future<SearchUserModel> searchChatUser(authorization, searchValue, limit, offset) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'search': searchValue};
+    final queryParameters = <String, dynamic>{r'search': searchValue, r'limit': limit, r'offset': offset};
     final _headers = <String, dynamic>{r'Authorization': authorization};
     _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
@@ -54,7 +54,7 @@ class _ApiClient implements ApiClient {
         Options(method: 'GET', headers: _headers, extra: _extra)
             .compose(_dio.options, '/api/chat-users/', queryParameters: queryParameters, data: _data)
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-
+    log(_result.data.toString());
     final value = SearchUserModel.fromJson(_result.data!);
     return value;
   }

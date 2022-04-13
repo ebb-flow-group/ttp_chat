@@ -1,90 +1,51 @@
 // ignore_for_file: prefer_collection_literals
 
 class SearchUserModel {
-  List<Brands>? brands;
-  List<Users>? users;
+  final int count;
+  final List<Users> users;
 
-  SearchUserModel({this.brands = const [], this.users = const []});
+  SearchUserModel({this.count = 0, this.users = const []});
 
-  SearchUserModel.fromJson(Map<String, dynamic> json) {
-    if (json['brands'] != null) {
-      brands = [];
-      json['brands'].forEach((v) {
-        brands!.add(Brands.fromJson(v));
-      });
-    }
-    if (json['users'] != null) {
-      users = [];
-      json['users'].forEach((v) {
-        users!.add(Users.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    if (brands != null) {
-      data['brands'] = brands!.map((v) => v.toJson()).toList();
-    }
-    if (users != null) {
-      data['users'] = users!.map((v) => v.toJson()).toList();
-    }
-    return data;
+  factory SearchUserModel.fromJson(Map<String, dynamic> json) {
+    return SearchUserModel(
+      count: json['count'] ?? 0,
+      users: ((json['results'] ?? []) as List<dynamic>).map((e) => Users.fromJson(e)).toList(),
+    );
   }
 }
 
-class Brands {
-  int? id;
-  String? name;
-  String? username;
-  String? logo;
-
-  Brands({this.id, this.name, this.username});
-
-  Brands.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    username = json['username'];
-    logo = json['logo'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = id;
-    data['name'] = name;
-    data['username'] = username;
-    data['logo'] = logo;
-    return data;
-  }
+enum UserType {
+  user,
+  brand,
 }
 
 class Users {
   int? id;
+  String? uid;
   String? firstName;
   String? lastName;
-  String? email;
-  String? avatar;
-  String? phoneNumber;
+  String? imgUrl;
+  UserType? type;
 
-  Users({this.id, this.firstName, this.lastName, this.email, this.phoneNumber});
+  Users({this.id, this.uid, this.firstName, this.lastName, this.imgUrl, this.type});
 
   Users.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    uid = json['firebase_uuid'];
     firstName = json['first_name'];
     lastName = json['last_name'];
-    email = json['email'];
-    phoneNumber = json['phone_number'];
-    avatar = json['avatar'];
+    imgUrl = json['image_url'];
+    type = json['type'] == 'user' ? UserType.user : UserType.brand;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = id;
+    data['firebase_uuid'] = uid;
     data['first_name'] = firstName;
     data['last_name'] = lastName;
-    data['email'] = email;
-    data['phone_number'] = phoneNumber;
-    data['avatar'] = avatar;
+    data['image_url'] = imgUrl;
+    data['type'] = type;
     return data;
   }
 }

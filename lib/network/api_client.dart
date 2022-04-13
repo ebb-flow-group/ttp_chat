@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:retrofit/retrofit.dart';
@@ -26,8 +28,8 @@ abstract class ApiClient {
   );
 
   @GET('/api/chat-users/')
-  Future<SearchUserModel> searchChatUser(
-      @Header("Authorization") String authorization, @Query("search") String searchValue);
+  Future<SearchUserModel> searchChatUser(@Header("Authorization") String authorization,
+      @Query("search") String searchValue, @Query("limit") int limit, @Query("offset") int offset);
 
   // @POST('/api/auth/')
   // Future<ChatSignInModel> signInMVP(
