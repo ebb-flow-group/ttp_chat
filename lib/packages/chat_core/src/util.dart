@@ -52,6 +52,35 @@ Future<List<types.Room>> processRoomsQuery(
   return await Future.wait(futures);
 }
 
+/// Returns a list of [types.Room] created from Firebase query.
+/// If room has 2 participants, sets correct room name and image.
+Future<List<types.Room?>> processChannelsQuery(
+  User firebaseUser,
+  QuerySnapshot query,
+) async {
+  // print("************************* processRoomsQuery *************************");
+  final futures = query.docs.map(
+    (doc) => processChannelDocument(doc, firebaseUser),
+  );
+
+  return await Future.wait(futures);
+}
+
+/// Returns a [types.Room] created from Firebase document
+Future<types.Room?> processChannelDocument(
+  DocumentSnapshot doc,
+  User firebaseUser,
+) async {
+  final data = doc.data() as Map<String, dynamic>;
+  DocumentSnapshot roomData =
+      await FirebaseFirestore.instance.collection('rooms').doc(doc.id).collection('users').doc(firebaseUser.uid).get();
+
+  if (roomData.exists) {
+    return processChannelRoomDocument(doc, firebaseUser);
+  }
+  return null;
+}
+
 /// Returns a [types.Room] created from Firebase document
 Future<types.Room> processRoomDocument(
   DocumentSnapshot doc,

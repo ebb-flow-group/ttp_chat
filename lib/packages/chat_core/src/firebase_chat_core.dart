@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:async/async.dart' show StreamZip;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -186,6 +187,20 @@ class FirebaseChatCore {
         .asyncMap((doc) => processRoomDocument(doc, firebaseUser!));
   }
 
+  Stream<List<types.Room>> joinRoomsStream(Stream<List<types.Room?>> a, Stream<List<types.Room?>> b) =>
+      StreamZip([a, b]).asyncMap((event) {
+        List<types.Room?> channels = event[0];
+        List<types.Room?> rooms = event[1];
+        List<types.Room> result = [];
+        for (var i = 0; i < channels.length; i++) {
+          if (channels[i] != null) result.add(channels[i]!);
+        }
+        for (var i = 0; i < rooms.length; i++) {
+          if (rooms[i] != null) result.add(rooms[i]!);
+        }
+        return result;
+      });
+
   /// Returns a stream of rooms from Firebase. Only rooms where current
   /// logged in user exist are returned. [orderByUpdatedAt] is used in case
   /// you want to have last modified rooms on top, there are a couple
@@ -208,8 +223,20 @@ class FirebaseChatCore {
             .where('userIds', arrayContains: firebaseUser!.uid)
             .orderBy('updatedAt', descending: true)
         : FirebaseFirestore.instance.collection('rooms').where('userIds', arrayContains: firebaseUser?.uid);
+    final channelCollection = FirebaseFirestore.instance
+        .collection('rooms')
+        .where('type', isEqualTo: "channel")
+        .orderBy('updatedAt', descending: true);
 
-    return collection.snapshots().asyncMap((query) => processRoomsQuery(firebaseUser!, query));
+    Stream<List<types.Room?>> channelStream =
+        channelCollection.snapshots().asyncMap((query) => processChannelsQuery(firebaseUser!, query));
+    channelStream.listen((event) {});
+
+    Stream<List<types.Room>> roomStream =
+        collection.snapshots().asyncMap((query) => processRoomsQuery(firebaseUser!, query));
+
+    return joinRoomsStream(channelStream, roomStream);
+    //return Observable.merge([roomStream, stream2]).pipe(combineStream);
   }
 
   /// Sends a message to the Firestore. Accepts any partial message and a
