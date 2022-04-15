@@ -7,16 +7,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ttp_chat/core/services/extensions.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:uuid/uuid.dart';
 
+import '../../../core/screens/chat_utils.dart';
+import '../../../global.dart';
 import '../../../models/base_model.dart';
+import '../../../models/brand_model.dart';
 import '../../../network/api_service.dart';
 import '../../../packages/chat_core/ttp_chat_core.dart';
 import '../../../utils/functions.dart';
@@ -161,8 +167,29 @@ class ChatProvider extends ChangeNotifier {
   }
 
   void brandCustomFirebaseTokenSignIn(List<BrandFirebaseTokenData> brandsList) async {
+    String firebaseToken = '';
+    if (brandsList.isNotEmpty) {
+      firebaseToken = brandsList.first.firebaseToken ?? "";
+    }
+
+    // Getting Active brand saved locally
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Brand? brand = prefs.getString(activeBrand)?.toBrand;
+
+    // Making Room List empty to avoid rooms of another brand
+    GetIt.I<ChatUtils>().updateRoomList([]);
+
+    //checking if the active brand is available in the list
+    if (brand != null) {
+      for (var element in brandsList) {
+        if (element.brandName == brand.name) {
+          firebaseToken = element.firebaseToken ?? "";
+        }
+      }
+    }
+
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(brandsList[0].firebaseToken!);
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
       consoleLog('UserId: ${userCredential.user!.uid}');
       apiStatus = ApiStatus.success;
       updateStream();
@@ -196,12 +223,11 @@ class ChatProvider extends ChangeNotifier {
     consoleLog('Access Token : $accessToken');
     BaseModel<BrandFirebaseTokenModel> response = await ApiService().getBrandFirebaseToken(accessToken);
     if (response.data != null) {
-      consoleLog('Brand Firebase Token : ${response.data!.toJson()}');
-      if (response.data!.brandFirebaseTokenList!.isEmpty || response.data!.brandFirebaseTokenList!.length > 1) {
+      if (response.data!.brandFirebaseTokenList?.isEmpty == true) {
         apiStatus = ApiStatus.failed;
         notifyListeners();
       } else {
-        brandCustomFirebaseTokenSignIn(response.data!.brandFirebaseTokenList!);
+        brandCustomFirebaseTokenSignIn(response.data?.brandFirebaseTokenList ?? []);
       }
     } else {
       apiStatus = ApiStatus.failed;

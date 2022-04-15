@@ -7,11 +7,11 @@ import 'package:ttp_chat/utils/functions.dart';
 
 class NotificationService {
   static subscribeToChannel(Map<String, dynamic> room) {
-    //Not Subcribing the owner of the room
+    ///Not Subcribing the owner of the room
     if (room['owner'] == FirebaseAuth.instance.currentUser?.uid) return;
     String? topic = room['topicName'];
     if (topic != null) {
-      consoleLog('Subscribing to topic: $topic');
+      ///  consoleLog('Subscribing to topic: $topic');
       FirebaseMessaging.instance.subscribeToTopic(topic);
     }
   }

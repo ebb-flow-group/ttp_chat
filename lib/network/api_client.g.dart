@@ -39,6 +39,7 @@ class _ApiClient implements ApiClient {
         Options(method: 'POST', headers: _headers, extra: _extra)
             .compose(_dio.options, '/auth/brand-firebase-tokens', queryParameters: queryParameters, data: _data)
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+
     final value = BrandFirebaseTokenModel.fromJson(_result.data!);
     return value;
   }

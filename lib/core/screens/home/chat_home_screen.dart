@@ -62,8 +62,6 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   int selectedTabIndex = 0;
   bool _error = false;
   bool _initialized = false;
-  bool isLoading = false;
-
   late ChatProvider chatProvider;
 
   @override
@@ -71,12 +69,6 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     chatProvider = context.read<ChatProvider>();
     initializeFlutterFire();
     super.initState();
-    //Not using cache Service now
-    // if (FirebaseAuth.instance.currentUser == null) {
-    //   CacheService().clearRoomList();
-    // } else {
-    //   chatProvider.getLocalRoomList();
-    // }
   }
 
   @override
@@ -86,17 +78,18 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    //FirebaseAuth.instance.signOut();
     chatProvider = context.watch<ChatProvider>();
     if (_error) {
       return ChatErrorScreen(onContactSupport: widget.onContactSupport);
     }
 
-    if (!_initialized || chatProvider.apiStatus == ApiStatus.called) {
-      return const Scaffold(body: LoadingScreen());
-    }
-
     if (chatProvider.apiStatus == ApiStatus.failed) {
       return ChatErrorScreen(onContactSupport: widget.onContactSupport);
+    }
+
+    if (!_initialized || chatProvider.apiStatus == ApiStatus.called) {
+      return const Scaffold(body: LoadingScreen());
     }
 
     return Scaffold(
