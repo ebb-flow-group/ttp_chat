@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:route_parser/route_parser.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/theme/style.dart';
-import 'package:ttp_chat/utils/functions.dart';
 
 import '../../../../packages/chat_types/src/util.dart';
 import '../../../services/routes.dart';
@@ -39,8 +39,7 @@ class EmptyMessage extends StatelessWidget {
         // ),
         const SizedBox(height: 30),
         if (!GetIt.I<ChatUtils>().isCreatorsApp)
-          if ((chatProvider.selectedChatRoom?.metadata?["other_user_type"] == "brand" &&
-              getChatUserId(chatProvider.selectedChatRoom) != null))
+          if (getChatUserId(chatProvider.selectedChatRoom) != null)
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   primary: Theme.of(context).primaryColor,
@@ -53,10 +52,11 @@ class EmptyMessage extends StatelessWidget {
                       .copyWith(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white),
                 ),
                 onPressed: () {
-                  String? userId = getChatUserId(chatProvider.selectedChatRoom);
-                  consoleLog("userId: $userId");
-                  if (userId != null && userId != 'deleted-brand') {
+                  String userId = getChatUserId(chatProvider.selectedChatRoom) ?? "";
+                  if (chatProvider.selectedChatRoom?.metadata?["other_user_type"] == "brand") {
                     context.push(Routes.homeOutletDetailPage, extra: userId);
+                  } else if (chatProvider.selectedChatRoom?.metadata?["other_user_type"] == "user") {
+                    context.push(RouteParser(Routes.userProfilePage).reverse({'id': Uri.encodeComponent(userId)}));
                   }
                 }),
       ],
