@@ -13,7 +13,7 @@ import 'util.dart';
 class FirebaseChatCore {
   FirebaseChatCore._privateConstructor() {
     FirebaseAuth.instance.idTokenChanges().listen((User? user) {
-      firebaseUser = user!;
+      if (user != null) firebaseUser = user;
     });
   }
 
