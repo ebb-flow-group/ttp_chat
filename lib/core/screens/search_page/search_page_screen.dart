@@ -119,8 +119,14 @@ class _SearchPageState extends State<SearchPage> {
                               user,
                               onChatClick: () {
                                 hideKeyboard(context);
-                                context.push(RouteParser(Routes.chatUserRoute)
-                                    .reverse({'id': Uri.encodeComponent(user.uid ?? "")}));
+                                if (user.uid == null) {
+                                  displaySnackBar(
+                                      "This user isn’t enabled for chat. You could reach out to Tabletop Support for assistance.",
+                                      context);
+                                  return;
+                                }
+                                context.push(
+                                    RouteParser(Routes.chatUserRoute).reverse({'id': Uri.encodeComponent(user.uid!)}));
                               },
                             );
                           }))
