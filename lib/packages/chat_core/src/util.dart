@@ -181,6 +181,7 @@ Future<types.Room> processChannelRoomDocument(
     String otherUserType = "";
     String ownerId = data["owner"];
     Map<String, dynamic> otherUser = await fetchUser(data["owner"]);
+
     //log("processChannelRoomDocument: ${otherUser.toString()}");
     try {
       imageUrl = data['imageUrl'] ?? otherUser['imageUrl'] ?? "";

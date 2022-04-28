@@ -65,7 +65,7 @@ class ChatUtils {
       final Map<String, dynamic> room = doc.data() as Map<String, dynamic>;
       if (room['type'] == "channel") {
         //Subscribing to channel
-        NotificationService.subscribeToChannel(room);
+        ChatNotificationService.subscribeToChannel(room);
       }
       return getUnreadMessageCount(doc, FirebaseAuth.instance.currentUser!);
     });
