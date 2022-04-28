@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:ttp_chat/utils/functions.dart';
 
-class NotificationService {
+class ChatNotificationService {
   static subscribeToChannel(Map<String, dynamic> room) {
     ///Not Subcribing the owner of the room
     if (room['owner'] == FirebaseAuth.instance.currentUser?.uid) return;
@@ -31,6 +31,27 @@ class NotificationService {
         if (topic != null) {
           log('Subscribing to topic: $topic');
           FirebaseMessaging.instance.subscribeToTopic(topic);
+        }
+      }
+    }).catchError((e) {
+      consoleLog(e.toString());
+    });
+  }
+
+  static unSubscribeFromAllChannels() {
+    if (FirebaseAuth.instance.currentUser == null) return;
+    FirebaseFirestore.instance
+        .collection('rooms')
+        .where('userIds', arrayContains: FirebaseAuth.instance.currentUser!.uid)
+        .where("type", isEqualTo: "channel")
+        .get()
+        .then((value) {
+      for (var doc in value.docs) {
+        Map<String, dynamic> room = doc.data();
+        String? topic = room['topicName'];
+        if (topic != null) {
+          log('UnSubscribing From topic: $topic');
+          FirebaseMessaging.instance.unsubscribeFromTopic(topic);
         }
       }
     }).catchError((e) {
