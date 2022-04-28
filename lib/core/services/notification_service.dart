@@ -38,15 +38,14 @@ class ChatNotificationService {
     });
   }
 
-  static unSubscribeFromAllChannels() {
+  static Future unSubscribeFromAllChannels() async{
     if (FirebaseAuth.instance.currentUser == null) return;
-    FirebaseFirestore.instance
+    QuerySnapshot<Map<String, dynamic>> data = await FirebaseFirestore.instance
         .collection('rooms')
         .where('userIds', arrayContains: FirebaseAuth.instance.currentUser!.uid)
         .where("type", isEqualTo: "channel")
-        .get()
-        .then((value) {
-      for (var doc in value.docs) {
+        .get();
+        for (var doc in data.docs) {
         Map<String, dynamic> room = doc.data();
         String? topic = room['topicName'];
         if (topic != null) {
@@ -54,8 +53,5 @@ class ChatNotificationService {
           FirebaseMessaging.instance.unsubscribeFromTopic(topic);
         }
       }
-    }).catchError((e) {
-      consoleLog(e.toString());
-    });
   }
 }
