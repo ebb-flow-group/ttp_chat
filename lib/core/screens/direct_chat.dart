@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,35 +15,9 @@ import 'loading_screen.dart';
 class DirectChat extends StatefulWidget {
   final String? otherUserId;
   final String? roomId;
-
-  /// Whether the Direct chat is with Channel Or User
-  @Deprecated('replacing this with roomId')
-  final bool isChannel;
   final String? accessToken, refreshToken;
-
-  /// If The user doen't exist in firebase, this name and image will be added when the user is created
-  @Deprecated('Not using these fields, better to remove from Navigation')
-  final String firstName, lastName, profileImage;
-  @Deprecated('Use otherUserId instead')
-  final String username, phoneNumber;
-  @Deprecated('Using Go Router for navigation Now, this can be removed')
-  final Function(int?, String?, String?)? onViewOrderDetailsClick;
-  const DirectChat(
-      {required this.accessToken,
-      required this.refreshToken,
-      this.otherUserId,
-      this.phoneNumber = "",
-      this.username = "",
-      this.firstName = "",
-      this.lastName = "",
-      this.roomId,
-      this.profileImage = "",
-      this.isChannel = false,
-      this.onViewOrderDetailsClick,
-      Key? key})
-      :
-        //TODO: Add After Deprecated fields username, phoneNumber are removed
-        // assert(otherUserId != null || roomId != null, "Either otherUserId or roomId must be provided"),
+  const DirectChat({required this.accessToken, required this.refreshToken, this.otherUserId, this.roomId, Key? key})
+      : assert(otherUserId != null || roomId != null, "Either otherUserId or roomId must be provided"),
         super(key: key);
 
   @override
@@ -62,13 +35,7 @@ class _DirectChatState extends State<DirectChat> {
 
   types.Room? room;
 
-  bool isLoading = true;
-
-  StreamSubscription<User?>? userStream;
-
-  String get otherUserId {
-    return widget.otherUserId ?? (widget.username.isEmpty ? widget.phoneNumber : widget.username);
-  }
+  String? get otherUserId => widget.otherUserId;
 
   init() async {
     if (widget.accessToken == null ||
@@ -79,7 +46,7 @@ class _DirectChatState extends State<DirectChat> {
       Navigator.pop(context);
       return;
     }
-    if (otherUserId.isEmpty && widget.roomId == null) {
+    if ((otherUserId == null || otherUserId?.isEmpty == true) && widget.roomId == null) {
       consoleLog("other UserId is null ");
       _showChatRoomError();
       return;
@@ -99,16 +66,16 @@ class _DirectChatState extends State<DirectChat> {
     if (widget.roomId != null) {
       consoleLog("Getting Room from RoomId");
       chatRoom = await ChatRoomUtils.getRoomFromId(widget.roomId!);
-    } else {
+    } else if (otherUserId != null) {
       consoleLog("Getting Room from UserId");
-      chatRoom = await ChatRoomUtils.checkIfRoomExists(otherUserId);
+      chatRoom = await ChatRoomUtils.checkIfRoomExists(otherUserId!);
     }
     if (chatRoom != null) {
       consoleLog("Room Exists");
       room = chatRoom;
       setState(() {});
-    } else {
-      types.User? user = await getUserFromFireStore(otherUserId, createUser: false);
+    } else if (otherUserId != null) {
+      types.User? user = await getUserFromFireStore(otherUserId!, createUser: false);
       if (user != null) {
         consoleLog("Creating New Room for $otherUserId");
         room = await FirebaseChatCore.instance.createRoom(user);
@@ -117,6 +84,8 @@ class _DirectChatState extends State<DirectChat> {
       } else {
         _showChatRoomError();
       }
+    } else {
+      _showChatRoomError();
     }
   }
 
