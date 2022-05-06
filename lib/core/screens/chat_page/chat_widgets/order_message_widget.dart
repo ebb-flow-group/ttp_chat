@@ -199,7 +199,7 @@ class OrderMessageWidget extends StatelessWidget {
       case 'paid':
         return isCreatorsApp ? 'NEW' : 'PENDING';
       case 'checked_out':
-        return 'PENDING PAYMENT';
+        return 'UNPAID';
       case 'failed':
         return 'FAILED';
       case 'rejected':
@@ -256,7 +256,7 @@ class OrderMessageWidget extends StatelessWidget {
   static TextColor getStatusBannerColor(String status) {
     TextColor color = TextColor();
     switch (status) {
-      case 'PENDING PAYMENT':
+      case 'UNPAID':
         return color..bgColor = Config.mentaikoColor;
       case 'FAILED':
         return TextColor(bgColor: Config.lightGrey, textColor: Config.mentaikoColor);
