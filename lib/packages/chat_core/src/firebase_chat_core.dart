@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
+import '../../../utils/functions.dart';
 import 'util.dart';
 
 /// Provides access to Firebase chat data. Singleton, use
@@ -92,8 +93,8 @@ class FirebaseChatCore {
         if (room.type == types.RoomType.group) return false;
 
         final userIds = room.users.map((u) => u.id);
-        print('IS USER PRESENT: ${userIds.contains(firebaseUser!.uid)}');
-        print('IS OTHER USER PRESENT: ${userIds.contains(otherUser.id)}');
+        consoleLog('IS USER PRESENT: ${userIds.contains(firebaseUser!.uid)}');
+        consoleLog('IS OTHER USER PRESENT: ${userIds.contains(otherUser.id)}');
         return userIds.contains(firebaseUser!.uid) && userIds.contains(otherUser.id);
       });
     } catch (e) {

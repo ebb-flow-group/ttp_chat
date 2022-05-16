@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart' hide Headers;
+import 'package:ttp_chat/utils/functions.dart';
 
 import 'error_message.dart';
 
@@ -42,29 +43,25 @@ class ServerError implements Exception {
         _errorMessage = "Receive timeout in send request";
         break;
       case DioErrorType.response:
-        print(error.response!.data);
+        consoleLog(error.response!.data);
 
         // Try to get issue from response
         if (error.response?.data is Map) {
-          ErrorMessage errorMessage =
-              ErrorMessage.fromJson(error.response!.data);
+          ErrorMessage errorMessage = ErrorMessage.fromJson(error.response!.data);
 
           if (errorMessage.detail != null) {
             _errorMessage = errorMessage.detail;
             break;
-          } else if (errorMessage.username != null &&
-              errorMessage.username!.isNotEmpty) {
+          } else if (errorMessage.username != null && errorMessage.username!.isNotEmpty) {
             _errorMessage = errorMessage.username![0];
             break;
-          } else if (errorMessage.email != null &&
-              errorMessage.email!.isNotEmpty) {
+          } else if (errorMessage.email != null && errorMessage.email!.isNotEmpty) {
             _errorMessage = errorMessage.email![0];
             break;
           }
         }
 
-        _errorMessage =
-            "Received invalid status code: ${error.response!.statusCode}";
+        _errorMessage = "Received invalid status code: ${error.response!.statusCode}";
         break;
     }
     return _errorMessage;

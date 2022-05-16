@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
-enum view { users, brands }
+enum View { users, brands }
 
 String getLastMessageDateTime(Object? lastMessageData) {
   String formattedDate = '';

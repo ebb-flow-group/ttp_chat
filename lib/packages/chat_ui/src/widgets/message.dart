@@ -74,7 +74,7 @@ class Message extends StatelessWidget {
       message?.author.firstName != null && (message!.author.firstName?.isNotEmpty == true) && showAvatar;
 
   Widget _buildAvatar(BuildContext context) {
-    final color = getUserAvatarNameColor(message!.author, InheritedChatTheme.of(context)!.theme!.userAvatarNameColors!);
+    //final color = getUserAvatarNameColor(message!.author, InheritedChatTheme.of(context)!.theme!.userAvatarNameColors!);
     final hasImage = message!.author.imageUrl != null;
     final name = getUserName(message!.author);
 
