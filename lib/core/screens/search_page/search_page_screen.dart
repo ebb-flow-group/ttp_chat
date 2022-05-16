@@ -129,7 +129,21 @@ class _SearchPageState extends State<SearchPage> {
                                     RouteParser(Routes.chatUserRoute).reverse({'id': Uri.encodeComponent(user.uid!)}));
                               },
                             );
-                          }))
+                          })),
+              if (searching && users.isNotEmpty)
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      height: 15,
+                      width: 15,
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).primaryColor,
+                        strokeWidth: 4,
+                      ),
+                    ),
+                  ),
+                )
             ],
           ),
         ));
