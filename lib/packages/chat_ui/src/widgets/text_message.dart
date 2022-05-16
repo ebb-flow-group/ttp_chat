@@ -21,8 +21,7 @@ class TextMessage extends StatelessWidget {
   final types.TextMessage? message;
 
   /// See [LinkPreview.onPreviewDataFetched]
-  final void Function(types.TextMessage, types.PreviewData)?
-      onPreviewDataFetched;
+  final void Function(types.TextMessage, types.PreviewData)? onPreviewDataFetched;
 
   /// Show user name for the received message. Useful for a group chat.
   final bool? showName;
@@ -45,29 +44,19 @@ class TextMessage extends StatelessWidget {
         ? InheritedChatTheme.of(context)!.theme!.sentMessageBodyTextStyle
         : InheritedChatTheme.of(context)!.theme!.receivedMessageBodyTextStyle;
     final linkDescriptionTextStyle = user.id == message!.author.id
-        ? InheritedChatTheme.of(context)!
-            .theme!
-            .sentMessageLinkDescriptionTextStyle
-        : InheritedChatTheme.of(context)!
-            .theme!
-            .receivedMessageLinkDescriptionTextStyle;
+        ? InheritedChatTheme.of(context)!.theme!.sentMessageLinkDescriptionTextStyle
+        : InheritedChatTheme.of(context)!.theme!.receivedMessageLinkDescriptionTextStyle;
     final linkTitleTextStyle = user.id == message!.author.id
         ? InheritedChatTheme.of(context)!.theme!.sentMessageLinkTitleTextStyle
-        : InheritedChatTheme.of(context)!
-            .theme!
-            .receivedMessageLinkTitleTextStyle;
+        : InheritedChatTheme.of(context)!.theme!.receivedMessageLinkTitleTextStyle;
 
-    final color = getUserAvatarNameColor(message!.author,
-        InheritedChatTheme.of(context)!.theme!.userAvatarNameColors!);
+    final color = getUserAvatarNameColor(message!.author, InheritedChatTheme.of(context)!.theme!.userAvatarNameColors!);
     final name = getUserName(message!.author);
 
     return LinkPreview(
       enableAnimation: true,
       header: showName! ? name : null,
-      headerStyle: InheritedChatTheme.of(context)!
-          .theme!
-          .userNameTextStyle!
-          .copyWith(color: color),
+      headerStyle: InheritedChatTheme.of(context)!.theme!.userNameTextStyle!.copyWith(color: color),
       linkStyle: bodyTextStyle,
       metadataTextStyle: linkDescriptionTextStyle,
       metadataTitleStyle: linkTitleTextStyle,
@@ -84,8 +73,7 @@ class TextMessage extends StatelessWidget {
   }
 
   Widget _textWidget(types.User user, BuildContext context) {
-    final color = getUserAvatarNameColor(message!.author,
-        InheritedChatTheme.of(context)!.theme!.userAvatarNameColors!);
+    final color = getUserAvatarNameColor(message!.author, InheritedChatTheme.of(context)!.theme!.userAvatarNameColors!);
     final name = getUserName(message!.author);
 
     return Column(
@@ -98,19 +86,15 @@ class TextMessage extends StatelessWidget {
               name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: InheritedChatTheme.of(context)!
-                  .theme!
-                  .userNameTextStyle!
-                  .copyWith(color: color),
+              style: InheritedChatTheme.of(context)!.theme!.userNameTextStyle!.copyWith(color: color),
             ),
           ),
         SelectableText(
           message!.text,
+          scrollPhysics: const NeverScrollableScrollPhysics(),
           style: user.id == message!.author.id
               ? InheritedChatTheme.of(context)!.theme!.sentMessageBodyTextStyle
-              : InheritedChatTheme.of(context)!
-                  .theme!
-                  .receivedMessageBodyTextStyle,
+              : InheritedChatTheme.of(context)!.theme!.receivedMessageBodyTextStyle,
           textWidthBasis: TextWidthBasis.longestLine,
         ),
       ],

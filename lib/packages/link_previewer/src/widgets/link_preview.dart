@@ -88,8 +88,7 @@ class LinkPreview extends StatefulWidget {
   _LinkPreviewState createState() => _LinkPreviewState();
 }
 
-class _LinkPreviewState extends State<LinkPreview>
-    with SingleTickerProviderStateMixin {
+class _LinkPreviewState extends State<LinkPreview> with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     duration: widget.animationDuration ?? const Duration(milliseconds: 300),
     vsync: this,
@@ -161,9 +160,7 @@ class _LinkPreviewState extends State<LinkPreview>
   }
 
   bool _hasData(PreviewData? previewData) {
-    return previewData?.title != null ||
-        previewData?.description != null ||
-        previewData?.image?.url != null;
+    return previewData?.title != null || previewData?.description != null || previewData?.image?.url != null;
   }
 
   bool _hasOnlyImage() {
@@ -210,13 +207,11 @@ class _LinkPreviewState extends State<LinkPreview>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               if (data.title != null) _titleWidget(data.title!),
-              if (data.description != null)
-                _descriptionWidget(data.description!),
+              if (data.description != null) _descriptionWidget(data.description!),
             ],
           ),
         ),
-        if (data.image?.url != null && widget.hideImage != true)
-          _imageWidget(data.image!.url, width),
+        if (data.image?.url != null && widget.hideImage != true) _imageWidget(data.image!.url, width),
       ],
     );
   }
@@ -263,13 +258,11 @@ class _LinkPreviewState extends State<LinkPreview>
                     ),
                   ),
                 _linkify(),
-                if (withPadding && child != null)
-                  shouldAnimate ? _animated(child) : child,
+                if (withPadding && child != null) shouldAnimate ? _animated(child) : child,
               ],
             ),
           ),
-          if (!withPadding && child != null)
-            shouldAnimate ? _animated(child) : child,
+          if (!withPadding && child != null) shouldAnimate ? _animated(child) : child,
         ],
       ),
     );
@@ -306,9 +299,8 @@ class _LinkPreviewState extends State<LinkPreview>
       linkStyle: widget.linkStyle,
       maxLines: 100,
       minLines: 1,
-      onOpen: widget.onLinkPressed != null
-          ? (element) => widget.onLinkPressed!(element.url)
-          : _onOpen,
+      scrollPhysics: const NeverScrollableScrollPhysics(),
+      onOpen: widget.onLinkPressed != null ? (element) => widget.onLinkPressed!(element.url) : _onOpen,
       options: const LinkifyOptions(
         defaultToHttps: true,
         humanize: false,
@@ -336,14 +328,12 @@ class _LinkPreviewState extends State<LinkPreview>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         if (data.title != null) _titleWidget(data.title!),
-                        if (data.description != null)
-                          _descriptionWidget(data.description!),
+                        if (data.description != null) _descriptionWidget(data.description!),
                       ],
                     ),
                   ),
                 ),
-                if (data.image?.url != null && widget.hideImage != true)
-                  _minimizedImageWidget(data.image!.url),
+                if (data.image?.url != null && widget.hideImage != true) _minimizedImageWidget(data.image!.url),
               ],
             ),
           ),
@@ -383,8 +373,7 @@ class _LinkPreviewState extends State<LinkPreview>
     if (widget.previewData != null && _hasData(widget.previewData)) {
       final aspectRatio = widget.previewData!.image == null
           ? null
-          : widget.previewData!.image!.width /
-              widget.previewData!.image!.height;
+          : widget.previewData!.image!.width / widget.previewData!.image!.height;
 
       final _width = aspectRatio == 1 ? widget.width : widget.width - 32;
 

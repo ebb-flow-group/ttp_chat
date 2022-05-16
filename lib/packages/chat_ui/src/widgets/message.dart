@@ -128,6 +128,7 @@ class Message extends StatelessWidget {
         );
       case types.MessageType.text:
         final textMessage = message as types.TextMessage;
+
         return TextMessage(
           message: textMessage,
           onPreviewDataFetched: onPreviewDataFetched!,
