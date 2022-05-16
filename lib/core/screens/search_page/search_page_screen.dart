@@ -153,27 +153,6 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  Widget _tabs() {
-    return Column(
-      children: [
-        //  const SizedBox(height: 17),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //   children: [
-        //     _tab(0, 'Brands', brandsList.length),
-        //     _tab(1, 'People', usersList.length),
-        //   ],
-        // ),
-        Container(
-          height: 3,
-          color: Theme.of(context).primaryColor,
-          child: searching ? LinearProgressIndicator(color: Theme.of(context).primaryColor) : null,
-        ),
-        const SizedBox(height: 17),
-      ],
-    );
-  }
-
   // Widget _tab(int index, String title, int count) {
   //   return SearchTabBar(
   //       selectedTabIndex: selectedTabIndex,
