@@ -5,6 +5,7 @@ import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart';
 import '../../../config.dart';
 import '../../../utils/cached_network_image.dart';
 import '../../../utils/util.dart';
+import '../../services/ts.dart';
 import 'helpers.dart';
 
 class ChatAvatar extends StatelessWidget {
@@ -45,11 +46,7 @@ class ChatAvatar extends StatelessWidget {
           ? Center(
               child: Text(
                 getInitials(name),
-                style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Ts.bold14(Config.creameryColor),
               ),
             )
           : null,

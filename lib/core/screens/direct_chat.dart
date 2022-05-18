@@ -78,6 +78,7 @@ class _DirectChatState extends State<DirectChat> {
       types.User? user = await getUserFromFireStore(otherUserId!, createUser: false);
       if (user != null) {
         consoleLog("Creating New Room for $otherUserId");
+
         room = await FirebaseChatCore.instance.createRoom(user);
         consoleLog('Room Name: ${room!.name}\nId: ${room!.id}\nUsers: ${room!.userIds}');
         setState(() {});

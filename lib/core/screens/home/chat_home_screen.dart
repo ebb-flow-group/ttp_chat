@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../../../features/chat/presentation/chat_provider.dart';
-import '../../../utils/functions.dart';
+import '../../../utils/navigation_helper.dart';
 import '../chat_error_screen.dart';
 import '../chat_utils.dart';
 import '../loading_screen.dart';
@@ -93,7 +93,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
     }
 
     return Scaffold(
-        appBar: chatAppBar(context, goToSearch: () => pushTo(SearchPage(accessToken: widget.accessToken), context)),
+        appBar: ChatAppBar(onSearchTap: () => Push.to(SearchPage(accessToken: widget.accessToken), context)),
         body: StreamBuilder<List<types.Room>>(
             stream: chatProvider.roomsStream,
             initialData: GetIt.I<ChatUtils>().roomList.isEmpty ? null : GetIt.I<ChatUtils>().roomList,
@@ -115,7 +115,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                 return const LoadingScreen();
               }
               return StartChatMessage(
-                goToSearch: () => pushTo(SearchPage(accessToken: widget.accessToken), context),
+                goToSearch: () => Push.to(SearchPage(accessToken: widget.accessToken), context),
               );
             }));
   }

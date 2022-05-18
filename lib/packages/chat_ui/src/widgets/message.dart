@@ -226,9 +226,11 @@ class Message extends StatelessWidget {
                           padding: showSenderImage ? const EdgeInsets.only(left: 5) : null,
                           decoration: BoxDecoration(
                             borderRadius: _borderRadius,
-                            color: !_currentUserIsAuthor || message!.type == types.MessageType.image
-                                ? InheritedChatTheme.of(context)!.theme!.secondaryColor // primaryColor
-                                : InheritedChatTheme.of(context)!.theme!.primaryColor, // accentColor
+                            color: message!.type == types.MessageType.custom
+                                ? null
+                                : !_currentUserIsAuthor || message!.type == types.MessageType.image
+                                    ? InheritedChatTheme.of(context)!.theme!.secondaryColor // primaryColor
+                                    : InheritedChatTheme.of(context)!.theme!.primaryColor, // accentColor
                           ),
                           child: ClipRRect(
                             borderRadius: _borderRadius,

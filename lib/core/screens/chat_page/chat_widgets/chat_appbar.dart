@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:route_parser/route_parser.dart';
+import 'package:ttp_chat/core/services/ts.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
-import 'package:ttp_chat/theme/style.dart';
 
+import '../../../../config.dart';
 import '../../../../packages/chat_types/src/util.dart';
 import '../../../services/routes.dart';
 import '../../chat_utils.dart';
 import '../../widgets/chat_avatar.dart';
 
-class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
+class ChatRoomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final ChatProvider chatProvider;
 
-  const ChatAppBar(this.chatProvider, {Key? key}) : super(key: key);
+  const ChatRoomAppBar(this.chatProvider, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +35,11 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         },
         child: Row(
           children: [
-            ChatAvatar(chatProvider.selectedChatRoom!),
-            const SizedBox(
-              width: 10,
-            ),
+            ChatAvatar(chatProvider.selectedChatRoom!, radius: 15),
+            const SizedBox(width: 10),
             Text(
               chatProvider.selectedChatRoom?.name ?? "",
-              style: appBarTitleStyle(context),
+              style: Ts.bold15(Config.primaryColor),
             ),
           ],
         ),
