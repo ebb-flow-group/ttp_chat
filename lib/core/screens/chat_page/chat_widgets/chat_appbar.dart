@@ -35,7 +35,7 @@ class ChatRoomAppBar extends StatelessWidget implements PreferredSizeWidget {
         },
         child: Row(
           children: [
-            ChatAvatar(chatProvider.selectedChatRoom!, radius: 15),
+            ChatAvatar(chatProvider.selectedChatRoom!, radius: 20),
             const SizedBox(width: 10),
             Text(
               chatProvider.selectedChatRoom?.name ?? "",

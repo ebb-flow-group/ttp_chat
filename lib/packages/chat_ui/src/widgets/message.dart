@@ -5,6 +5,7 @@ import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../../../../config.dart';
 import '../../../../core/screens/widgets/helpers.dart';
+import '../../../../core/services/ts.dart';
 import '../util.dart';
 import 'file_message.dart';
 import 'image_message.dart';
@@ -79,28 +80,38 @@ class Message extends StatelessWidget {
     final name = getUserName(message!.author);
 
     return viewAvatar
-        ? Container(
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-                color: Config.primaryColor,
-                image: !hasImage
-                    ? null
-                    : DecorationImage(image: NetworkImage(message!.author.imageUrl!), fit: BoxFit.cover),
-                shape: BoxShape.circle,
-                gradient: Config.tabletopGradient),
-            child: !hasImage
-                ? Center(
-                    child: Text(
-                      getInitials(name),
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
+        ? Center(
+            child: Stack(
+              children: [
+                Container(
+                  height: 30,
+                  width: 30,
+                  decoration: const BoxDecoration(
+                    color: Config.primaryColor,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                Container(
+                  height: 30,
+                  width: 30,
+                  decoration: BoxDecoration(
+                      color: Config.primaryColor,
+                      image: !hasImage
+                          ? null
+                          : DecorationImage(image: NetworkImage(message!.author.imageUrl!), fit: BoxFit.cover),
+                      shape: BoxShape.circle,
+                      gradient: Config.tabletopGradient),
+                  child: !hasImage
+                      ? Center(
+                          child: Text(
+                            getInitials(name),
+                            style: Ts.bold10(Config.creameryColor),
                           ),
-                    ),
-                  )
-                : null,
+                        )
+                      : null,
+                ),
+              ],
+            ),
           )
         : Container(
             margin: const EdgeInsets.only(right: 40),
@@ -211,7 +222,7 @@ class Message extends StatelessWidget {
           Stack(
             children: [
               Container(
-                margin: showSenderImage ? const EdgeInsets.only(left: 20) : null,
+                margin: showSenderImage ? const EdgeInsets.only(left: 15) : null,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
                     maxWidth: messageWidth!.toDouble(),
@@ -223,7 +234,7 @@ class Message extends StatelessWidget {
                         onLongPress: () => onMessageLongPress?.call(message!),
                         onTap: () => onMessageTap?.call(message!),
                         child: Container(
-                          padding: showSenderImage ? const EdgeInsets.only(left: 5) : null,
+                          padding: showSenderImage ? const EdgeInsets.only(left: 3) : null,
                           decoration: BoxDecoration(
                             borderRadius: _borderRadius,
                             color: message!.type == types.MessageType.custom
