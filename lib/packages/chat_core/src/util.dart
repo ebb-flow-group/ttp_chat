@@ -153,11 +153,10 @@ Future<types.Room> processDirectRoomDocument(
     } else if (data['metadata']['other_user_type'] == null ||
         data['metadata']['other_user_type'] == "null" ||
         data['metadata']['other_user_type']?.isEmpty) {
-      // Doing Nothing for now
-      //
-      // data['name'] = "Deleted Account";
-      // data['metadata']['other_user_type'] = "brand";
-      // data['userIds'] = [firebaseUser.uid, "deleted-brand"];
+      // If the other user type is not found, Marking it as a Deleted Account
+      data['name'] = "Deleted Account";
+      data['metadata']['other_user_type'] = "brand";
+      data['userIds'] = [firebaseUser.uid, "deleted-brand"];
     }
     return types.Room.fromJson(data);
   } catch (e) {

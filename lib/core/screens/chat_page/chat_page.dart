@@ -118,7 +118,7 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                     sentMessageLinkTitleTextStyle: const TextStyle(color: Colors.white),
                     sentMessageLinkDescriptionTextStyle:
                         const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
-                    receivedMessageBodyTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+                    receivedMessageBodyTextStyle: Ts.text13(Config.creameryColor),
                     receivedMessageCaptionTextStyle:
                         const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
                     receivedMessageLinkTitleTextStyle: const TextStyle(color: Colors.white),
