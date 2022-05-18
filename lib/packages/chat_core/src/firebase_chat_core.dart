@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
+import 'package:ttp_chat/utils/functions.dart';
 
 import 'util.dart';
 
@@ -88,18 +89,22 @@ class FirebaseChatCore {
     final rooms = await processRoomsQuery(firebaseUser!, query);
 
     try {
+      log("checking if room exists");
       return rooms.firstWhere((room) {
+        // Returning False if the room is not a direct chat
         if (room.type == types.RoomType.group) return false;
+        if (room.type == types.RoomType.channel) return false;
 
-        final userIds = room.users.map((u) => u.id);
-        print('IS USER PRESENT: ${userIds.contains(firebaseUser!.uid)}');
-        print('IS OTHER USER PRESENT: ${userIds.contains(otherUser.id)}');
+        final userIds = room.userIds;
+
         return userIds.contains(firebaseUser!.uid) && userIds.contains(otherUser.id);
       });
     } catch (e) {
       // Do nothing if room does not exist
       // Create a new room instead
     }
+
+    consoleLog("Creating new room");
 
     final currentUser = await fetchUser(firebaseUser!.uid);
     final users = [types.User.fromJson(currentUser), otherUser];

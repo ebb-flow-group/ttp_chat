@@ -102,6 +102,7 @@ Future<types.Room> processDirectRoomDocument(
     if (e.isNotEmpty && e.first.toString().isNotEmpty) {
       otherUserId = e.first.toString();
     }
+
     try {
       final otherUser = users.firstWhere(
         (u) => u['id'] != firebaseUser.uid,
@@ -152,9 +153,11 @@ Future<types.Room> processDirectRoomDocument(
     } else if (data['metadata']['other_user_type'] == null ||
         data['metadata']['other_user_type'] == "null" ||
         data['metadata']['other_user_type']?.isEmpty) {
-      data['name'] = "Deleted Account";
-      data['metadata']['other_user_type'] = "brand";
-      data['userIds'] = [firebaseUser.uid, "deleted-brand"];
+      // Doing Nothing for now
+      //
+      // data['name'] = "Deleted Account";
+      // data['metadata']['other_user_type'] = "brand";
+      // data['userIds'] = [firebaseUser.uid, "deleted-brand"];
     }
     return types.Room.fromJson(data);
   } catch (e) {
