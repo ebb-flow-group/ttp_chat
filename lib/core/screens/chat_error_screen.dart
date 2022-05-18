@@ -3,21 +3,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../theme/style.dart';
 
-class ChatErrorScreen extends StatefulWidget {
+class ChatErrorScreen extends StatelessWidget {
   final void Function()? onContactSupport;
   const ChatErrorScreen({this.onContactSupport, Key? key}) : super(key: key);
 
-  @override
-  _ChatErrorScreenState createState() => _ChatErrorScreenState();
-}
-
-class _ChatErrorScreenState extends State<ChatErrorScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: startChatMessageWidget());
-  }
-
-  Widget startChatMessageWidget() {
+  Widget _wBody(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 17),
       child: Column(
@@ -64,7 +54,7 @@ class _ChatErrorScreenState extends State<ChatErrorScreen> {
             color: Theme.of(context).colorScheme.secondary,
             textColor: Theme.of(context).scaffoldBackgroundColor,
             onPressed: () {
-              if (widget.onContactSupport != null) widget.onContactSupport!();
+              onContactSupport?.call();
             },
             minWidth: MediaQuery.of(context).size.width,
             height: 42,
@@ -72,5 +62,10 @@ class _ChatErrorScreenState extends State<ChatErrorScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(body: _wBody(context));
   }
 }

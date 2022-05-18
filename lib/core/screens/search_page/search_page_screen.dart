@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:route_parser/route_parser.dart';
+import 'package:ttp_chat/config.dart';
 import 'package:ttp_chat/core/widgets/no_search_results.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
@@ -14,6 +15,7 @@ import '../../../network/api_service.dart';
 import '../../../packages/chat_core/src/util.dart';
 import '../../../utils/functions.dart';
 import '../../services/routes.dart';
+import '../../services/ts.dart';
 import '../../widgets/input_search.dart';
 import '../widgets/helpers.dart';
 import 'search_widgets/search_user_tile.dart';
@@ -28,7 +30,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  List<Users> users = [];
+  List<SearchUser> users = [];
   List<types.Room> userRooms = [];
   bool searching = false;
   Timer? _debounce;
@@ -55,8 +57,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color(0xFFFDFBEF).withOpacity(0.2),
-          title: Text('Start a new chat', style: Theme.of(context).textTheme.headline6),
+          title: Text('Start a new chat', style: Ts.bold17(Config.primaryColor)),
           actions: [
             if (searching)
               Padding(
@@ -114,7 +115,7 @@ class _SearchPageState extends State<SearchPage> {
                           itemCount: users.length,
                           padding: const EdgeInsets.symmetric(horizontal: 17.0),
                           itemBuilder: (BuildContext ctx, int index) {
-                            Users user = users[index];
+                            SearchUser user = users[index];
                             return SearchUserTile(
                               user,
                               onChatClick: () {

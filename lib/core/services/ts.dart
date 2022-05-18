@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-
-import 'l.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Ts {
   static TextStyle _bold(double size, Color color, {bool isUnderline = false}) {
     return TextStyle(
-      fontFamily: 'AvenirNextLTPro',
+      fontFamily: 'AvenirNext',
       fontWeight: FontWeight.w700,
-      fontSize: L.v(size),
+      fontSize: size.sp,
       color: color,
       decoration: isUnderline ? TextDecoration.underline : TextDecoration.none,
     );
@@ -15,9 +14,9 @@ class Ts {
 
   static TextStyle _demi(double size, Color color, {bool isUnderline = false}) {
     return TextStyle(
-      fontFamily: 'AvenirNextLTPro',
+      fontFamily: 'AvenirNext',
       fontWeight: FontWeight.w600,
-      fontSize: L.v(size),
+      fontSize: size.sp,
       color: color,
       decoration: isUnderline ? TextDecoration.underline : TextDecoration.none,
     );
@@ -25,9 +24,9 @@ class Ts {
 
   static TextStyle _text(double size, Color color, {bool isUnderline = false}) {
     return TextStyle(
-      fontFamily: 'AvenirNextLTPro',
+      fontFamily: 'AvenirNext',
       fontWeight: FontWeight.w500,
-      fontSize: L.v(size),
+      fontSize: size.sp,
       color: color,
       decoration: isUnderline ? TextDecoration.underline : TextDecoration.none,
     );

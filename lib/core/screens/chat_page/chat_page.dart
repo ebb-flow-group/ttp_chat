@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:ttp_chat/config.dart';
 import 'package:ttp_chat/core/screens/chat_page/chat_widgets/recording_animation.dart';
 import 'package:ttp_chat/core/screens/chat_utils.dart';
+import 'package:ttp_chat/core/screens/loading_screen.dart';
+import 'package:ttp_chat/core/services/ts.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:ttp_chat/packages/chat_ui/ttp_chat_ui.dart';
 
@@ -66,77 +68,75 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
   Widget build(BuildContext context) {
     chatProvider = context.watch<ChatProvider>();
     return Scaffold(
-      appBar: ChatAppBar(chatProvider),
+      extendBodyBehindAppBar: true,
+      appBar: ChatRoomAppBar(chatProvider),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-        child: Container(
-          color: Theme.of(context).backgroundColor,
-          child: StreamBuilder<List<types.Message>>(
-            initialData: const [],
-            stream: messageStream,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const LinearProgressIndicator(color: Config.primaryColor);
-              }
+        child: StreamBuilder<List<types.Message>>(
+          initialData: const [],
+          stream: messageStream,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const LoadingScreen();
+            }
 
-              return Stack(
-                children: [
-                  Chat(
-                    messages: snapshot.data ?? [],
-                    dateFormat: DateFormat('dd MMM'),
-                    dateLocale: '',
-                    timeFormat: DateFormat('hh:mm a'),
-                    isLastPage: false,
-                    onEndReached: () async {
-                      debugPrint('END');
-                    },
-                    onEndReachedThreshold: 10.0,
-                    onTextChanged: (String value) {},
-                    isAttachmentUploading: chatProvider.isAttachmentUploading,
-                    onAttachmentPressed: () => handleAttachmentPressed(context, chatProvider: chatProvider),
-                    onVoiceMessagePressed: _handleVoiceMessagePressed,
-                    onMessageTap: chatProvider.handleFBMessageTap,
-                    onPreviewDataFetched: chatProvider.handleFBPreviewDataFetched,
-                    onSendPressed: chatProvider.handleFBSendPressed,
-                    hideInput: hideInput,
-                    user: types.User(
-                      id: FirebaseChatCore.instance.firebaseUser!.uid,
-                    ),
-                    buildCustomMessage: (message) => OrderMessageWidget(message),
-                    onMessageLongPress: (message) {},
-                    showUserAvatars: true,
-                    theme: DefaultChatTheme(
-                      messageBorderRadius: 0.0,
-                      backgroundColor: ThemeUtils.defaultAppThemeData.scaffoldBackgroundColor,
-                      primaryColor: Config.lightGrey,
-                      secondaryColor: Theme.of(context).primaryColor,
-                      inputTextColor: Theme.of(context).primaryColor,
-                      sentMessageBodyTextStyle:
-                          const TextStyle(color: Config.primaryColor, fontWeight: FontWeight.normal),
-                      sentMessageCaptionTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
-                      sentMessageLinkTitleTextStyle: const TextStyle(color: Colors.white),
-                      sentMessageLinkDescriptionTextStyle:
-                          const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
-                      receivedMessageBodyTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
-                      receivedMessageCaptionTextStyle:
-                          const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
-                      receivedMessageLinkTitleTextStyle: const TextStyle(color: Colors.white),
-                      receivedMessageLinkDescriptionTextStyle:
-                          const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
-                      sentMessageDocumentIconColor: Colors.white,
-                      receivedMessageDocumentIconColor: Colors.white,
-                    ),
-                    emptyState: EmptyMessage(chatProvider: chatProvider),
-                    customDateHeaderText: (DateTime dateTime) {
-                      return DateFormat('dd MMM  •  hh:mm a').format(dateTime).toUpperCase();
-                    },
+            return Stack(
+              children: [
+                Chat(
+                  messages: snapshot.data ?? [],
+                  dateFormat: DateFormat('dd MMM'),
+                  dateLocale: '',
+                  timeFormat: DateFormat('hh:mm a'),
+                  isLastPage: false,
+                  onEndReached: () async {
+                    debugPrint('END');
+                  },
+                  onEndReachedThreshold: 10.0,
+                  onTextChanged: (String value) {},
+                  isAttachmentUploading: chatProvider.isAttachmentUploading,
+                  onAttachmentPressed: () => handleAttachmentPressed(context, chatProvider: chatProvider),
+                  onVoiceMessagePressed: _handleVoiceMessagePressed,
+                  onMessageTap: chatProvider.handleFBMessageTap,
+                  onPreviewDataFetched: chatProvider.handleFBPreviewDataFetched,
+                  onSendPressed: chatProvider.handleFBSendPressed,
+                  hideInput: hideInput,
+                  user: types.User(
+                    id: FirebaseChatCore.instance.firebaseUser!.uid,
                   ),
-                  if (showRecordingAnimation)
-                    RecordingAnimation(offset: offset, chatProvider: chatProvider, controller: controller)
-                ],
-              );
-            },
-          ),
+                  buildCustomMessage: (message) => OrderMessageWidget(message),
+                  onMessageLongPress: (message) {},
+                  showUserAvatars: true,
+                  theme: DefaultChatTheme(
+                    dateDividerTextStyle: Ts.demi11(Config.grayG2Color),
+                    messageBorderRadius: 0.0,
+                    backgroundColor: ThemeUtils.defaultAppThemeData.scaffoldBackgroundColor,
+                    primaryColor: Config.lightGrey,
+                    secondaryColor: Theme.of(context).primaryColor,
+                    inputTextColor: Theme.of(context).primaryColor,
+                    sentMessageBodyTextStyle: Ts.text13(Config.primaryColor),
+                    sentMessageCaptionTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+                    sentMessageLinkTitleTextStyle: const TextStyle(color: Colors.white),
+                    sentMessageLinkDescriptionTextStyle:
+                        const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+                    receivedMessageBodyTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+                    receivedMessageCaptionTextStyle:
+                        const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+                    receivedMessageLinkTitleTextStyle: const TextStyle(color: Colors.white),
+                    receivedMessageLinkDescriptionTextStyle:
+                        const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+                    sentMessageDocumentIconColor: Colors.white,
+                    receivedMessageDocumentIconColor: Colors.white,
+                  ),
+                  emptyState: EmptyMessage(chatProvider: chatProvider),
+                  customDateHeaderText: (DateTime dateTime) {
+                    return DateFormat('dd MMM  •  hh:mm a').format(dateTime).toUpperCase();
+                  },
+                ),
+                if (showRecordingAnimation)
+                  RecordingAnimation(offset: offset, chatProvider: chatProvider, controller: controller)
+              ],
+            );
+          },
         ),
       ),
     );

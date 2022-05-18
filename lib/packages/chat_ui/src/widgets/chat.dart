@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:ttp_chat/config.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../chat_l10n.dart';
@@ -242,10 +243,10 @@ class _ChatState extends State<Chat> {
         margin: const EdgeInsets.only(bottom: 32, top: 16, left: 20, right: 20),
         child: Row(
           children: [
-            Expanded(
+            const Expanded(
               child: Divider(
-                thickness: 1.5,
-                color: Colors.grey[300],
+                thickness: 1,
+                color: Config.grayG4Color,
               ),
             ),
             Padding(
@@ -255,10 +256,10 @@ class _ChatState extends State<Chat> {
                 style: widget.theme.dateDividerTextStyle,
               ),
             ),
-            Expanded(
+            const Expanded(
               child: Divider(
-                thickness: 1.5,
-                color: Colors.grey[300],
+                thickness: 1,
+                color: Config.grayG4Color,
               ),
             ),
           ],
