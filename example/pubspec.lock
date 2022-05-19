@@ -327,9 +327,11 @@ packages:
   go_router:
     dependency: transitive
     description:
-      name: go_router
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: cb4034e99ddb2f447d1dc4d2bf34093935341894
+      url: "https://github.com/GauravCalidig/go_router.git"
+    source: git
     version: "3.1.0"
   graphs:
     dependency: transitive
