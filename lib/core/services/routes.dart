@@ -1,5 +1,5 @@
 class Routes {
-  static const String routePrefix = '/t';
+  static const String routePrefix = '';
 
   static const String homeOutletDetailPage = '$routePrefix/home-brand';
   static const String orderDetailRoute = '$routePrefix/orders/detail/:id';
