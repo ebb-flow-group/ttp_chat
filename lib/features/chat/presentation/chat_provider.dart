@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
@@ -417,15 +419,28 @@ class ChatProvider extends ChangeNotifier {
 
     if (result != null) {
       setAttachmentUploading(true);
-      final file = File(result.path);
-      final size = file.lengthSync();
+
+      final size = await result.length();
       final bytes = await result.readAsBytes();
       final image = await decodeImageFromList(bytes);
-      final name = result.path.split('/').last;
+      String name = "";
+      try {
+        name = result.path.split('/').last;
+      } catch (e) {
+        name = "image.jpg";
+      }
 
       try {
         final reference = FirebaseStorage.instance.ref(name);
-        await reference.putFile(file);
+        if (kIsWeb) {
+          final metadata =
+              SettableMetadata(contentType: 'image/jpeg', customMetadata: {'picked-file-path': result.path});
+          await reference.putData(bytes, metadata);
+        } else {
+          final file = File(result.path);
+          await reference.putFile(file);
+        }
+
         final uri = await reference.getDownloadURL();
 
         final message = types.PartialImage(
@@ -447,13 +462,21 @@ class ChatProvider extends ChangeNotifier {
 
     if (result != null) {
       setAttachmentUploading(true);
-      final name = result.files.single.name;
-      final filePath = result.files.single.path;
-      final file = File(filePath ?? '');
+      PlatformFile file = result.files.single;
+      final name = file.name;
+      final filePath = file.path;
 
       try {
         final reference = FirebaseStorage.instance.ref(name);
-        await reference.putFile(file);
+        if (kIsWeb) {
+          Uint8List? bytes = file.bytes;
+          if (bytes == null) return;
+          await reference.putData(bytes);
+        } else {
+          final file = File(filePath ?? '');
+          await reference.putFile(file);
+        }
+
         final uri = await reference.getDownloadURL();
 
         final message = types.PartialFile(

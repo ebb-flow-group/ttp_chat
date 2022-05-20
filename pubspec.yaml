@@ -44,10 +44,10 @@ dependencies:
   html: ^0.15.0
   http: ^0.13.4
   get_it: ^7.2.0
-  cached_network_image: ^3.2.0
+  cached_network_image: ^3.2.1
   firebase_messaging: ^11.4.0
   flutter_screenutil: ^5.5.3+1
-    # Navigation
+  # Navigation
   go_router:
     git:
       url: https://github.com/GauravCalidig/go_router.git
@@ -57,7 +57,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^1.0.4
+  flutter_lints: ^2.0.1
   retrofit_generator: ^4.0.1
   build_runner: ^2.1.11
   dart_code_metrics: ^4.15.2
