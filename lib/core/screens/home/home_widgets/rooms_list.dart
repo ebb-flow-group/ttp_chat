@@ -17,9 +17,9 @@ class RoomsList extends StatefulWidget {
   final AsyncSnapshot<List<Room>> snapshot;
   final ChatProvider provider;
 
-  final view list;
+  final View list;
 
-  const RoomsList(this.snapshot, {this.list = view.brands, required this.provider, Key? key}) : super(key: key);
+  const RoomsList(this.snapshot, {this.list = View.brands, required this.provider, Key? key}) : super(key: key);
 
   @override
   State<RoomsList> createState() => _RoomsListState();
@@ -71,7 +71,7 @@ class RoomListView extends StatelessWidget {
     required this.snapshot,
   }) : super(key: key);
 
-  final view list;
+  final View list;
   final ValueChanged<types.Room> onTap;
   final AsyncSnapshot<List<types.Room>> snapshot;
 

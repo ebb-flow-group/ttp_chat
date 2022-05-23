@@ -130,7 +130,21 @@ class _SearchPageState extends State<SearchPage> {
                                     RouteParser(Routes.chatUserRoute).reverse({'id': Uri.encodeComponent(user.uid!)}));
                               },
                             );
-                          }))
+                          })),
+              if (searching && users.isNotEmpty)
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      height: 15,
+                      width: 15,
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).primaryColor,
+                        strokeWidth: 4,
+                      ),
+                    ),
+                  ),
+                )
             ],
           ),
         ));
@@ -152,27 +166,6 @@ class _SearchPageState extends State<SearchPage> {
       searching = false;
       setState(() {});
     }
-  }
-
-  Widget _tabs() {
-    return Column(
-      children: [
-        //  const SizedBox(height: 17),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //   children: [
-        //     _tab(0, 'Brands', brandsList.length),
-        //     _tab(1, 'People', usersList.length),
-        //   ],
-        // ),
-        Container(
-          height: 3,
-          color: Theme.of(context).primaryColor,
-          child: searching ? LinearProgressIndicator(color: Theme.of(context).primaryColor) : null,
-        ),
-        const SizedBox(height: 17),
-      ],
-    );
   }
 
   // Widget _tab(int index, String title, int count) {

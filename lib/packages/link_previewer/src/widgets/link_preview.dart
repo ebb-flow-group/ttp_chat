@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart' hide UrlLinkifier;
 import 'package:ttp_chat/packages/chat_types/src/preview_data.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../url_linkifier.dart' show UrlLinkifier;
 import '../utils.dart' show getPreviewData;
@@ -170,8 +170,8 @@ class _LinkPreviewState extends State<LinkPreview> with SingleTickerProviderStat
   }
 
   Future<void> _onOpen(LinkableElement link) async {
-    if (await canLaunch(link.url)) {
-      await launch(link.url);
+    if (await canLaunchUrlString(link.url)) {
+      await launchUrlString(link.url);
     } else {
       throw 'Could not launch $link';
     }

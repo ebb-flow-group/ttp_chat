@@ -28,7 +28,7 @@ class _DirectChatState extends State<DirectChat> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       init();
     });
   }

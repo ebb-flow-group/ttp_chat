@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:ttp_chat/utils/functions.dart';
 
+import '../../../utils/functions.dart';
 import 'util.dart';
 
 /// Provides access to Firebase chat data. Singleton, use

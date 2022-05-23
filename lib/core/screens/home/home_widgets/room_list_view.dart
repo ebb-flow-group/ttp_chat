@@ -46,11 +46,11 @@ class RoomListView extends StatelessWidget {
         isSwitchedAccount
             ? Expanded(
                 child: RoomsList(stream,
-                    provider: chatProvider, list: chatProvider.selectedTabIndex == 0 ? view.users : view.brands),
+                    provider: chatProvider, list: chatProvider.selectedTabIndex == 0 ? View.users : View.brands),
               )
             : Expanded(
                 child: RoomsList(stream,
-                    provider: chatProvider, list: chatProvider.selectedTabIndex == 0 ? view.brands : view.users),
+                    provider: chatProvider, list: chatProvider.selectedTabIndex == 0 ? View.brands : View.users),
               )
       ],
     );
