@@ -22,14 +22,14 @@ final _protocolIdentifierRegex = RegExp(
 /// Used to find links in the text.
 class UrlLinkifier extends Linkifier {
   /// Default constructor
-  UrlLinkifier();
+  const UrlLinkifier();
 
   /// Parses text to find all links inside it
   @override
   List<LinkifyElement> parse(elements, options) {
     final list = <LinkifyElement>[];
 
-    for (var element in elements) {
+    for (final element in elements) {
       if (element is TextElement) {
         var loose = false;
         var match = _urlRegex.firstMatch(element.text);

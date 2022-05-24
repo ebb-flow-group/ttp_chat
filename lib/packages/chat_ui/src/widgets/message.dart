@@ -193,27 +193,27 @@ class Message extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _user = InheritedUser.of(context)!.user;
-    final _messageBorderRadius = InheritedChatTheme.of(context)!.theme!.messageBorderRadius;
-    final _borderRadius = BorderRadius.only(
-      bottomLeft: Radius.circular(_user!.id == message!.author.id || roundBorder! ? _messageBorderRadius! : 0),
-      bottomRight: Radius.circular(_user.id == message!.author.id
+    final user = InheritedUser.of(context)!.user;
+    final messageBorderRadius = InheritedChatTheme.of(context)!.theme!.messageBorderRadius;
+    final borderRadius = BorderRadius.only(
+      bottomLeft: Radius.circular(user!.id == message!.author.id || roundBorder! ? messageBorderRadius! : 0),
+      bottomRight: Radius.circular(user.id == message!.author.id
           ? roundBorder!
-              ? _messageBorderRadius!
+              ? messageBorderRadius!
               : 0
-          : _messageBorderRadius!),
-      topLeft: Radius.circular(_messageBorderRadius!),
-      topRight: Radius.circular(_messageBorderRadius),
+          : messageBorderRadius!),
+      topLeft: Radius.circular(messageBorderRadius!),
+      topRight: Radius.circular(messageBorderRadius),
     );
-    final _currentUserIsAuthor = _user.id == message!.author.id;
+    final currentUserIsAuthor = user.id == message!.author.id;
     bool showSenderImage =
-        (!_currentUserIsAuthor && showUserAvatars!) && viewAvatar && (message!.type == types.MessageType.text);
+        (!currentUserIsAuthor && showUserAvatars!) && viewAvatar && (message!.type == types.MessageType.text);
 
     return Container(
-      alignment: _user.id == message!.author.id ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: user.id == message!.author.id ? Alignment.centerRight : Alignment.centerLeft,
       margin: EdgeInsets.only(
         bottom: 4,
-        left: showSenderImage ? 5 : 25,
+        left: showSenderImage ? 5 : 20,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -236,16 +236,16 @@ class Message extends StatelessWidget {
                         child: Container(
                           padding: showSenderImage ? const EdgeInsets.only(left: 3) : null,
                           decoration: BoxDecoration(
-                            borderRadius: _borderRadius,
+                            borderRadius: borderRadius,
                             color: message!.type == types.MessageType.custom
                                 ? null
-                                : !_currentUserIsAuthor || message!.type == types.MessageType.image
+                                : !currentUserIsAuthor || message!.type == types.MessageType.image
                                     ? InheritedChatTheme.of(context)!.theme!.secondaryColor // primaryColor
                                     : InheritedChatTheme.of(context)!.theme!.primaryColor, // accentColor
                           ),
                           child: ClipRRect(
-                            borderRadius: _borderRadius,
-                            child: _buildMessage(_currentUserIsAuthor),
+                            borderRadius: borderRadius,
+                            child: _buildMessage(currentUserIsAuthor),
                           ),
                         ),
                       ),
@@ -256,7 +256,7 @@ class Message extends StatelessWidget {
               if (showSenderImage) Positioned(top: 0, bottom: 0, child: _buildAvatar(context)),
             ],
           ),
-          if (_currentUserIsAuthor)
+          if (currentUserIsAuthor)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Center(

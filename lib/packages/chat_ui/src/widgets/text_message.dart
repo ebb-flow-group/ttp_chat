@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:ttp_chat/packages/link_previewer/flutter_link_previewer.dart';
+import 'package:ttp_chat/packages/link_previewer/src/utils.dart';
 
 import '../util.dart';
 import 'inherited_chat_theme.dart';
@@ -103,14 +104,14 @@ class TextMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _user = InheritedUser.of(context)!.user;
-    final _width = MediaQuery.of(context).size.width;
+    final user = InheritedUser.of(context)!.user;
+    final width = MediaQuery.of(context).size.width;
 
-    final urlRegexp = RegExp(REGEX_LINK);
+    final urlRegexp = RegExp(regexLink);
     final matches = urlRegexp.allMatches(message!.text.toLowerCase());
 
     if (matches.isNotEmpty && usePreviewData! && onPreviewDataFetched != null) {
-      return _linkPreview(_user!, _width, context);
+      return _linkPreview(user!, width, context);
     }
 
     return Container(
@@ -118,7 +119,7 @@ class TextMessage extends StatelessWidget {
         horizontal: 20,
         vertical: 10,
       ),
-      child: _textWidget(_user!, context),
+      child: _textWidget(user!, context),
     );
   }
 }
