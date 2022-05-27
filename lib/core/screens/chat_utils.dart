@@ -19,8 +19,7 @@ import '../services/notification_service.dart';
 class ChatUtils {
   final bool isCreatorsApp;
   final String baseUrl;
-  final FirebaseOptions options;
-  ChatUtils({this.isCreatorsApp = false, this.baseUrl = BASE_URL, required this.options});
+  ChatUtils({this.isCreatorsApp = false, this.baseUrl = BASE_URL});
 
   List<types.Room> roomList = [];
 
