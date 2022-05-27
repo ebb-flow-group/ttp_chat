@@ -140,21 +140,6 @@ class ChatProvider extends ChangeNotifier {
   void userCustomFirebaseTokenSignIn(String firebaseToken) async {
     consoleLog('User Token : $firebaseToken');
     try {
-      // consoleLog("---------------------------------");
-      // consoleLog(Firebase.app().name);
-      // consoleLog(Firebase.apps.first.name);
-
-      // consoleLog("---------------------------------");
-      // for (var app in Firebase.apps) {
-      //   consoleLog(app.name);
-      //   try {
-      //     await FirebaseAuth.instanceFor(app: app).signInWithCustomToken(firebaseToken);
-      //   } catch (e) {
-      //     consoleLog("error");
-      //   }
-      // }
-
-      // consoleLog("---------------------------------");
       UserCredential userCredential =
           await FirebaseAuth.instanceFor(app: Firebase.apps.first).signInWithCustomToken(firebaseToken);
       consoleLog('UserId: ${userCredential.user!.uid}');

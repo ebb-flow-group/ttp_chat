@@ -99,17 +99,12 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
       return const Scaffold(body: LoadingScreen());
     }
     return Scaffold(
-        appBar: chatAppBar(context,
-            goToSearch: () =>
-                pushTo(SearchPage(accessToken: widget.accessToken), context)),
+        appBar: chatAppBar(context, goToSearch: () => pushTo(SearchPage(accessToken: widget.accessToken), context)),
         body: StreamBuilder<List<types.Room>>(
             stream: chatProvider.roomsStream,
-            initialData: GetIt.I<ChatUtils>().roomList.isEmpty
-                ? null
-                : GetIt.I<ChatUtils>().roomList,
+            initialData: GetIt.I<ChatUtils>().roomList.isEmpty ? null : GetIt.I<ChatUtils>().roomList,
             builder: (context, snapshot) {
-              if (FirebaseAuth.instance.currentUser != null &&
-                  snapshot.connectionState != ConnectionState.waiting) {
+              if (FirebaseAuth.instance.currentUser != null && snapshot.connectionState != ConnectionState.waiting) {
                 // log('****** Saving Room List to Cache ******');
                 GetIt.I<ChatUtils>().updateRoomList(snapshot.data ?? []);
                 //  CacheService().saveRoomList(snapshot.data ?? [], chatProvider);
@@ -126,8 +121,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
                 return const LoadingScreen();
               }
               return StartChatMessage(
-                goToSearch: () => pushTo(
-                    SearchPage(accessToken: widget.accessToken), context),
+                goToSearch: () => pushTo(SearchPage(accessToken: widget.accessToken), context),
               );
             }));
   }
