@@ -10,13 +10,17 @@ import 'package:ttp_chat/packages/chat_types/src/room.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:ttp_chat/utils/functions.dart';
 
+import '../../features/chat/domain/brand_firebase_token_model.dart';
+import '../../models/base_model.dart';
+import '../../network/api_service.dart';
 import '../../packages/chat_core/src/util.dart';
 import '../services/notification_service.dart';
 
 class ChatUtils {
   final bool isCreatorsApp;
   final String baseUrl;
-  ChatUtils({this.isCreatorsApp = false, this.baseUrl = BASE_URL});
+  final FirebaseOptions options;
+  ChatUtils({this.isCreatorsApp = false, this.baseUrl = BASE_URL, required this.options});
 
   List<types.Room> roomList = [];
 
@@ -49,25 +53,27 @@ class ChatUtils {
     }
   }
 
-  Stream<List<int>> getUnreadMessages() {
-    var firebaseUser = FirebaseAuth.instance.currentUser;
-    if (firebaseUser == null) return const Stream.empty();
-
-    final collection = FirebaseFirestore.instance.collection('rooms').where('userIds', arrayContains: firebaseUser.uid);
-
-    return collection.snapshots().asyncMap((query) => processChatsQuery(query));
+  static Future<BaseModel<BrandFirebaseTokenModel>> getCreatorFcmTokens(String accessToken) async {
+    return await ApiService().getBrandFirebaseToken(accessToken);
   }
 
-  Future<List<int>> processChatsQuery(
-    QuerySnapshot query,
-  ) async {
+  static Stream<List<int>> getUnreadMessages({FirebaseApp? app}) {
+    var firebaseUser = getFirebaseAuth(app).currentUser;
+    if (firebaseUser == null) return const Stream.empty();
+
+    final collection = getFirebaseFirestore(app).collection('rooms').where('userIds', arrayContains: firebaseUser.uid);
+
+    return collection.snapshots().asyncMap((query) => processChatsQuery(query, app: app));
+  }
+
+  static Future<List<int>> processChatsQuery(QuerySnapshot query, {FirebaseApp? app}) async {
     final futures = query.docs.map((doc) {
       final Map<String, dynamic> room = doc.data() as Map<String, dynamic>;
       if (room['type'] == "channel") {
         //Subscribing to channel
         ChatNotificationService.subscribeToChannel(room);
       }
-      return getUnreadMessageCount(doc, FirebaseAuth.instance.currentUser!);
+      return getUnreadMessageCount(doc, getFirebaseAuth(app).currentUser!, app: app);
     });
     return await Future.wait(futures);
   }
@@ -114,4 +120,10 @@ class ChatUtils {
       }
     }
   }
+
+  static FirebaseAuth getFirebaseAuth(FirebaseApp? app) =>
+      app == null ? FirebaseAuth.instance : FirebaseAuth.instanceFor(app: app);
+
+  static FirebaseFirestore getFirebaseFirestore(FirebaseApp? app) =>
+      app == null ? FirebaseFirestore.instance : FirebaseFirestore.instanceFor(app: app);
 }
