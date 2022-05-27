@@ -7,16 +7,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ttp_chat/core/services/extensions.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:uuid/uuid.dart';
 
+import '../../../core/screens/chat_utils.dart';
+import '../../../global.dart';
 import '../../../models/base_model.dart';
+import '../../../models/brand.dart';
 import '../../../network/api_service.dart';
 import '../../../packages/chat_core/ttp_chat_core.dart';
 import '../../../utils/functions.dart';
@@ -40,7 +46,8 @@ class ChatProvider extends ChangeNotifier {
   ScrollController controller = ScrollController();
   GlobalKey<AnimatedListState>? waveFormListKey;
 
-  Stream<List<types.Room>> roomsStream = FirebaseChatCore.instance.rooms(orderByUpdatedAt: true);
+  Stream<List<types.Room>> roomsStream =
+      FirebaseChatCore.instance.rooms(orderByUpdatedAt: true);
 
   updateStream() {
     roomsStream = FirebaseChatCore.instance.rooms(orderByUpdatedAt: true);
@@ -66,8 +73,10 @@ class ChatProvider extends ChangeNotifier {
     recorderTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       Record().isRecording().then((running) {
         if (running) {
-          audioMessageDuration = audioMessageDuration + const Duration(seconds: 1);
-          consoleLog("Recorder running for ${audioMessageDuration.inSeconds} seconds");
+          audioMessageDuration =
+              audioMessageDuration + const Duration(seconds: 1);
+          consoleLog(
+              "Recorder running for ${audioMessageDuration.inSeconds} seconds");
         } else {
           consoleLog('Recorder Stopped');
           if (recorderTimer != null) recorderTimer!.cancel();
@@ -125,7 +134,8 @@ class ChatProvider extends ChangeNotifier {
       // FirebaseAuth.instance.currentUser!.reload();
       apiStatus = ApiStatus.success;
       notifyListeners();
-      consoleLog('Brand is signed in ${FirebaseAuth.instance.currentUser!.uid}');
+      consoleLog(
+          'Brand is signed in ${FirebaseAuth.instance.currentUser!.uid}');
     }
   }
 
@@ -148,7 +158,8 @@ class ChatProvider extends ChangeNotifier {
 
       // consoleLog("---------------------------------");
       UserCredential userCredential =
-          await FirebaseAuth.instanceFor(app: Firebase.apps.first).signInWithCustomToken(firebaseToken);
+          await FirebaseAuth.instanceFor(app: Firebase.apps.first)
+              .signInWithCustomToken(firebaseToken);
       consoleLog('UserId: ${userCredential.user!.uid}');
       apiStatus = ApiStatus.success;
       updateStream();
@@ -160,9 +171,32 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  void brandCustomFirebaseTokenSignIn(List<BrandFirebaseTokenData> brandsList) async {
+  void brandCustomFirebaseTokenSignIn(
+      List<BrandFirebaseTokenData> brandsList) async {
+    String firebaseToken = '';
+    if (brandsList.isNotEmpty) {
+      firebaseToken = brandsList.first.firebaseToken ?? "";
+    }
+
+    // Getting Active brand saved locally
+    SharedPreferences prefs = GetIt.I<SharedPreferences>();
+    Brand? brand = prefs.getString(Constants.activeBrand)?.toBrand();
+
+    // Making Room List empty to avoid rooms of another brand
+    GetIt.I<ChatUtils>().updateRoomList([]);
+
+    //checking if the active brand is available in the list
+    if (brand != null) {
+      for (var element in brandsList) {
+        if (element.brandName == brand.name) {
+          firebaseToken = element.firebaseToken ?? "";
+        }
+      }
+    }
+
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(brandsList[0].firebaseToken!);
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
       consoleLog('UserId: ${userCredential.user!.uid}');
       apiStatus = ApiStatus.success;
       updateStream();
@@ -181,7 +215,8 @@ class ChatProvider extends ChangeNotifier {
 
   void getUserFirebaseToken(String accessToken) async {
     consoleLog('Access Token : $accessToken');
-    BaseModel<UserFirebaseTokenModel> response = await ApiService().getUserFirebaseToken(accessToken);
+    BaseModel<UserFirebaseTokenModel> response =
+        await ApiService().getUserFirebaseToken(accessToken);
     if (response.data != null) {
       consoleLog('User Firebase Token : ${response.data!.firebaseToken!}');
       userCustomFirebaseTokenSignIn(response.data!.firebaseToken!);
@@ -194,10 +229,12 @@ class ChatProvider extends ChangeNotifier {
 
   void getBrandFirebaseToken(String accessToken) async {
     consoleLog('Access Token : $accessToken');
-    BaseModel<BrandFirebaseTokenModel> response = await ApiService().getBrandFirebaseToken(accessToken);
+    BaseModel<BrandFirebaseTokenModel> response =
+        await ApiService().getBrandFirebaseToken(accessToken);
     if (response.data != null) {
       consoleLog('Brand Firebase Token : ${response.data!.toJson()}');
-      if (response.data!.brandFirebaseTokenList!.isEmpty || response.data!.brandFirebaseTokenList!.length > 1) {
+      if (response.data!.brandFirebaseTokenList!.isEmpty ||
+          response.data!.brandFirebaseTokenList!.length > 1) {
         apiStatus = ApiStatus.failed;
         notifyListeners();
       } else {
@@ -213,10 +250,12 @@ class ChatProvider extends ChangeNotifier {
   void startRecording() async {
     bool result = await Record().hasPermission();
     if (result) {
-      Directory voiceMessageDirectory = await getApplicationDocumentsDirectory();
+      Directory voiceMessageDirectory =
+          await getApplicationDocumentsDirectory();
       consoleLog('Directory Path: ${voiceMessageDirectory.path}');
       voiceMessageFilePath = '';
-      voiceMessageFilePath = '${voiceMessageDirectory.path}/${DateTime.now().millisecondsSinceEpoch.toString()}.mp4';
+      voiceMessageFilePath =
+          '${voiceMessageDirectory.path}/${DateTime.now().millisecondsSinceEpoch.toString()}.mp4';
       consoleLog('Audio Message Path: $voiceMessageFilePath');
       await Record()
           .start(
@@ -381,13 +420,16 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  void handleFBPreviewDataFetched(types.TextMessage message, types.PreviewData previewData) {
+  void handleFBPreviewDataFetched(
+      types.TextMessage message, types.PreviewData previewData) {
     final updatedMessage = message.copyWith(previewData: previewData);
-    FirebaseChatCore.instance.updateMessage(updatedMessage, selectedChatRoom!.id);
+    FirebaseChatCore.instance
+        .updateMessage(updatedMessage, selectedChatRoom!.id);
   }
 
   void handleFBImageSelection() async {
-    final result = await ImagePicker().pickImage(imageQuality: 70, maxWidth: 1440, source: ImageSource.gallery);
+    final result = await ImagePicker().pickImage(
+        imageQuality: 70, maxWidth: 1440, source: ImageSource.gallery);
 
     if (result != null) {
       setAttachmentUploading(true);
@@ -403,7 +445,11 @@ class ChatProvider extends ChangeNotifier {
         final uri = await reference.getDownloadURL();
 
         final message = types.PartialImage(
-            height: image.height.toDouble(), name: name, size: size, uri: uri, width: image.width.toDouble());
+            height: image.height.toDouble(),
+            name: name,
+            size: size,
+            uri: uri,
+            width: image.width.toDouble());
 
         FirebaseChatCore.instance.sendMessage(message, selectedChatRoom);
         setAttachmentUploading(false);
