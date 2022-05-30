@@ -17,14 +17,12 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ttp_chat/core/services/extensions.dart';
+import 'package:ttp_chat/config.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:uuid/uuid.dart';
 
 import '../../../core/screens/chat_utils.dart';
-import '../../../global.dart';
 import '../../../models/base_model.dart';
-import '../../../models/brand.dart';
 import '../../../network/api_service.dart';
 import '../../../packages/chat_core/ttp_chat_core.dart';
 import '../../../utils/functions.dart';
@@ -161,15 +159,15 @@ class ChatProvider extends ChangeNotifier {
 
     // Getting Active brand saved locally
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    Brand? brand = prefs.getString(Constants.activeBrand)?.toBrand();
+    int? brandId = prefs.getInt(Config.activeBrandId);
 
     // Making Room List empty to avoid rooms of another brand
     GetIt.I<ChatUtils>().updateRoomList([]);
 
     //checking if the active brand is available in the list
-    if (brand != null) {
+    if (brandId != null) {
       for (var element in brandsList) {
-        if (element.brandName == brand.name) {
+        if (element.brandId == brandId) {
           firebaseToken = element.firebaseToken ?? "";
         }
       }
