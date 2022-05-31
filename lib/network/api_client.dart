@@ -8,6 +8,7 @@ import '../core/screens/chat_utils.dart';
 import '../features/chat/domain/brand_firebase_token_model.dart';
 import '../features/chat/domain/search_user_model.dart';
 import '../features/chat/domain/user_firebase_token_model.dart';
+import '../models/refresh_token_response.dart';
 
 part 'api_client.g.dart';
 
@@ -16,6 +17,9 @@ abstract class ApiClient {
   factory ApiClient(Dio dio) {
     return _ApiClient(dio, baseUrl: GetIt.I<ChatUtils>().baseUrl);
   }
+
+  @POST("/auth/refresh-token/")
+  Future<RefreshTokenResponse> refreshToken(@Field("refresh") String? refresh);
 
   @POST("/auth/firebase-token")
   Future<UserFirebaseTokenModel> getUserFirebaseToken(
@@ -30,8 +34,4 @@ abstract class ApiClient {
   @GET('/api/chat-users/')
   Future<SearchUserModel> searchChatUser(@Header("Authorization") String authorization,
       @Query("search") String searchValue, @Query("limit") int limit, @Query("offset") int offset);
-
-  // @POST('/api/auth/')
-  // Future<ChatSignInModel> signInMVP(
-  //     @Field('username') String username, @Field('password') String password);
 }

@@ -2,9 +2,3 @@ library ttp_chat;
 
 export 'core/screens/direct_chat.dart';
 export 'core/screens/home/chat_home_screen.dart';
-
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}

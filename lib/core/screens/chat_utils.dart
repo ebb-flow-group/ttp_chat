@@ -5,18 +5,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
-import 'package:ttp_chat/global.dart';
 import 'package:ttp_chat/packages/chat_types/src/room.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:ttp_chat/utils/functions.dart';
 
+import '../../features/chat/domain/brand_firebase_token_model.dart';
+import '../../models/base_model.dart';
+import '../../network/api_service.dart';
 import '../../packages/chat_core/src/util.dart';
 import '../services/notification_service.dart';
 
 class ChatUtils {
+  /// This should be set to [true] if the package is running in Creators App
   final bool isCreatorsApp;
+
+  /// The base url of current environment for API calls
   final String baseUrl;
-  ChatUtils({this.isCreatorsApp = false, this.baseUrl = BASE_URL});
+
+  ChatUtils({this.isCreatorsApp = false, required this.baseUrl});
 
   List<types.Room> roomList = [];
 
@@ -25,6 +31,7 @@ class ChatUtils {
     this.roomList = roomList;
   }
 
+  /// Logs in the user to Firebase using the given [accessToken] and [refreshToken]
   static initFirebaseApp({required String accessToken, required String refreshToken, void Function()? onInit}) async {
     await Firebase.initializeApp();
     StreamSubscription<User?>? userStream;
@@ -49,25 +56,28 @@ class ChatUtils {
     }
   }
 
-  Stream<List<int>> getUnreadMessages() {
-    var firebaseUser = FirebaseAuth.instance.currentUser;
-    if (firebaseUser == null) return const Stream.empty();
-
-    final collection = FirebaseFirestore.instance.collection('rooms').where('userIds', arrayContains: firebaseUser.uid);
-
-    return collection.snapshots().asyncMap((query) => processChatsQuery(query));
+  static Future<BaseModel<BrandFirebaseTokenModel>> getCreatorFcmTokens(
+      String accessToken, String? refreshToken) async {
+    return await ApiService().getBrandFirebaseToken(accessToken, refreshToken);
   }
 
-  Future<List<int>> processChatsQuery(
-    QuerySnapshot query,
-  ) async {
+  static Stream<List<int>> getUnreadMessages({FirebaseApp? app}) {
+    var firebaseUser = getFirebaseAuth(app).currentUser;
+    if (firebaseUser == null) return const Stream.empty();
+
+    final collection = getFirebaseFirestore(app).collection('rooms').where('userIds', arrayContains: firebaseUser.uid);
+
+    return collection.snapshots().asyncMap((query) => _processChatsQuery(query, app: app));
+  }
+
+  static Future<List<int>> _processChatsQuery(QuerySnapshot query, {FirebaseApp? app}) async {
     final futures = query.docs.map((doc) {
       final Map<String, dynamic> room = doc.data() as Map<String, dynamic>;
       if (room['type'] == "channel") {
         //Subscribing to channel
         ChatNotificationService.subscribeToChannel(room);
       }
-      return getUnreadMessageCount(doc, FirebaseAuth.instance.currentUser!);
+      return getUnreadMessageCount(doc, getFirebaseAuth(app).currentUser!, app: app);
     });
     return await Future.wait(futures);
   }
@@ -114,4 +124,10 @@ class ChatUtils {
       }
     }
   }
+
+  static FirebaseAuth getFirebaseAuth(FirebaseApp? app) =>
+      app == null ? FirebaseAuth.instance : FirebaseAuth.instanceFor(app: app);
+
+  static FirebaseFirestore getFirebaseFirestore(FirebaseApp? app) =>
+      app == null ? FirebaseFirestore.instance : FirebaseFirestore.instanceFor(app: app);
 }

@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:ttp_chat/core/screens/chat_utils.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 /// Extension with one [toShortString] method
@@ -289,14 +291,14 @@ Future<Map<String, dynamic>> getLastMessageOfRoom(String roomId) async {
   return collection.docs.isNotEmpty ? collection.docs[0].data() : {};
 }
 
-Future<int> getUnreadMessageCount(DocumentSnapshot<Object?> room, User firebaseUser) async {
+Future<int> getUnreadMessageCount(DocumentSnapshot<Object?> room, User firebaseUser, {FirebaseApp? app}) async {
   final roomId = room.id;
   final Map<String, dynamic> roomData = room.data() as Map<String, dynamic>;
   final String type = roomData['type'] ?? "";
   if (type == "channel") {
-    return getUnreadChannelMessageCount(roomId, firebaseUser);
+    return getUnreadChannelMessageCount(roomId, firebaseUser, app: app);
   } else {
-    final collection = await FirebaseFirestore.instance
+    final collection = await ChatUtils.getFirebaseFirestore(app)
         .collection('rooms')
         .doc(roomId)
         .collection('messages')
@@ -307,8 +309,8 @@ Future<int> getUnreadMessageCount(DocumentSnapshot<Object?> room, User firebaseU
   }
 }
 
-Future<int> getUnreadChannelMessageCount(String roomId, User firebaseUser) async {
-  final collection = await FirebaseFirestore.instance
+Future<int> getUnreadChannelMessageCount(String roomId, User firebaseUser, {FirebaseApp? app}) async {
+  final collection = await ChatUtils.getFirebaseFirestore(app)
       .collection('rooms')
       .doc(roomId)
       .collection('messages')

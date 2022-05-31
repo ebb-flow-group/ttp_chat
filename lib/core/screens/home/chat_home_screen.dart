@@ -91,14 +91,13 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
       return ChatErrorScreen(onContactSupport: widget.onContactSupport);
     }
 
-    if (!_initialized || chatProvider.apiStatus == ApiStatus.called) {
-      return const Scaffold(body: LoadingScreen());
-    }
-
     if (chatProvider.apiStatus == ApiStatus.failed) {
       return ChatErrorScreen(onContactSupport: widget.onContactSupport);
     }
 
+    if (!_initialized || chatProvider.apiStatus == ApiStatus.called) {
+      return const Scaffold(body: LoadingScreen());
+    }
     return Scaffold(
         appBar: chatAppBar(context, goToSearch: () => pushTo(SearchPage(accessToken: widget.accessToken), context)),
         body: StreamBuilder<List<types.Room>>(
