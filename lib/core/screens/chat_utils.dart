@@ -16,8 +16,12 @@ import '../../packages/chat_core/src/util.dart';
 import '../services/notification_service.dart';
 
 class ChatUtils {
+  /// This should be set to [true] if the package is running in Creators App
   final bool isCreatorsApp;
+
+  /// The base url of current environment for API calls
   final String baseUrl;
+
   ChatUtils({this.isCreatorsApp = false, required this.baseUrl});
 
   List<types.Room> roomList = [];
@@ -27,6 +31,7 @@ class ChatUtils {
     this.roomList = roomList;
   }
 
+  /// Logs in the user to Firebase using the given [accessToken] and [refreshToken]
   static initFirebaseApp({required String accessToken, required String refreshToken, void Function()? onInit}) async {
     await Firebase.initializeApp();
     StreamSubscription<User?>? userStream;
@@ -61,10 +66,10 @@ class ChatUtils {
 
     final collection = getFirebaseFirestore(app).collection('rooms').where('userIds', arrayContains: firebaseUser.uid);
 
-    return collection.snapshots().asyncMap((query) => processChatsQuery(query, app: app));
+    return collection.snapshots().asyncMap((query) => _processChatsQuery(query, app: app));
   }
 
-  static Future<List<int>> processChatsQuery(QuerySnapshot query, {FirebaseApp? app}) async {
+  static Future<List<int>> _processChatsQuery(QuerySnapshot query, {FirebaseApp? app}) async {
     final futures = query.docs.map((doc) {
       final Map<String, dynamic> room = doc.data() as Map<String, dynamic>;
       if (room['type'] == "channel") {
