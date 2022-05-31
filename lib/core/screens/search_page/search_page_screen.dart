@@ -20,8 +20,9 @@ import 'search_widgets/search_user_tile.dart';
 
 class SearchPage extends StatefulWidget {
   final String? accessToken;
+  final String? refreshToken;
 
-  const SearchPage({Key? key, this.accessToken}) : super(key: key);
+  const SearchPage({Key? key, this.accessToken, this.refreshToken}) : super(key: key);
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -141,8 +142,8 @@ class _SearchPageState extends State<SearchPage> {
       searching = true;
     });
     try {
-      BaseModel<SearchUserModel> response = await ApiService()
-          .searchUser(widget.accessToken!, searchController.text, offset: paginate ? users.length : 0);
+      BaseModel<SearchUserModel> response = await ApiService().searchUser(widget.accessToken!, widget.refreshToken,
+          searchValue: searchController.text, offset: paginate ? users.length : 0);
       if (response.data != null) {
         searching = false;
         paginate ? users.addAll(response.data?.users ?? []) : users = response.data?.users ?? [];

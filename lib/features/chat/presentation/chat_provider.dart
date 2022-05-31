@@ -113,7 +113,7 @@ class ChatProvider extends ChangeNotifier {
     selectedTabIndex = 0;
     if (FirebaseAuth.instance.currentUser == null) {
       consoleLog('User is not signed in');
-      getUserFirebaseToken(accessToken!);
+      getUserFirebaseToken(accessToken!, refreshToken);
     } else {
       // FirebaseAuth.instance.currentUser!.reload();
       apiStatus = ApiStatus.success;
@@ -125,7 +125,7 @@ class ChatProvider extends ChangeNotifier {
   ChatProvider.brandSignIn(this.accessToken, this.refreshToken) {
     selectedTabIndex = 0;
     if (FirebaseAuth.instance.currentUser == null) {
-      getBrandFirebaseToken(accessToken!);
+      getBrandFirebaseToken(accessToken!, refreshToken);
       consoleLog('Brand is not signed in');
     } else {
       // FirebaseAuth.instance.currentUser!.reload();
@@ -192,22 +192,22 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getUserFirebaseToken(String accessToken) async {
+  void getUserFirebaseToken(String accessToken, String? refreshToken) async {
     consoleLog('Access Token : $accessToken');
-    BaseModel<UserFirebaseTokenModel> response = await ApiService().getUserFirebaseToken(accessToken);
+    BaseModel<UserFirebaseTokenModel> response = await ApiService().getUserFirebaseToken(accessToken, refreshToken);
     if (response.data != null) {
       consoleLog('User Firebase Token : ${response.data!.firebaseToken!}');
       userCustomFirebaseTokenSignIn(response.data!.firebaseToken!);
     } else {
       apiStatus = ApiStatus.failed;
       notifyListeners();
-      consoleLog('SignIn Error: ${response.getException.getErrorMessage()}');
+      consoleLog('SignIn Error: ${response.getException?.getErrorMessage()}');
     }
   }
 
-  void getBrandFirebaseToken(String accessToken) async {
+  void getBrandFirebaseToken(String accessToken, String? refreshToken) async {
     consoleLog('Access Token : $accessToken');
-    BaseModel<BrandFirebaseTokenModel> response = await ApiService().getBrandFirebaseToken(accessToken);
+    BaseModel<BrandFirebaseTokenModel> response = await ApiService().getBrandFirebaseToken(accessToken, refreshToken);
     if (response.data != null) {
       if (response.data!.brandFirebaseTokenList?.isEmpty == true) {
         apiStatus = ApiStatus.failed;
@@ -218,7 +218,7 @@ class ChatProvider extends ChangeNotifier {
     } else {
       apiStatus = ApiStatus.failed;
       notifyListeners();
-      consoleLog('SignIn Error: ${response.getException.getErrorMessage()}');
+      consoleLog('SignIn Error: ${response.getException?.getErrorMessage()}');
     }
   }
 

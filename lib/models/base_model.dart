@@ -1,4 +1,4 @@
-import 'server_error.dart';
+import 'package:ttp_chat/models/server_error.dart';
 
 class BaseModel<T> {
   ServerError? _error;
@@ -12,7 +12,7 @@ class BaseModel<T> {
     this.data = data;
   }
 
-  ServerError get getException {
-    return _error!;
+  ServerError? get getException {
+    return _error;
   }
 }

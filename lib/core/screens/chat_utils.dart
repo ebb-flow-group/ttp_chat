@@ -56,8 +56,9 @@ class ChatUtils {
     }
   }
 
-  static Future<BaseModel<BrandFirebaseTokenModel>> getCreatorFcmTokens(String accessToken) async {
-    return await ApiService().getBrandFirebaseToken(accessToken);
+  static Future<BaseModel<BrandFirebaseTokenModel>> getCreatorFcmTokens(
+      String accessToken, String? refreshToken) async {
+    return await ApiService().getBrandFirebaseToken(accessToken, refreshToken);
   }
 
   static Stream<List<int>> getUnreadMessages({FirebaseApp? app}) {
