@@ -63,4 +63,7 @@ class Config {
       Color.fromRGBO(232, 58, 99, 0.9),
     ],
   );
+
+  //Shared Preferences
+  static const String activeBrandId = "active-brand-id";
 }
