@@ -1,75 +1,54 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:ttp_chat/config.dart';
-import 'package:ttp_chat/core/screens/chat_page/chat_widgets/recording_animation.dart';
-import 'package:ttp_chat/core/screens/chat_utils.dart';
 import 'package:ttp_chat/core/screens/loading_screen.dart';
 import 'package:ttp_chat/core/services/ts.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:ttp_chat/packages/chat_ui/ttp_chat_ui.dart';
 
-import '../../../features/chat/presentation/chat_provider.dart';
 import '../../../packages/chat_core/ttp_chat_core.dart';
 import '../../../theme/style.dart';
 import 'chat_widgets/attachment_utils.dart';
 import 'chat_widgets/chat_appbar.dart';
 import 'chat_widgets/empty_message.dart';
 import 'chat_widgets/order_message_widget.dart';
+import 'store/chat_page_state.dart';
 
-class ChatPage extends StatelessWidget {
-  final types.Room selectedChatRoom;
+class ChatPage extends StatefulWidget {
+  final types.Room chatRoom;
 
-  const ChatPage(this.selectedChatRoom, {Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ChatProvider>(
-      create: (context) => ChatProvider.initialiseAndLoadMessages(selectedChatRoom),
-      child: _ChatPage(selectedChatRoom),
-    );
-  }
-}
-
-class _ChatPage extends StatefulWidget {
-  final types.Room selectedChatRoom;
-
-  const _ChatPage(this.selectedChatRoom);
+  const ChatPage(this.chatRoom, {Key? key}) : super(key: key);
 
   @override
-  _ChatPageState createState() => _ChatPageState();
+  State<ChatPage> createState() => _ChatPageState();
 }
 
-class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixin {
-  late ChatProvider chatProvider;
+class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin {
   late AnimationController controller;
   late Animation<Offset> offset;
   Stream<List<types.Message>>? messageStream;
   bool showRecordingAnimation = false;
+  ChatPageState state = ChatPageState();
 
   @override
   void initState() {
     super.initState();
-    chatProvider = context.read<ChatProvider>();
-    messageStream = FirebaseChatCore.instance.messages(widget.selectedChatRoom);
+    state.init(widget.chatRoom);
     controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
     offset = Tween<Offset>(begin: const Offset(-2.0, 0.0), end: Offset.zero).animate(controller);
-    ChatUtils.updateUnreadMessageStatus(chatProvider);
   }
 
   @override
   void dispose() {
     super.dispose();
-    chatProvider.disposeTimer();
   }
 
   @override
   Widget build(BuildContext context) {
-    chatProvider = context.watch<ChatProvider>();
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: ChatRoomAppBar(chatProvider),
+      appBar: ChatRoomAppBar(state.chatRoom),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
         child: StreamBuilder<List<types.Message>>(
@@ -93,12 +72,12 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                   },
                   onEndReachedThreshold: 10.0,
                   onTextChanged: (String value) {},
-                  isAttachmentUploading: chatProvider.isAttachmentUploading,
-                  onAttachmentPressed: () => handleAttachmentPressed(context, chatProvider: chatProvider),
+                  isAttachmentUploading: state.isAttachmentUploading,
+                  onAttachmentPressed: () => handleAttachmentPressed(context, state: state),
                   onVoiceMessagePressed: _handleVoiceMessagePressed,
-                  onMessageTap: chatProvider.handleFBMessageTap,
-                  onPreviewDataFetched: chatProvider.handleFBPreviewDataFetched,
-                  onSendPressed: chatProvider.handleFBSendPressed,
+                  onMessageTap: state.onMessageTap,
+                  onPreviewDataFetched: state.handlePreviewDataFetched,
+                  onSendPressed: state.sendMessage,
                   hideInput: hideInput,
                   user: types.User(
                     id: FirebaseChatCore.instance.firebaseUser!.uid,
@@ -127,13 +106,13 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                     sentMessageDocumentIconColor: Colors.white,
                     receivedMessageDocumentIconColor: Colors.white,
                   ),
-                  emptyState: EmptyMessage(chatProvider: chatProvider),
+                  emptyState: EmptyMessage(chatRoom: state.chatRoom),
                   customDateHeaderText: (DateTime dateTime) {
                     return DateFormat('dd MMM  •  hh:mm a').format(dateTime).toUpperCase();
                   },
                 ),
-                if (showRecordingAnimation)
-                  RecordingAnimation(offset: offset, chatProvider: chatProvider, controller: controller)
+                // if (showRecordingAnimation)
+                //   RecordingAnimation(offset: offset, chatProvider: chatProvider, controller: controller)
               ],
             );
           },
@@ -146,17 +125,17 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
   /// 1. If The Account is Deleted from firebase
   /// 2. If the Room is Channel and the current user is not the owner of room
   bool get hideInput {
-    if (chatProvider.selectedChatRoom?.type == types.RoomType.channel) {
-      return chatProvider.selectedChatRoom?.owner != FirebaseAuth.instance.currentUser?.uid;
+    if (state.chatRoom.type == types.RoomType.channel) {
+      return state.chatRoom.owner != FirebaseAuth.instance.currentUser?.uid;
     } else {
-      return (chatProvider.selectedChatRoom!.userIds.any((id) => (id == 'deleted-brand' || id == 'deleted-user')));
+      return (state.chatRoom.userIds.any((id) => (id == 'deleted-brand' || id == 'deleted-user')));
     }
   }
 
   _handleVoiceMessagePressed() {
     setState(() => showRecordingAnimation = true);
     controller.forward();
-    chatProvider.startRecording();
-    chatProvider.startWaveFormAnimation();
+    // chatProvider.startRecording();
+    // chatProvider.startWaveFormAnimation();
   }
 }

@@ -81,12 +81,13 @@ class ChatUtils {
     return await Future.wait(futures);
   }
 
-  static Future updateUnreadMessageStatus(ChatProvider provider) async {
+  static Future updateUnreadMessageStatus(Room? chatRoom) async {
+    if (chatRoom == null) return;
     // Handling the Room Types
-    if (provider.selectedChatRoom?.type == RoomType.channel) {
+    if (chatRoom.type == RoomType.channel) {
       final collection = await FirebaseFirestore.instance
           .collection('rooms')
-          .doc(provider.selectedChatRoom!.id)
+          .doc(chatRoom.id)
           .collection('messages')
           .where('authorId', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)
           .where('unreadUserIds', arrayContains: FirebaseAuth.instance.currentUser!.uid)
@@ -94,7 +95,7 @@ class ChatUtils {
       for (QueryDocumentSnapshot<Map<String, dynamic>> singleMessage in collection.docs) {
         FirebaseFirestore.instance
             .collection('rooms')
-            .doc(provider.selectedChatRoom!.id)
+            .doc(chatRoom.id)
             .collection('messages')
             .doc(singleMessage.id)
             .update({
@@ -105,7 +106,7 @@ class ChatUtils {
       try {
         final collection = await FirebaseFirestore.instance
             .collection('rooms')
-            .doc(provider.selectedChatRoom!.id)
+            .doc(chatRoom.id)
             .collection('messages')
             .where('authorId', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)
             .where("status", isEqualTo: "sent")
@@ -113,7 +114,7 @@ class ChatUtils {
         for (QueryDocumentSnapshot<Map<String, dynamic>> singleMessage in collection.docs) {
           FirebaseFirestore.instance
               .collection('rooms')
-              .doc(provider.selectedChatRoom!.id)
+              .doc(chatRoom.id)
               .collection('messages')
               .doc(singleMessage.id)
               .update({'status': 'delivered'});

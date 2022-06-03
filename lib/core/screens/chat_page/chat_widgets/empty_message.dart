@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ttp_chat/config.dart';
 import 'package:ttp_chat/core/services/ts.dart';
-import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
+import 'package:ttp_chat/packages/chat_types/src/room.dart';
 import 'package:ttp_chat/utils/functions.dart';
 
 import '../../../../packages/chat_types/src/util.dart';
@@ -11,9 +11,9 @@ import '../../chat_utils.dart';
 import '../../widgets/chat_avatar.dart';
 
 class EmptyMessage extends StatelessWidget {
-  const EmptyMessage({Key? key, required this.chatProvider}) : super(key: key);
+  const EmptyMessage({Key? key, required this.chatRoom}) : super(key: key);
 
-  final ChatProvider chatProvider;
+  final Room chatRoom;
 
   @override
   Widget build(BuildContext context) {
@@ -26,20 +26,20 @@ class EmptyMessage extends StatelessWidget {
           style: Ts.text15(Config.grayG1Color),
         ),
         const SizedBox(height: 30),
-        ChatAvatar(chatProvider.selectedChatRoom!, radius: 50),
+        ChatAvatar(chatRoom, radius: 50),
         const SizedBox(height: 14),
         Text(
-          chatProvider.selectedChatRoom?.name ?? "",
+          chatRoom.name ?? "",
           style: Ts.bold17(Config.primaryColor),
         ),
         //  const SizedBox(height: 4),
         // Text(
-        //   '@${getChatUserId(chatProvider.selectedChatRoom?.userIds)}',
+        //   '@${getChatUserId(chatRoom?.userIds)}',
         //   style: TextStyle(fontWeight: FontWeight.normal, color: Theme.of(context).primaryColor),
         // ),
         const SizedBox(height: 30),
         if (!GetIt.I<ChatUtils>().isCreatorsApp)
-          if (getChatUserId(chatProvider.selectedChatRoom) != null)
+          if (getChatUserId(chatRoom) != null)
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   primary: Theme.of(context).primaryColor,
@@ -49,10 +49,10 @@ class EmptyMessage extends StatelessWidget {
                   style: Ts.bold14(Config.creameryColor),
                 ),
                 onPressed: () {
-                  String userId = getChatUserId(chatProvider.selectedChatRoom) ?? "";
-                  if (chatProvider.selectedChatRoom?.metadata?["other_user_type"] == "brand") {
+                  String userId = getChatUserId(chatRoom) ?? "";
+                  if (chatRoom.metadata?["other_user_type"] == "brand") {
                     Routes.navigateToOutletPage(context, userId);
-                  } else if (chatProvider.selectedChatRoom?.metadata?["other_user_type"] == "user") {
+                  } else if (chatRoom.metadata?["other_user_type"] == "user") {
                     Routes.navigateToUserProfile(context, userId);
                   } else {
                     consoleLog("ChatRoomAppBar: user type not found");

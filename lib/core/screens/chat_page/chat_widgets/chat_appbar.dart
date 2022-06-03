@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ttp_chat/core/services/ts.dart';
-import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
+import 'package:ttp_chat/packages/chat_types/src/room.dart';
 
 import '../../../../config.dart';
 import '../../../../packages/chat_types/src/util.dart';
@@ -10,9 +10,9 @@ import '../../chat_utils.dart';
 import '../../widgets/chat_avatar.dart';
 
 class ChatRoomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final ChatProvider chatProvider;
+  final Room chatRoom;
 
-  const ChatRoomAppBar(this.chatProvider, {Key? key}) : super(key: key);
+  const ChatRoomAppBar(this.chatRoom, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,21 +22,21 @@ class ChatRoomAppBar extends StatelessWidget implements PreferredSizeWidget {
       titleSpacing: 1,
       title: GestureDetector(
         onTap: () {
-          if (!GetIt.I<ChatUtils>().isCreatorsApp && getChatUserId(chatProvider.selectedChatRoom) != null) {
-            String userId = getChatUserId(chatProvider.selectedChatRoom) ?? "";
-            if (chatProvider.selectedChatRoom?.metadata?["other_user_type"] == "brand") {
+          if (!GetIt.I<ChatUtils>().isCreatorsApp && getChatUserId(chatRoom) != null) {
+            String userId = getChatUserId(chatRoom) ?? "";
+            if (chatRoom.metadata?["other_user_type"] == "brand") {
               Routes.navigateToOutletPage(context, userId);
-            } else if (chatProvider.selectedChatRoom?.metadata?["other_user_type"] == "user") {
+            } else if (chatRoom.metadata?["other_user_type"] == "user") {
               Routes.navigateToUserProfile(context, userId);
             }
           }
         },
         child: Row(
           children: [
-            ChatAvatar(chatProvider.selectedChatRoom!, radius: 20),
+            ChatAvatar(chatRoom, radius: 20),
             const SizedBox(width: 10),
             Text(
-              chatProvider.selectedChatRoom?.name ?? "",
+              chatRoom.name ?? "",
               style: Ts.bold15(Config.primaryColor),
             ),
           ],

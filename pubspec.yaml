@@ -48,6 +48,7 @@ dependencies:
   cached_network_image: ^3.2.0
   firebase_messaging: ^11.2.12
   flutter_screenutil: ^5.5.3+1
+  flutter_mobx: ^2.0.2
 
 
 
@@ -58,6 +59,7 @@ dev_dependencies:
   retrofit_generator: ^2.0.1+2
   build_runner: any
   dart_code_metrics: ^4.8.1
+  mobx_codegen: ^2.0.3
 
 flutter:
   assets:

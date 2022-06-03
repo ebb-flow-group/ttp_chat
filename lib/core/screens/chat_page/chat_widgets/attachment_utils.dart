@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
+import 'package:ttp_chat/core/screens/chat_page/store/chat_page_state.dart';
 
 import 'bottomsheet_item.dart';
 
-handleAttachmentPressed(BuildContext context, {required ChatProvider chatProvider}) {
+void handleAttachmentPressed(BuildContext context, {required ChatPageState state}) {
   FocusScope.of(context).requestFocus(FocusNode());
   showModalBottomSheet<void>(
     context: context,
@@ -45,7 +45,7 @@ handleAttachmentPressed(BuildContext context, {required ChatProvider chatProvide
                       title: const Text('Upload a photo'),
                       onTap: () {
                         Navigator.pop(context);
-                        chatProvider.handleFBImageSelection();
+                        state.pickAndSendImage();
                       }),
                   /*_ListItem(
                       leading: SvgPicture.asset(
@@ -57,7 +57,7 @@ handleAttachmentPressed(BuildContext context, {required ChatProvider chatProvide
                       title: Text('Upload a file'),
                       onTap: () {
                         Navigator.pop(context);
-                        chatProvider.handleFBFileSelection();
+                        state.handleFBFileSelection();
                       },
                     ),*/
                   // Divider(),
