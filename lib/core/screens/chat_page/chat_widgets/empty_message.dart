@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
-import 'package:route_parser/route_parser.dart';
 import 'package:ttp_chat/config.dart';
 import 'package:ttp_chat/core/services/ts.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
@@ -55,7 +53,7 @@ class EmptyMessage extends StatelessWidget {
                   if (chatProvider.selectedChatRoom?.metadata?["other_user_type"] == "brand") {
                     Routes.navigateToOutletPage(context, userId);
                   } else if (chatProvider.selectedChatRoom?.metadata?["other_user_type"] == "user") {
-                    context.push(RouteParser(Routes.userProfilePage).reverse({'id': Uri.encodeComponent(userId)}));
+                    Routes.navigateToUserProfile(context, userId);
                   } else {
                     consoleLog("ChatRoomAppBar: user type not found");
                   }

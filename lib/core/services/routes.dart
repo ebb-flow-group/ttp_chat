@@ -13,4 +13,10 @@ class Routes {
   static navigateToOutletPage(BuildContext context, String id) {
     context.push(RouteParser(Routes.homeOutletPage).reverse({'id': Uri.encodeComponent(id)}));
   }
+
+  static navigateToUserProfile(BuildContext context, String id) {
+    //TODO : Uncomment when user profile is ready in main app
+    // PR here : https://github.com/ebb-flow-group/tabletop_app_3/pull/130
+    // context.push(RouteParser(Routes.userProfilePage).reverse({'id': Uri.encodeComponent(id)}));
+  }
 }
