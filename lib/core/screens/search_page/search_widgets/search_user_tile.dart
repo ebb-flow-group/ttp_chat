@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:route_parser/route_parser.dart';
 
 import '../../../../features/chat/domain/search_user_model.dart';
 import '../../../../utils/functions.dart';
@@ -21,7 +22,7 @@ class SearchUserTile extends StatelessWidget {
         : GestureDetector(
             onTap: () {
               if (!GetIt.I<ChatUtils>().isCreatorsApp && (user.uid != null) && user.type == UserType.brand) {
-                context.push(Routes.homeOutletDetailPage, extra: user.uid);
+                context.push(RouteParser(Routes.homeOutletPage).reverse({'id': user.uid!}));
               }
             },
             child: Padding(
