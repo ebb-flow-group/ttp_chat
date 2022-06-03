@@ -47,6 +47,7 @@ dependencies:
   get_it: ^7.2.0
   cached_network_image: ^3.2.0
   firebase_messaging: ^11.2.12
+  flutter_screenutil: ^5.5.3+1
 
 
 
@@ -93,14 +94,3 @@ flutter:
     - packages/ttp_chat/assets/icon/chat.svg
     - packages/ttp_chat/assets/anim/loading_anim.riv
 
-
-  fonts:
-    - family: AvenirNextLTPro
-      fonts:
-        - asset: assets/fonts/AvenirNextLTPro-Regular.otf
-          weight: 500
-        - asset: assets/fonts/AvenirNextLTPro-Bold.otf
-          weight: 800
-
-
-  

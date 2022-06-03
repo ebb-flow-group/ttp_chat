@@ -5,6 +5,7 @@ import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
 import '../../../../config.dart';
 import '../../../../core/screens/widgets/helpers.dart';
+import '../../../../core/services/ts.dart';
 import '../util.dart';
 import 'file_message.dart';
 import 'image_message.dart';
@@ -74,33 +75,43 @@ class Message extends StatelessWidget {
       message?.author.firstName != null && (message!.author.firstName?.isNotEmpty == true) && showAvatar;
 
   Widget _buildAvatar(BuildContext context) {
-    final color = getUserAvatarNameColor(message!.author, InheritedChatTheme.of(context)!.theme!.userAvatarNameColors!);
+    //final color = getUserAvatarNameColor(message!.author, InheritedChatTheme.of(context)!.theme!.userAvatarNameColors!);
     final hasImage = message!.author.imageUrl != null;
     final name = getUserName(message!.author);
 
     return viewAvatar
-        ? Container(
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-                color: Config.primaryColor,
-                image: !hasImage
-                    ? null
-                    : DecorationImage(image: NetworkImage(message!.author.imageUrl!), fit: BoxFit.cover),
-                shape: BoxShape.circle,
-                gradient: Config.tabletopGradient),
-            child: !hasImage
-                ? Center(
-                    child: Text(
-                      getInitials(name),
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
+        ? Center(
+            child: Stack(
+              children: [
+                Container(
+                  height: 30,
+                  width: 30,
+                  decoration: const BoxDecoration(
+                    color: Config.primaryColor,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                Container(
+                  height: 30,
+                  width: 30,
+                  decoration: BoxDecoration(
+                      color: Config.primaryColor,
+                      image: !hasImage
+                          ? null
+                          : DecorationImage(image: NetworkImage(message!.author.imageUrl!), fit: BoxFit.cover),
+                      shape: BoxShape.circle,
+                      gradient: Config.tabletopGradient),
+                  child: !hasImage
+                      ? Center(
+                          child: Text(
+                            getInitials(name),
+                            style: Ts.bold10(Config.creameryColor),
                           ),
-                    ),
-                  )
-                : null,
+                        )
+                      : null,
+                ),
+              ],
+            ),
           )
         : Container(
             margin: const EdgeInsets.only(right: 40),
@@ -128,6 +139,7 @@ class Message extends StatelessWidget {
         );
       case types.MessageType.text:
         final textMessage = message as types.TextMessage;
+
         return TextMessage(
           message: textMessage,
           onPreviewDataFetched: onPreviewDataFetched!,
@@ -181,27 +193,27 @@ class Message extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _user = InheritedUser.of(context)!.user;
-    final _messageBorderRadius = InheritedChatTheme.of(context)!.theme!.messageBorderRadius;
-    final _borderRadius = BorderRadius.only(
-      bottomLeft: Radius.circular(_user!.id == message!.author.id || roundBorder! ? _messageBorderRadius! : 0),
-      bottomRight: Radius.circular(_user.id == message!.author.id
+    final user = InheritedUser.of(context)!.user;
+    final messageBorderRadius = InheritedChatTheme.of(context)!.theme!.messageBorderRadius;
+    final borderRadius = BorderRadius.only(
+      bottomLeft: Radius.circular(user!.id == message!.author.id || roundBorder! ? messageBorderRadius! : 0),
+      bottomRight: Radius.circular(user.id == message!.author.id
           ? roundBorder!
-              ? _messageBorderRadius!
+              ? messageBorderRadius!
               : 0
-          : _messageBorderRadius!),
-      topLeft: Radius.circular(_messageBorderRadius!),
-      topRight: Radius.circular(_messageBorderRadius),
+          : messageBorderRadius!),
+      topLeft: Radius.circular(messageBorderRadius!),
+      topRight: Radius.circular(messageBorderRadius),
     );
-    final _currentUserIsAuthor = _user.id == message!.author.id;
+    final currentUserIsAuthor = user.id == message!.author.id;
     bool showSenderImage =
-        (!_currentUserIsAuthor && showUserAvatars!) && viewAvatar && (message!.type == types.MessageType.text);
+        (!currentUserIsAuthor && showUserAvatars!) && viewAvatar && (message!.type == types.MessageType.text);
 
     return Container(
-      alignment: _user.id == message!.author.id ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: user.id == message!.author.id ? Alignment.centerRight : Alignment.centerLeft,
       margin: EdgeInsets.only(
         bottom: 4,
-        left: showSenderImage ? 5 : 25,
+        left: showSenderImage ? 5 : 20,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -210,7 +222,7 @@ class Message extends StatelessWidget {
           Stack(
             children: [
               Container(
-                margin: showSenderImage ? const EdgeInsets.only(left: 20) : null,
+                margin: showSenderImage ? const EdgeInsets.only(left: 15) : null,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
                     maxWidth: messageWidth!.toDouble(),
@@ -222,16 +234,18 @@ class Message extends StatelessWidget {
                         onLongPress: () => onMessageLongPress?.call(message!),
                         onTap: () => onMessageTap?.call(message!),
                         child: Container(
-                          padding: showSenderImage ? const EdgeInsets.only(left: 5) : null,
+                          padding: showSenderImage ? const EdgeInsets.only(left: 3) : null,
                           decoration: BoxDecoration(
-                            borderRadius: _borderRadius,
-                            color: !_currentUserIsAuthor || message!.type == types.MessageType.image
-                                ? InheritedChatTheme.of(context)!.theme!.secondaryColor // primaryColor
-                                : InheritedChatTheme.of(context)!.theme!.primaryColor, // accentColor
+                            borderRadius: borderRadius,
+                            color: message!.type == types.MessageType.custom
+                                ? null
+                                : !currentUserIsAuthor || message!.type == types.MessageType.image
+                                    ? InheritedChatTheme.of(context)!.theme!.secondaryColor // primaryColor
+                                    : InheritedChatTheme.of(context)!.theme!.primaryColor, // accentColor
                           ),
                           child: ClipRRect(
-                            borderRadius: _borderRadius,
-                            child: _buildMessage(_currentUserIsAuthor),
+                            borderRadius: borderRadius,
+                            child: _buildMessage(currentUserIsAuthor),
                           ),
                         ),
                       ),
@@ -242,7 +256,7 @@ class Message extends StatelessWidget {
               if (showSenderImage) Positioned(top: 0, bottom: 0, child: _buildAvatar(context)),
             ],
           ),
-          if (_currentUserIsAuthor)
+          if (currentUserIsAuthor)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Center(

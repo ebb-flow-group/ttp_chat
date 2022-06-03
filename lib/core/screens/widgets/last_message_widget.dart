@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:ttp_chat/core/services/ts.dart';
+
+import '../../../config.dart';
 
 class LastMessaageWidget extends StatelessWidget {
   final Map data;
@@ -17,12 +20,9 @@ class LastMessaageWidget extends StatelessWidget {
               size: 18,
             ),
             const SizedBox(width: 6),
-            const Text(
+            Text(
               'Image',
-              style: TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.normal,
-              ),
+              style: Ts.text14(Config.grayG1Color),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -37,12 +37,9 @@ class LastMessaageWidget extends StatelessWidget {
               size: 18,
             ),
             const SizedBox(width: 6),
-            const Text(
+            Text(
               'File',
-              style: TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.normal,
-              ),
+              style: Ts.text14(Config.grayG1Color),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -57,12 +54,9 @@ class LastMessaageWidget extends StatelessWidget {
               size: 18,
             ),
             const SizedBox(width: 10),
-            const Text(
+            Text(
               'Voice message',
-              style: TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.normal,
-              ),
+              style: Ts.text14(Config.grayG1Color),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -78,12 +72,9 @@ class LastMessaageWidget extends StatelessWidget {
               color: Theme.of(context).primaryColor,
             ),
             const SizedBox(width: 6),
-            const Text(
+            Text(
               'Order',
-              style: TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.normal,
-              ),
+              style: Ts.text14(Config.grayG1Color),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -92,10 +83,7 @@ class LastMessaageWidget extends StatelessWidget {
       } else if (data['type'] == 'text') {
         return Text(
           data['text'],
-          style: const TextStyle(
-            color: Colors.grey,
-            fontWeight: FontWeight.normal,
-          ),
+          style: Ts.text14(Config.grayG1Color),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         );

@@ -2,14 +2,14 @@
 
 class SearchUserModel {
   final int count;
-  final List<Users> users;
+  final List<SearchUser> users;
 
   SearchUserModel({this.count = 0, this.users = const []});
 
   factory SearchUserModel.fromJson(Map<String, dynamic> json) {
     return SearchUserModel(
       count: json['count'] ?? 0,
-      users: ((json['results'] ?? []) as List<dynamic>).map((e) => Users.fromJson(e)).toList(),
+      users: ((json['results'] ?? []) as List<dynamic>).map((e) => SearchUser.fromJson(e)).toList(),
     );
   }
 }
@@ -19,7 +19,7 @@ enum UserType {
   brand,
 }
 
-class Users {
+class SearchUser {
   int? id;
   String? uid;
   String? firstName;
@@ -27,9 +27,14 @@ class Users {
   String? imgUrl;
   UserType? type;
 
-  Users({this.id, this.uid, this.firstName, this.lastName, this.imgUrl, this.type});
+  SearchUser({this.id, this.uid, this.firstName, this.lastName, this.imgUrl, this.type});
 
-  Users.fromJson(Map<String, dynamic> json) {
+  String get fullName {
+    String name = "${firstName ?? ""} ${lastName ?? ""}".trim();
+    return name.isEmpty ? "Guest" : name;
+  }
+
+  SearchUser.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     uid = json['firebase_uuid'];
     firstName = json['first_name'];

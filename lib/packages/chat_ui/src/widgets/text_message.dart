@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:ttp_chat/packages/link_previewer/flutter_link_previewer.dart';
+import 'package:ttp_chat/packages/link_previewer/src/utils.dart';
 
 import '../util.dart';
 import 'inherited_chat_theme.dart';
@@ -21,8 +22,7 @@ class TextMessage extends StatelessWidget {
   final types.TextMessage? message;
 
   /// See [LinkPreview.onPreviewDataFetched]
-  final void Function(types.TextMessage, types.PreviewData)?
-      onPreviewDataFetched;
+  final void Function(types.TextMessage, types.PreviewData)? onPreviewDataFetched;
 
   /// Show user name for the received message. Useful for a group chat.
   final bool? showName;
@@ -45,29 +45,19 @@ class TextMessage extends StatelessWidget {
         ? InheritedChatTheme.of(context)!.theme!.sentMessageBodyTextStyle
         : InheritedChatTheme.of(context)!.theme!.receivedMessageBodyTextStyle;
     final linkDescriptionTextStyle = user.id == message!.author.id
-        ? InheritedChatTheme.of(context)!
-            .theme!
-            .sentMessageLinkDescriptionTextStyle
-        : InheritedChatTheme.of(context)!
-            .theme!
-            .receivedMessageLinkDescriptionTextStyle;
+        ? InheritedChatTheme.of(context)!.theme!.sentMessageLinkDescriptionTextStyle
+        : InheritedChatTheme.of(context)!.theme!.receivedMessageLinkDescriptionTextStyle;
     final linkTitleTextStyle = user.id == message!.author.id
         ? InheritedChatTheme.of(context)!.theme!.sentMessageLinkTitleTextStyle
-        : InheritedChatTheme.of(context)!
-            .theme!
-            .receivedMessageLinkTitleTextStyle;
+        : InheritedChatTheme.of(context)!.theme!.receivedMessageLinkTitleTextStyle;
 
-    final color = getUserAvatarNameColor(message!.author,
-        InheritedChatTheme.of(context)!.theme!.userAvatarNameColors!);
+    final color = getUserAvatarNameColor(message!.author, InheritedChatTheme.of(context)!.theme!.userAvatarNameColors!);
     final name = getUserName(message!.author);
 
     return LinkPreview(
       enableAnimation: true,
       header: showName! ? name : null,
-      headerStyle: InheritedChatTheme.of(context)!
-          .theme!
-          .userNameTextStyle!
-          .copyWith(color: color),
+      headerStyle: InheritedChatTheme.of(context)!.theme!.userNameTextStyle!.copyWith(color: color),
       linkStyle: bodyTextStyle,
       metadataTextStyle: linkDescriptionTextStyle,
       metadataTitleStyle: linkTitleTextStyle,
@@ -84,8 +74,7 @@ class TextMessage extends StatelessWidget {
   }
 
   Widget _textWidget(types.User user, BuildContext context) {
-    final color = getUserAvatarNameColor(message!.author,
-        InheritedChatTheme.of(context)!.theme!.userAvatarNameColors!);
+    final color = getUserAvatarNameColor(message!.author, InheritedChatTheme.of(context)!.theme!.userAvatarNameColors!);
     final name = getUserName(message!.author);
 
     return Column(
@@ -98,19 +87,15 @@ class TextMessage extends StatelessWidget {
               name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: InheritedChatTheme.of(context)!
-                  .theme!
-                  .userNameTextStyle!
-                  .copyWith(color: color),
+              style: InheritedChatTheme.of(context)!.theme!.userNameTextStyle!.copyWith(color: color),
             ),
           ),
         SelectableText(
           message!.text,
+          scrollPhysics: const NeverScrollableScrollPhysics(),
           style: user.id == message!.author.id
               ? InheritedChatTheme.of(context)!.theme!.sentMessageBodyTextStyle
-              : InheritedChatTheme.of(context)!
-                  .theme!
-                  .receivedMessageBodyTextStyle,
+              : InheritedChatTheme.of(context)!.theme!.receivedMessageBodyTextStyle,
           textWidthBasis: TextWidthBasis.longestLine,
         ),
       ],
@@ -119,22 +104,22 @@ class TextMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _user = InheritedUser.of(context)!.user;
-    final _width = MediaQuery.of(context).size.width;
+    final user = InheritedUser.of(context)!.user;
+    final width = MediaQuery.of(context).size.width;
 
-    final urlRegexp = RegExp(REGEX_LINK);
+    final urlRegexp = RegExp(regexLink);
     final matches = urlRegexp.allMatches(message!.text.toLowerCase());
 
     if (matches.isNotEmpty && usePreviewData! && onPreviewDataFetched != null) {
-      return _linkPreview(_user!, _width, context);
+      return _linkPreview(user!, width, context);
     }
 
     return Container(
       margin: const EdgeInsets.symmetric(
-        horizontal: 24,
-        vertical: 16,
+        horizontal: 20,
+        vertical: 10,
       ),
-      child: _textWidget(_user!, context),
+      child: _textWidget(user!, context),
     );
   }
 }

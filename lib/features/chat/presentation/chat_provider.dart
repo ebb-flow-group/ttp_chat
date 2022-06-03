@@ -17,10 +17,10 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ttp_chat/config.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:uuid/uuid.dart';
 
+import '../../../config.dart';
 import '../../../core/screens/chat_utils.dart';
 import '../../../models/base_model.dart';
 import '../../../network/api_service.dart';

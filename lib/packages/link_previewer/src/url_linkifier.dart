@@ -22,14 +22,14 @@ final _protocolIdentifierRegex = RegExp(
 /// Used to find links in the text.
 class UrlLinkifier extends Linkifier {
   /// Default constructor
-  UrlLinkifier();
+  const UrlLinkifier();
 
   /// Parses text to find all links inside it
   @override
   List<LinkifyElement> parse(elements, options) {
     final list = <LinkifyElement>[];
 
-    elements.forEach((element) {
+    for (final element in elements) {
       if (element is TextElement) {
         var loose = false;
         var match = _urlRegex.firstMatch(element.text);
@@ -60,8 +60,7 @@ class UrlLinkifier extends Linkifier {
             var originalUrl = match.group(2)!;
             String? end;
 
-            if (options.excludeLastPeriod &&
-                originalUrl[originalUrl.length - 1] == '.') {
+            if (options.excludeLastPeriod && originalUrl[originalUrl.length - 1] == '.') {
               end = '.';
               originalUrl = originalUrl.substring(0, originalUrl.length - 1);
             }
@@ -69,8 +68,7 @@ class UrlLinkifier extends Linkifier {
             final url = originalUrl;
 
             if (loose || !originalUrl.startsWith(_protocolIdentifierRegex)) {
-              originalUrl = (options.defaultToHttps ? 'https://' : 'http://') +
-                  originalUrl;
+              originalUrl = (options.defaultToHttps ? 'https://' : 'http://') + originalUrl;
             }
 
             list.add(
@@ -92,7 +90,7 @@ class UrlLinkifier extends Linkifier {
       } else {
         list.add(element);
       }
-    });
+    }
 
     return list;
   }

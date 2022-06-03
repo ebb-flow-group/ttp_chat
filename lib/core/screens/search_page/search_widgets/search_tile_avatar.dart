@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ttp_chat/core/services/ts.dart';
 
 import '../../../../config.dart';
 import '../../../../utils/cached_network_image.dart';
@@ -28,11 +29,7 @@ class SearchTileAvatar extends StatelessWidget {
           ? Center(
               child: Text(
                 getInitials(name ?? ""),
-                style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Ts.bold14(Config.creameryColor),
               ),
             )
           : null,

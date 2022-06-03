@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:ttp_chat/core/services/ts.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart';
 
+import '../../../config.dart';
 import 'chat_avatar.dart';
 import 'helpers.dart';
 import 'last_message_widget.dart';
@@ -34,9 +36,7 @@ class ChatTile extends StatelessWidget {
                       children: [
                         Text(
                           room.name ?? "",
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                          ),
+                          style: Ts.bold13(Config.primaryColor),
                         ),
                         const SizedBox(height: 4),
                         LastMessaageWidget(room.metadata?['last_messages'] ?? {}),
@@ -48,7 +48,7 @@ class ChatTile extends StatelessWidget {
                     children: [
                       Text(
                         getLastMessageDateTime(room.metadata?['last_messages'] ?? {}),
-                        style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 12),
+                        style: Ts.demi11(Config.grayG1Color),
                       ),
                       const SizedBox(height: 6),
                       room.metadata?['unread_message_count'] != 0
@@ -58,10 +58,8 @@ class ChatTile extends StatelessWidget {
                               decoration: const BoxDecoration(
                                 color: Colors.red,
                               ),
-                              child: Text(
-                                room.metadata?['unread_message_count'].toString() ?? "",
-                                style: const TextStyle(color: Colors.white, fontSize: 12, height: 1),
-                              ),
+                              child: Text(room.metadata?['unread_message_count'].toString() ?? "",
+                                  style: Ts.bold10(Config.creameryColor)),
                             )
                           : const SizedBox()
                     ],

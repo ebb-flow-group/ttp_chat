@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:ttp_chat/core/services/ts.dart';
 
-import '../../../theme/style.dart';
+import '../../../config.dart';
 
 class StartChatMessage extends StatelessWidget {
   final void Function()? goToSearch;
@@ -16,22 +17,18 @@ class StartChatMessage extends StatelessWidget {
         children: [
           SvgPicture.asset(
             'assets/chat_icons/start_chat.svg',
-            width: 34,
-            height: 34,
+            width: 30,
+            height: 30,
           ),
           const SizedBox(height: 20),
           Text(
             'Connect with the community',
-            style: appBarTitleStyle(context).copyWith(fontSize: 22),
+            style: Ts.bold20(Config.primaryColor),
           ),
           const SizedBox(height: 12),
-          const Text(
+          Text(
             'Thriving communities are made up of vibrant connections. Chat makes it personal, putting you in direct contact with your fans and customers.',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
+            style: Ts.text14(Config.grayG1Color),
             softWrap: true,
             textAlign: TextAlign.center,
           ),
@@ -40,11 +37,11 @@ class StartChatMessage extends StatelessWidget {
               icon: Icon(
                 Icons.add_rounded,
                 color: Theme.of(context).primaryColor,
-                size: 20,
+                size: 10,
               ),
               label: Text(
                 'Start Your First Chat',
-                style: appBarTitleStyle(context).copyWith(fontSize: 14),
+                style: Ts.bold14(Config.primaryColor),
               ),
               onPressed: goToSearch)
         ],

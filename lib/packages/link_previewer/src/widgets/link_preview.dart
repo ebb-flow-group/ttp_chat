@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart' hide UrlLinkifier;
 import 'package:ttp_chat/packages/chat_types/src/preview_data.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../url_linkifier.dart' show UrlLinkifier;
 import '../utils.dart' show getPreviewData;
@@ -20,23 +20,27 @@ class LinkPreview extends StatefulWidget {
     this.header,
     this.headerStyle,
     this.hideImage,
+    this.imageBuilder,
     this.linkStyle,
     this.metadataTextStyle,
     this.metadataTitleStyle,
     this.onLinkPressed,
     required this.onPreviewDataFetched,
+    this.openOnPreviewImageTap = true,
+    this.openOnPreviewTitleTap = true,
     this.padding,
     required this.previewData,
     required this.text,
     this.textStyle,
+    this.textWidget,
     required this.width,
   }) : super(key: key);
 
-  /// CORS proxy to make more previews work on web. Not tested.
-  final String? corsProxy;
-
   /// Expand animation duration
   final Duration? animationDuration;
+
+  /// CORS proxy to make more previews work on web. Not tested.
+  final String? corsProxy;
 
   /// Enables expand animation. Default value is false.
   final bool? enableAnimation;
@@ -49,6 +53,9 @@ class LinkPreview extends StatefulWidget {
 
   /// Hides image data from the preview
   final bool? hideImage;
+
+  /// Function that allows you to build a custom image
+  final Widget Function(String)? imageBuilder;
 
   /// Style of highlighted links in the text
   final TextStyle? linkStyle;
@@ -68,6 +75,12 @@ class LinkPreview extends StatefulWidget {
   /// preview data again.
   final void Function(PreviewData) onPreviewDataFetched;
 
+  /// Open the link when the link preview image is tapped. Defaults to false.
+  final bool openOnPreviewImageTap;
+
+  /// Open the link when the link preview title/description is tapped. Defaults to false.
+  final bool openOnPreviewTitleTap;
+
   /// Padding around initial text widget
   final EdgeInsets? padding;
 
@@ -81,6 +94,9 @@ class LinkPreview extends StatefulWidget {
   /// Style of the provided text
   final TextStyle? textStyle;
 
+  /// Widget to display above the preview. If null, defaults to a linkified [text].
+  final Widget? textWidget;
+
   /// Width of the [LinkPreview] widget
   final double width;
 
@@ -88,17 +104,9 @@ class LinkPreview extends StatefulWidget {
   _LinkPreviewState createState() => _LinkPreviewState();
 }
 
-class _LinkPreviewState extends State<LinkPreview>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    duration: widget.animationDuration ?? const Duration(milliseconds: 300),
-    vsync: this,
-  );
-
-  late final Animation<double> _animation = CurvedAnimation(
-    parent: _controller,
-    curve: Curves.easeOutQuad,
-  );
+class _LinkPreviewState extends State<LinkPreview> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _animation;
 
   bool isFetchingPreviewData = false;
   bool shouldAnimate = false;
@@ -106,6 +114,16 @@ class _LinkPreviewState extends State<LinkPreview>
   @override
   void initState() {
     super.initState();
+
+    _controller = AnimationController(
+      duration: widget.animationDuration ?? const Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutQuad,
+    );
 
     didUpdateWidget(widget);
   }
@@ -161,9 +179,7 @@ class _LinkPreviewState extends State<LinkPreview>
   }
 
   bool _hasData(PreviewData? previewData) {
-    return previewData?.title != null ||
-        previewData?.description != null ||
-        previewData?.image?.url != null;
+    return previewData?.title != null || previewData?.description != null || previewData?.image?.url != null;
   }
 
   bool _hasOnlyImage() {
@@ -172,11 +188,11 @@ class _LinkPreviewState extends State<LinkPreview>
         widget.previewData?.image?.url != null;
   }
 
-  Future<void> _onOpen(LinkableElement link) async {
-    if (await canLaunch(link.url)) {
-      await launch(link.url);
-    } else {
-      throw 'Could not launch $link';
+  Future<void> _onOpen(String url) async {
+    if (widget.onLinkPressed != null) {
+      widget.onLinkPressed!(url);
+    } else if (await canLaunchUrlString(url)) {
+      await launchUrlString(url);
     }
   }
 
@@ -189,8 +205,8 @@ class _LinkPreviewState extends State<LinkPreview>
     );
   }
 
-  Widget _bodyWidget(PreviewData data, String text, double width) {
-    final _padding = widget.padding ??
+  Widget _bodyWidget(PreviewData data, double width) {
+    final padding = widget.padding ??
         const EdgeInsets.only(
           bottom: 16,
           left: 24,
@@ -200,23 +216,24 @@ class _LinkPreviewState extends State<LinkPreview>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Container(
-          padding: EdgeInsets.only(
-            bottom: _padding.bottom,
-            left: _padding.left,
-            right: _padding.right,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              if (data.title != null) _titleWidget(data.title!),
-              if (data.description != null)
-                _descriptionWidget(data.description!),
-            ],
+        GestureDetector(
+          onTap: widget.openOnPreviewTitleTap ? () => _onOpen(data.link!) : null,
+          child: Container(
+            padding: EdgeInsets.only(
+              bottom: padding.bottom,
+              left: padding.left,
+              right: padding.right,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                if (data.title != null) _titleWidget(data.title!),
+                if (data.description != null) _descriptionWidget(data.description!),
+              ],
+            ),
           ),
         ),
-        if (data.image?.url != null && widget.hideImage != true)
-          _imageWidget(data.image!.url, width),
+        if (data.image?.url != null && widget.hideImage != true) _imageWidget(data.image!.url, data.link!, width),
       ],
     );
   }
@@ -226,7 +243,7 @@ class _LinkPreviewState extends State<LinkPreview>
     bool withPadding = false,
     Widget? child,
   }) {
-    final _padding = widget.padding ??
+    final padding = widget.padding ??
         const EdgeInsets.symmetric(
           horizontal: 24,
           vertical: 16,
@@ -236,7 +253,7 @@ class _LinkPreviewState extends State<LinkPreview>
 
     return Container(
       constraints: BoxConstraints(maxWidth: widget.width),
-      padding: withPadding ? _padding : null,
+      padding: withPadding ? padding : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -244,9 +261,9 @@ class _LinkPreviewState extends State<LinkPreview>
             padding: withPadding
                 ? const EdgeInsets.all(0)
                 : EdgeInsets.only(
-                    left: _padding.left,
-                    right: _padding.right,
-                    top: _padding.top,
+                    left: padding.left,
+                    right: padding.right,
+                    top: padding.top,
                     bottom: _hasOnlyImage() ? 0 : 16,
                   ),
             child: Column(
@@ -262,14 +279,12 @@ class _LinkPreviewState extends State<LinkPreview>
                       style: widget.headerStyle,
                     ),
                   ),
-                _linkify(),
-                if (withPadding && child != null)
-                  shouldAnimate ? _animated(child) : child,
+                widget.textWidget ?? _linkify(),
+                if (withPadding && child != null) shouldAnimate ? _animated(child) : child,
               ],
             ),
           ),
-          if (!withPadding && child != null)
-            shouldAnimate ? _animated(child) : child,
+          if (!withPadding && child != null) shouldAnimate ? _animated(child) : child,
         ],
       ),
     );
@@ -287,28 +302,32 @@ class _LinkPreviewState extends State<LinkPreview>
     );
   }
 
-  Widget _imageWidget(String url, double width) {
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: width,
-      ),
-      width: width,
-      child: Image.network(
-        url,
-        fit: BoxFit.fitWidth,
+  Widget _imageWidget(String imageUrl, String linkUrl, double width) {
+    return GestureDetector(
+      onTap: widget.openOnPreviewImageTap ? () => _onOpen(linkUrl) : null,
+      child: Container(
+        constraints: BoxConstraints(
+          maxHeight: width,
+        ),
+        width: width,
+        child: widget.imageBuilder != null
+            ? widget.imageBuilder!(imageUrl)
+            : Image.network(
+                imageUrl,
+                fit: BoxFit.contain,
+              ),
       ),
     );
   }
 
   Widget _linkify() {
     return SelectableLinkify(
-      linkifiers: [UrlLinkifier()],
+      linkifiers: const [EmailLinkifier(), UrlLinkifier()],
       linkStyle: widget.linkStyle,
       maxLines: 100,
       minLines: 1,
-      onOpen: widget.onLinkPressed != null
-          ? (element) => widget.onLinkPressed!(element.url)
-          : _onOpen,
+      onOpen: (link) => _onOpen(link.url),
+      scrollPhysics: const NeverScrollableScrollPhysics(),
       options: const LinkifyOptions(
         defaultToHttps: true,
         humanize: false,
@@ -319,7 +338,7 @@ class _LinkPreviewState extends State<LinkPreview>
     );
   }
 
-  Widget _minimizedBodyWidget(PreviewData data, String text) {
+  Widget _minimizedBodyWidget(PreviewData data) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -330,20 +349,22 @@ class _LinkPreviewState extends State<LinkPreview>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.only(right: 4),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        if (data.title != null) _titleWidget(data.title!),
-                        if (data.description != null)
-                          _descriptionWidget(data.description!),
-                      ],
+                  child: GestureDetector(
+                    onTap: widget.openOnPreviewTitleTap ? () => _onOpen(data.link!) : null,
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 4),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          if (data.title != null) _titleWidget(data.title!),
+                          if (data.description != null) _descriptionWidget(data.description!),
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 if (data.image?.url != null && widget.hideImage != true)
-                  _minimizedImageWidget(data.image!.url),
+                  _minimizedImageWidget(data.image!.url, data.link!),
               ],
             ),
           ),
@@ -351,15 +372,18 @@ class _LinkPreviewState extends State<LinkPreview>
     );
   }
 
-  Widget _minimizedImageWidget(String url) {
+  Widget _minimizedImageWidget(String imageUrl, String linkUrl) {
     return ClipRRect(
       borderRadius: const BorderRadius.all(
         Radius.circular(12),
       ),
-      child: SizedBox(
-        height: 48,
-        width: 48,
-        child: Image.network(url),
+      child: GestureDetector(
+        onTap: widget.openOnPreviewImageTap ? () => _onOpen(linkUrl) : null,
+        child: SizedBox(
+          height: 48,
+          width: 48,
+          child: widget.imageBuilder != null ? widget.imageBuilder!(imageUrl) : Image.network(imageUrl),
+        ),
       ),
     );
   }
@@ -380,19 +404,18 @@ class _LinkPreviewState extends State<LinkPreview>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.previewData != null && _hasData(widget.previewData)) {
+    final previewData = widget.previewData;
+
+    if (previewData != null && _hasData(previewData)) {
       final aspectRatio = widget.previewData!.image == null
           ? null
-          : widget.previewData!.image!.width /
-              widget.previewData!.image!.height;
+          : widget.previewData!.image!.width / widget.previewData!.image!.height;
 
-      final _width = aspectRatio == 1 ? widget.width : widget.width - 32;
+      final width = aspectRatio == 1 ? widget.width : widget.width - 32;
 
       return _containerWidget(
         animate: shouldAnimate,
-        child: aspectRatio == 1
-            ? _minimizedBodyWidget(widget.previewData!, widget.text)
-            : _bodyWidget(widget.previewData!, widget.text, _width),
+        child: aspectRatio == 1 ? _minimizedBodyWidget(previewData) : _bodyWidget(previewData, width),
         withPadding: aspectRatio == 1,
       );
     } else {

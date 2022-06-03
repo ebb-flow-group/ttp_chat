@@ -6,10 +6,6 @@ import 'package:ttp_chat/config.dart';
 import 'package:ttp_chat/core/services/ts.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
-Future pushTo(Widget page, BuildContext context) {
-  return Navigator.of(context).push(MaterialPageRoute(builder: (context) => page));
-}
-
 displaySnackBar(String message, BuildContext context) {
   var snackBar = SnackBar(
     content: Text(

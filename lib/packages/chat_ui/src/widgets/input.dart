@@ -106,10 +106,8 @@ class _InputState extends State<Input> {
       child: Shortcuts(
         shortcuts: {
           LogicalKeySet(LogicalKeyboardKey.enter): const SendMessageIntent(),
-          LogicalKeySet(LogicalKeyboardKey.enter, LogicalKeyboardKey.alt):
-              const NewLineIntent(),
-          LogicalKeySet(LogicalKeyboardKey.enter, LogicalKeyboardKey.shift):
-              const NewLineIntent(),
+          LogicalKeySet(LogicalKeyboardKey.enter, LogicalKeyboardKey.alt): const NewLineIntent(),
+          LogicalKeySet(LogicalKeyboardKey.enter, LogicalKeyboardKey.shift): const NewLineIntent(),
         },
         child: Actions(
           actions: {
@@ -125,16 +123,15 @@ class _InputState extends State<Input> {
                     TextPosition(offset: _newValue.length),
                   ),
                 );
+                return null;
               },
             ),
           },
           child: Focus(
             autofocus: true,
             child: Material(
-              borderRadius:
-                  InheritedChatTheme.of(context)!.theme!.inputBorderRadius,
-              color:
-                  InheritedChatTheme.of(context)!.theme!.inputBackgroundColor,
+              borderRadius: InheritedChatTheme.of(context)!.theme!.inputBorderRadius,
+              color: InheritedChatTheme.of(context)!.theme!.inputBackgroundColor,
               child: Container(
                 padding: EdgeInsets.fromLTRB(
                   24 + _query.padding.left,
@@ -149,30 +146,18 @@ class _InputState extends State<Input> {
                       child: TextField(
                         controller: _textController,
                         decoration: InputDecoration.collapsed(
-                          hintStyle: InheritedChatTheme.of(context)!
-                              .theme!
-                              .inputTextStyle!
-                              .copyWith(
-                                color: InheritedChatTheme.of(context)!
-                                    .theme!
-                                    .inputTextColor!
-                                    .withOpacity(0.5),
+                          hintStyle: InheritedChatTheme.of(context)!.theme!.inputTextStyle!.copyWith(
+                                color: InheritedChatTheme.of(context)!.theme!.inputTextColor!.withOpacity(0.5),
                               ),
-                          hintText:
-                              InheritedL10n.of(context)!.l10n!.inputPlaceholder,
+                          hintText: InheritedL10n.of(context)!.l10n!.inputPlaceholder,
                         ),
                         focusNode: _inputFocusNode,
                         keyboardType: TextInputType.multiline,
                         maxLines: 5,
                         minLines: 1,
                         onChanged: widget.onTextChanged,
-                        style: InheritedChatTheme.of(context)!
-                            .theme!
-                            .inputTextStyle!
-                            .copyWith(
-                              color: InheritedChatTheme.of(context)!
-                                  .theme!
-                                  .inputTextColor,
+                        style: InheritedChatTheme.of(context)!.theme!.inputTextStyle!.copyWith(
+                              color: InheritedChatTheme.of(context)!.theme!.inputTextColor,
                             ),
                         textCapitalization: TextCapitalization.sentences,
                       ),

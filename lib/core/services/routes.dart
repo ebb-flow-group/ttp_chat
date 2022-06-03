@@ -8,6 +8,7 @@ class Routes {
   static const String orderPaymentRoute = '/orders/pay/:id';
   static const String ordersRoute = '/orders';
   static const String chatUserRoute = '/chats/user/:id';
+  static const String userProfilePage = '/user/:id';
 
   static navigateToOutletPage(BuildContext context, String id) {
     context.push(RouteParser(Routes.homeOutletPage).reverse({'id': Uri.encodeComponent(id)}));

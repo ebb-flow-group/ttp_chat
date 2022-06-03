@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
@@ -127,5 +129,5 @@ class User extends Equatable {
   final Role? role;
 
   /// Updated user timestamp, in ms
-  final dynamic? updatedAt;
+  final dynamic updatedAt;
 }
