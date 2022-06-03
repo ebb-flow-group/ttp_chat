@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/theme/style.dart';
 import 'package:ttp_chat/utils/functions.dart';
@@ -28,7 +29,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
               String? userId = getChatUserId(chatProvider.selectedChatRoom);
               consoleLog("userId: $userId");
               if (userId != null && userId != 'deleted-brand') {
-                Routes.navigateToOutletPage(context, userId);
+                context.push(Routes.homeOutletDetailPage, extra: userId);
               }
             }
           }
