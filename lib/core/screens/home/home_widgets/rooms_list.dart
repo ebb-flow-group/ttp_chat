@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
+import 'package:ttp_chat/utils/navigation_helper.dart';
 
 import '../../../../config.dart';
 import '../../../../features/chat/presentation/chat_provider.dart';
@@ -16,9 +17,9 @@ class RoomsList extends StatefulWidget {
   final AsyncSnapshot<List<Room>> snapshot;
   final ChatProvider provider;
 
-  final view list;
+  final View list;
 
-  const RoomsList(this.snapshot, {this.list = view.brands, required this.provider, Key? key}) : super(key: key);
+  const RoomsList(this.snapshot, {this.list = View.brands, required this.provider, Key? key}) : super(key: key);
 
   @override
   State<RoomsList> createState() => _RoomsListState();
@@ -41,7 +42,7 @@ class _RoomsListState extends State<RoomsList> {
               list: widget.list,
               onTap: (room) async {
                 setState(() {});
-                var result = await pushTo(ChatPage(room), context);
+                var result = await Push.to(ChatPage(room), context);
                 if (result == null) {
                   // log('****** Updating Room List ******');
                   widget.provider.updateStream();
@@ -70,7 +71,7 @@ class RoomListView extends StatelessWidget {
     required this.snapshot,
   }) : super(key: key);
 
-  final view list;
+  final View list;
   final ValueChanged<types.Room> onTap;
   final AsyncSnapshot<List<types.Room>> snapshot;
 

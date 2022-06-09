@@ -1,9 +1,11 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/material.dart';
 
 // For internal usage only. Use values from theme itself.
 
 /// See [ChatTheme.userAvatarNameColors]
-const COLORS = [
+const chatAvatarColors = [
   Color(0xffff6767),
   Color(0xff66e0da),
   Color(0xfff5a2d9),
@@ -49,37 +51,37 @@ const SECONDARY_DARK = Color(0xff2b2250);
 abstract class ChatTheme {
   /// Creates a new chat theme based on provided colors and text styles.
   const ChatTheme({
-    @required this.attachmentButtonIcon,
-    @required this.backgroundColor,
-    @required this.dateDividerTextStyle,
-    @required this.deliveredIcon,
-    @required this.documentIcon,
-    @required this.emptyChatPlaceholderTextStyle,
-    @required this.errorColor,
-    @required this.errorIcon,
-    @required this.inputBackgroundColor,
-    @required this.inputBorderRadius,
-    @required this.inputTextStyle,
-    @required this.inputTextColor,
-    @required this.messageBorderRadius,
-    @required this.primaryColor,
-    @required this.receivedMessageBodyTextStyle,
-    @required this.receivedMessageCaptionTextStyle,
-    @required this.receivedMessageDocumentIconColor,
-    @required this.receivedMessageLinkDescriptionTextStyle,
-    @required this.receivedMessageLinkTitleTextStyle,
-    @required this.secondaryColor,
-    @required this.seenIcon,
-    @required this.sendButtonIcon,
-    @required this.sendingIcon,
-    @required this.sentMessageBodyTextStyle,
-    @required this.sentMessageCaptionTextStyle,
-    @required this.sentMessageDocumentIconColor,
-    @required this.sentMessageLinkDescriptionTextStyle,
-    @required this.sentMessageLinkTitleTextStyle,
-    @required this.userAvatarNameColors,
-    @required this.userAvatarTextStyle,
-    @required this.userNameTextStyle,
+    required this.attachmentButtonIcon,
+    required this.backgroundColor,
+    required this.dateDividerTextStyle,
+    required this.deliveredIcon,
+    required this.documentIcon,
+    required this.emptyChatPlaceholderTextStyle,
+    required this.errorColor,
+    required this.errorIcon,
+    required this.inputBackgroundColor,
+    required this.inputBorderRadius,
+    required this.inputTextStyle,
+    required this.inputTextColor,
+    required this.messageBorderRadius,
+    required this.primaryColor,
+    required this.receivedMessageBodyTextStyle,
+    required this.receivedMessageCaptionTextStyle,
+    required this.receivedMessageDocumentIconColor,
+    required this.receivedMessageLinkDescriptionTextStyle,
+    required this.receivedMessageLinkTitleTextStyle,
+    required this.secondaryColor,
+    required this.seenIcon,
+    required this.sendButtonIcon,
+    required this.sendingIcon,
+    required this.sentMessageBodyTextStyle,
+    required this.sentMessageCaptionTextStyle,
+    required this.sentMessageDocumentIconColor,
+    required this.sentMessageLinkDescriptionTextStyle,
+    required this.sentMessageLinkTitleTextStyle,
+    required this.userAvatarNameColors,
+    required this.userAvatarTextStyle,
+    required this.userNameTextStyle,
   });
 
   /// Icon for select attachment button
@@ -191,7 +193,7 @@ class DefaultChatTheme extends ChatTheme {
   /// Creates a default chat theme. Use this constructor if you want to
   /// override only a couple of variables, otherwise create a new class
   /// which extends [ChatTheme]
-  DefaultChatTheme({
+  const DefaultChatTheme({
     Widget? attachmentButtonIcon,
     Color backgroundColor = NEUTRAL_7,
     TextStyle dateDividerTextStyle = const TextStyle(
@@ -287,7 +289,7 @@ class DefaultChatTheme extends ChatTheme {
       fontWeight: FontWeight.w800,
       height: 1.375,
     ),
-    List<Color> userAvatarNameColors = COLORS,
+    List<Color> userAvatarNameColors = chatAvatarColors,
     TextStyle userAvatarTextStyle = const TextStyle(
       color: NEUTRAL_7,
       fontFamily: 'Avenir',
@@ -319,8 +321,7 @@ class DefaultChatTheme extends ChatTheme {
           receivedMessageBodyTextStyle: receivedMessageBodyTextStyle,
           receivedMessageCaptionTextStyle: receivedMessageCaptionTextStyle,
           receivedMessageDocumentIconColor: receivedMessageDocumentIconColor,
-          receivedMessageLinkDescriptionTextStyle:
-              receivedMessageLinkDescriptionTextStyle,
+          receivedMessageLinkDescriptionTextStyle: receivedMessageLinkDescriptionTextStyle,
           receivedMessageLinkTitleTextStyle: receivedMessageLinkTitleTextStyle,
           secondaryColor: secondaryColor,
           seenIcon: seenIcon ?? const SizedBox(),
@@ -329,8 +330,7 @@ class DefaultChatTheme extends ChatTheme {
           sentMessageBodyTextStyle: sentMessageBodyTextStyle,
           sentMessageCaptionTextStyle: sentMessageCaptionTextStyle,
           sentMessageDocumentIconColor: sentMessageDocumentIconColor,
-          sentMessageLinkDescriptionTextStyle:
-              sentMessageLinkDescriptionTextStyle,
+          sentMessageLinkDescriptionTextStyle: sentMessageLinkDescriptionTextStyle,
           sentMessageLinkTitleTextStyle: sentMessageLinkTitleTextStyle,
           userAvatarNameColors: userAvatarNameColors,
           userAvatarTextStyle: userAvatarTextStyle,
@@ -440,7 +440,7 @@ class DarkChatTheme extends ChatTheme {
       fontWeight: FontWeight.w800,
       height: 1.375,
     ),
-    List<Color> userAvatarNameColors = COLORS,
+    List<Color> userAvatarNameColors = chatAvatarColors,
     TextStyle userAvatarTextStyle = const TextStyle(
       color: NEUTRAL_7,
       fontFamily: 'Avenir',
@@ -472,8 +472,7 @@ class DarkChatTheme extends ChatTheme {
           receivedMessageBodyTextStyle: receivedMessageBodyTextStyle,
           receivedMessageCaptionTextStyle: receivedMessageCaptionTextStyle,
           receivedMessageDocumentIconColor: receivedMessageDocumentIconColor,
-          receivedMessageLinkDescriptionTextStyle:
-              receivedMessageLinkDescriptionTextStyle,
+          receivedMessageLinkDescriptionTextStyle: receivedMessageLinkDescriptionTextStyle,
           receivedMessageLinkTitleTextStyle: receivedMessageLinkTitleTextStyle,
           secondaryColor: secondaryColor,
           seenIcon: seenIcon!,
@@ -482,8 +481,7 @@ class DarkChatTheme extends ChatTheme {
           sentMessageBodyTextStyle: sentMessageBodyTextStyle,
           sentMessageCaptionTextStyle: sentMessageCaptionTextStyle,
           sentMessageDocumentIconColor: sentMessageDocumentIconColor,
-          sentMessageLinkDescriptionTextStyle:
-              sentMessageLinkDescriptionTextStyle,
+          sentMessageLinkDescriptionTextStyle: sentMessageLinkDescriptionTextStyle,
           sentMessageLinkTitleTextStyle: sentMessageLinkTitleTextStyle,
           userAvatarNameColors: userAvatarNameColors,
           userAvatarTextStyle: userAvatarTextStyle,

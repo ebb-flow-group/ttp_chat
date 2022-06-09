@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:ttp_chat/config.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
+import 'package:ttp_chat/utils/functions.dart';
 
 import '../chat_l10n.dart';
 import '../chat_theme.dart';
@@ -23,7 +25,7 @@ import 'message.dart';
 /// Entry widget, represents the complete chat
 class Chat extends StatefulWidget {
   /// Creates a chat widget
-  Chat({
+  const Chat({
     Key? key,
     this.buildCustomMessage,
     this.customDateHeaderText,
@@ -46,7 +48,7 @@ class Chat extends StatefulWidget {
     this.onTextChanged,
     this.showUserAvatars = false,
     this.showUserNames = false,
-    required this.theme,
+    this.theme = const DefaultChatTheme(),
     this.timeFormat,
     this.usePreviewData = true,
     this.hideInput = false,
@@ -137,7 +139,7 @@ class Chat extends StatefulWidget {
   /// Chat theme. Extend [ChatTheme] class to create your own theme or use
   /// existing one, like the [DefaultChatTheme]. You can customize only certain
   /// variables, see more here [DefaultChatTheme].
-  ChatTheme theme = DefaultChatTheme();
+  final ChatTheme theme;
 
   /// Allows you to customize the time format. IMPORTANT: only for the time,
   /// do not return date here. See [dateFormat] to customize the date format.
@@ -242,10 +244,10 @@ class _ChatState extends State<Chat> {
         margin: const EdgeInsets.only(bottom: 32, top: 16, left: 20, right: 20),
         child: Row(
           children: [
-            Expanded(
+            const Expanded(
               child: Divider(
-                thickness: 1.5,
-                color: Colors.grey[300],
+                thickness: 1,
+                color: Config.grayG4Color,
               ),
             ),
             Padding(
@@ -255,10 +257,10 @@ class _ChatState extends State<Chat> {
                 style: widget.theme.dateDividerTextStyle,
               ),
             ),
-            Expanded(
+            const Expanded(
               child: Divider(
-                thickness: 1.5,
-                color: Colors.grey[300],
+                thickness: 1,
+                color: Config.grayG4Color,
               ),
             ),
           ],
@@ -298,7 +300,7 @@ class _ChatState extends State<Chat> {
           usePreviewData: widget.usePreviewData!,
         );
       } catch (e, s) {
-        print('CATCH ERROR $e $s');
+        consoleLog('CATCH ERROR $e $s');
       }
 
       return const SizedBox();

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ttp_chat/config.dart';
+import 'package:ttp_chat/core/services/ts.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
-import 'package:ttp_chat/theme/style.dart';
 import 'package:ttp_chat/utils/functions.dart';
 
 import '../../../../packages/chat_types/src/util.dart';
@@ -22,15 +23,15 @@ class EmptyMessage extends StatelessWidget {
       children: [
         const SizedBox(height: 50),
         Text(
-          'You\'re about to chat up...',
-          style: TextStyle(fontWeight: FontWeight.normal, color: Theme.of(context).primaryColor),
+          'You’re about to chat with',
+          style: Ts.text15(Config.grayG1Color),
         ),
         const SizedBox(height: 30),
         ChatAvatar(chatProvider.selectedChatRoom!, radius: 50),
         const SizedBox(height: 14),
         Text(
           chatProvider.selectedChatRoom?.name ?? "",
-          style: appBarTitleStyle(context),
+          style: Ts.bold17(Config.primaryColor),
         ),
         //  const SizedBox(height: 4),
         // Text(
@@ -39,18 +40,14 @@ class EmptyMessage extends StatelessWidget {
         // ),
         const SizedBox(height: 30),
         if (!GetIt.I<ChatUtils>().isCreatorsApp)
-          if ((chatProvider.selectedChatRoom?.metadata?["other_user_type"] == "brand" &&
-              getChatUserId(chatProvider.selectedChatRoom) != null))
+          if (getChatUserId(chatProvider.selectedChatRoom) != null)
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   primary: Theme.of(context).primaryColor,
                 ),
                 child: Text(
                   "View Profile",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline4!
-                      .copyWith(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white),
+                  style: Ts.bold14(Config.creameryColor),
                 ),
                 onPressed: () {
                   String? userId = getChatUserId(chatProvider.selectedChatRoom);

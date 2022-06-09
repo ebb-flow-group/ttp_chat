@@ -20,6 +20,9 @@ String? getChatUserId(Room? room) {
       chatUserId = id.toString();
     }
   }
+  if (chatUserId == "deleted-brand" || chatUserId == "deleted-user") {
+    return null;
+  }
   return chatUserId;
 }
 

@@ -98,7 +98,7 @@ class _CustomInputState extends State<CustomInput> {
         ),
         child: Row(
           children: [
-            //TODO: Removing audio option for now
+            // Removing audio option for now
             //?https://www.notion.so/tabletophq/Voice-messaging-function-in-chat-not-working-can-t-close-it-once-you-click-on-it-too-have-to-exit--13cdbc89cdc142178353a498b79077c5
             // if (_textController.text.isEmpty)
             //   IconButton(
