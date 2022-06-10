@@ -113,9 +113,8 @@ class OrderMessageWidget extends StatelessWidget {
                           child: Divider(color: Config.grayG5Color, height: 0),
                         ),
                         GestureDetector(
-                          onTap: () => context.push(
-                              RouteParser(paymentPending ? Routes.orderPaymentRoute : Routes.orderDetailRoute)
-                                  .reverse({'id': "${message.metadata?['id']}"})),
+                          onTap: () => context
+                              .push(RouteParser(Routes.orderDetailRoute).reverse({'id': "${message.metadata?['id']}"})),
                           child: Container(
                             width: MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
