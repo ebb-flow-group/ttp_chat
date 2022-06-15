@@ -233,7 +233,7 @@ class ChatProvider extends ChangeNotifier {
       await Record()
           .start(
             path: voiceMessageFilePath,
-            encoder: AudioEncoder.AAC,
+            encoder: AudioEncoder.aacLc,
             bitRate: 128000,
             samplingRate: 44100,
           )
