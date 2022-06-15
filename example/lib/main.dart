@@ -100,7 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               tooltip: 'Increment',
               child: SvgPicture.asset(
-                "assets/icons/search.svg",
+                'assets/icon/search.svg',
+                package: 'ttp_chat',
                 width: kBaseSize,
                 height: kBaseSize,
                 color: Config.primaryColor,

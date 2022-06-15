@@ -18,15 +18,15 @@ class VoiceMessage extends StatefulWidget {
   final types.VoiceMessage? message;
 
   @override
-  _VoiceMessageState createState() => _VoiceMessageState();
+  VoiceMessageState createState() => VoiceMessageState();
 }
 
-class _VoiceMessageState extends State<VoiceMessage> {
+class VoiceMessageState extends State<VoiceMessage> {
   AudioPlayer? audioPlayer;
   Duration? duration;
   Duration? position;
 
-  PlayerState playerState = PlayerState.STOPPED;
+  PlayerState playerState = PlayerState.stopped;
 
   get durationText => duration != null ? duration.toString().split('.').first : '';
 
@@ -81,7 +81,7 @@ class _VoiceMessageState extends State<VoiceMessage> {
   void onComplete() {
     audioPlayer!.stop();
     setState(() {
-      playerState = PlayerState.COMPLETED;
+      playerState = PlayerState.completed;
       if (Platform.isAndroid) {
         duration = const Duration(seconds: 0);
         position = const Duration(seconds: 0);
@@ -91,45 +91,45 @@ class _VoiceMessageState extends State<VoiceMessage> {
 
   void play() async {
     audioPlayer = AudioPlayer(playerId: widget.message!.uri.split('/').last);
-    audioPlayer!.onAudioPositionChanged.listen((p) => setState(() => position = p));
+    audioPlayer!.onPositionChanged.listen((p) => setState(() => position = p));
     audioPlayer!.onPlayerStateChanged.listen((s) {
-      if (s == PlayerState.PLAYING) {
+      if (s == PlayerState.playing) {
         audioPlayer!.onDurationChanged.listen((Duration d) {
           consoleLog('Max duration: $d');
           setState(() => duration = d);
         });
         setState(() {
-          playerState = PlayerState.PLAYING;
+          playerState = PlayerState.playing;
           consoleLog('Playing');
           Future.delayed(const Duration(seconds: 1), () => startTimeout());
         });
-      } else if (s == PlayerState.PAUSED) {
+      } else if (s == PlayerState.paused) {
         setState(() {
-          playerState = PlayerState.PAUSED;
+          playerState = PlayerState.paused;
           consoleLog('Paused');
         });
-      } else if (s == PlayerState.COMPLETED) {
+      } else if (s == PlayerState.completed) {
         setState(() {
-          playerState = PlayerState.COMPLETED;
+          playerState = PlayerState.completed;
           consoleLog('Completed');
         });
         onComplete();
       }
     }, onError: (msg) {
       setState(() {
-        playerState = PlayerState.COMPLETED;
+        playerState = PlayerState.completed;
       });
       consoleLog('Error: $msg');
     });
 
-    await audioPlayer!.play(widget.message!.uri, isLocal: false);
+    await audioPlayer!.play(UrlSource(widget.message!.uri));
   }
 
   Future stop() async {
     await audioPlayer!.stop();
     setState(() {
-      playerState = PlayerState.PAUSED;
-      playerState = PlayerState.STOPPED;
+      playerState = PlayerState.paused;
+      playerState = PlayerState.stopped;
       duration = const Duration(seconds: 0);
       position = const Duration(seconds: 0);
     });
@@ -138,7 +138,7 @@ class _VoiceMessageState extends State<VoiceMessage> {
   Future pause() async {
     await audioPlayer!.pause();
     setState(() {
-      playerState = PlayerState.PAUSED;
+      playerState = PlayerState.paused;
       timer!.cancel();
       timerMaxSeconds = timerMaxSeconds - currentSeconds;
     });
@@ -147,13 +147,13 @@ class _VoiceMessageState extends State<VoiceMessage> {
   Future resume() async {
     await audioPlayer!.resume();
     setState(() {
-      playerState = PlayerState.PLAYING;
+      playerState = PlayerState.playing;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final _user = InheritedUser.of(context)!.user;
+    final user = InheritedUser.of(context)!.user;
 
     return Semantics(
       key: widget.key,
@@ -165,9 +165,9 @@ class _VoiceMessageState extends State<VoiceMessage> {
           children: [
             GestureDetector(
                 onTap: () {
-                  if (playerState == PlayerState.PLAYING) {
+                  if (playerState == PlayerState.playing) {
                     pause();
-                  } else if (playerState == PlayerState.PAUSED) {
+                  } else if (playerState == PlayerState.paused) {
                     resume();
                   } else {
                     consoleLog('PLAYED AUDIO PATH: ${widget.message!.uri}');
@@ -176,7 +176,7 @@ class _VoiceMessageState extends State<VoiceMessage> {
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(right: 14.0),
-                  child: playerState == PlayerState.PLAYING
+                  child: playerState == PlayerState.playing
                       ? const Icon(
                           Icons.pause_rounded,
                           color: Colors.white,
@@ -202,7 +202,7 @@ class _VoiceMessageState extends State<VoiceMessage> {
               padding: const EdgeInsets.only(left: 24.0),
               child: Text(
                 timerText,
-                style: _user?.id == widget.message?.author.id
+                style: user?.id == widget.message?.author.id
                     ? InheritedChatTheme.of(context)!.theme!.sentMessageBodyTextStyle
                     : InheritedChatTheme.of(context)!.theme!.receivedMessageBodyTextStyle,
                 textWidthBasis: TextWidthBasis.longestLine,
