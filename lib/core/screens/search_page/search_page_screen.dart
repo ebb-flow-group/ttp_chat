@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:route_parser/route_parser.dart';
@@ -17,6 +16,7 @@ import '../../../utils/functions.dart';
 import '../../services/routes.dart';
 import '../../services/ts.dart';
 import '../../widgets/input_search.dart';
+import '../chat_utils.dart';
 import '../widgets/helpers.dart';
 import 'search_widgets/search_user_tile.dart';
 
@@ -184,7 +184,7 @@ class _SearchPageState extends State<SearchPage> {
       if (userRooms.isNotEmpty) {
         consoleLog("checking from list");
         //?checking whether user is sending message to himself
-        if (docId == FirebaseAuth.instance.currentUser?.uid) {
+        if (docId == chatUtils.firebaseAuth.currentUser?.uid) {
           consoleLog("Checking if user has room with himself");
           for (var room in userRooms) {
             bool isUser = areItemsEqual(room.userIds);
@@ -206,13 +206,13 @@ class _SearchPageState extends State<SearchPage> {
         return null;
       } else {
         consoleLog("checking from firestore");
-        QuerySnapshot snapshot = await FirebaseFirestore.instance
+        QuerySnapshot snapshot = await chatUtils.firebaseFirestore
             .collection('rooms')
-            .where('userIds', arrayContains: FirebaseAuth.instance.currentUser!.uid)
+            .where('userIds', arrayContains: chatUtils.firebaseAuth.currentUser!.uid)
             .get();
 
         if (snapshot.docs.isNotEmpty) {
-          List<types.Room> rooms = await processRoomsQuery(FirebaseAuth.instance.currentUser!, snapshot);
+          List<types.Room> rooms = await processRoomsQuery(chatUtils.firebaseAuth.currentUser!, snapshot);
           //removing rooms that are group or channels
           rooms.removeWhere(
               (element) => (element.type == types.RoomType.channel || element.type == types.RoomType.group));

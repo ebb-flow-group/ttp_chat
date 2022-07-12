@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ttp_chat/config.dart';
 import 'package:ttp_chat/core/services/ts.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
+
+import '../core/screens/chat_utils.dart';
 
 displaySnackBar(String message, BuildContext context) {
   var snackBar = SnackBar(
@@ -25,7 +26,7 @@ displaySnackBar(String message, BuildContext context) {
 Future<types.User?> getUserFromFireStore(String userId,
     {bool createUser = true, String? firstName, String? imageUrl = "", String? lastName = ""}) async {
   try {
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    DocumentSnapshot snapshot = await chatUtils.firebaseFirestore.collection('users').doc(userId).get();
     if (snapshot.exists) {
       var data = snapshot.data() as Map<String, dynamic>;
       types.User result = types.User.fromJson(data)..id = snapshot.id;
@@ -39,7 +40,7 @@ Future<types.User?> getUserFromFireStore(String userId,
         lastName: lastName ?? "",
       );
       consoleLog("Creating New User $firstName $lastName $userId");
-      await FirebaseFirestore.instance.collection('users').doc(user.id).set({
+      await chatUtils.firebaseFirestore.collection('users').doc(user.id).set({
         'createdAt': FieldValue.serverTimestamp(),
         'firstName': user.firstName,
         'imageUrl': user.imageUrl,
@@ -70,7 +71,7 @@ bool isLoggedInUser(String? uid) {
   if (uid == null) {
     return false;
   }
-  return uid == (FirebaseAuth.instance.currentUser?.uid ?? "");
+  return uid == (chatUtils.firebaseAuth.currentUser?.uid ?? "");
 }
 
 areItemsEqual(List data) {

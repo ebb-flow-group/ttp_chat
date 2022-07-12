@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -147,7 +146,7 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
   /// 2. If the Room is Channel and the current user is not the owner of room
   bool get hideInput {
     if (chatProvider.selectedChatRoom?.type == types.RoomType.channel) {
-      return chatProvider.selectedChatRoom?.owner != FirebaseAuth.instance.currentUser?.uid;
+      return chatProvider.selectedChatRoom?.owner != chatUtils.firebaseAuth.currentUser?.uid;
     } else {
       return (chatProvider.selectedChatRoom!.userIds.any((id) => (id == 'deleted-brand' || id == 'deleted-user')));
     }

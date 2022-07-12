@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:ttp_chat/utils/chatroom_utils.dart';
 
@@ -25,6 +25,8 @@ class DirectChat extends StatefulWidget {
 }
 
 class _DirectChatState extends State<DirectChat> {
+  final _chatUtils = GetIt.I<ChatUtils>();
+
   @override
   void initState() {
     super.initState();
@@ -56,7 +58,7 @@ class _DirectChatState extends State<DirectChat> {
         refreshToken: widget.refreshToken!,
         onInit: () {
           log('Firebase app initialized');
-          if (FirebaseAuth.instance.currentUser == null) return;
+          if (_chatUtils.firebaseAuth.currentUser == null) return;
           findChat();
         });
   }

@@ -1,18 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 
+import '../core/screens/chat_utils.dart';
 import '../packages/chat_core/src/util.dart';
 import 'functions.dart';
 
 class ChatRoomUtils {
   static Future<types.Room?> checkIfRoomExists(String userId, {bool isChannel = false}) async {
     try {
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
+      QuerySnapshot snapshot = await chatUtils.firebaseFirestore
           .collection('rooms')
-          .where('userIds', arrayContains: FirebaseAuth.instance.currentUser!.uid)
+          .where('userIds', arrayContains: chatUtils.firebaseAuth.currentUser!.uid)
           .get();
-      List<types.Room> rooms = await processRoomsQuery(FirebaseAuth.instance.currentUser!, snapshot);
+      List<types.Room> rooms = await processRoomsQuery(chatUtils.firebaseAuth.currentUser!, snapshot);
       if (rooms.isNotEmpty) {
         for (var room in rooms) {
           if (room.userIds.contains(userId)) {
@@ -41,8 +41,8 @@ class ChatRoomUtils {
 
   static Future<types.Room?> getRoomFromId(String roomId) async {
     try {
-      DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('rooms').doc(roomId).get();
-      return await processRoomDocument(snapshot, FirebaseAuth.instance.currentUser!);
+      DocumentSnapshot snapshot = await chatUtils.firebaseFirestore.collection('rooms').doc(roomId).get();
+      return await processRoomDocument(snapshot, chatUtils.firebaseAuth.currentUser!);
     } catch (e) {
       consoleLog(e.toString());
       return null;

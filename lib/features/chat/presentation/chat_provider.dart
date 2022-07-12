@@ -5,7 +5,6 @@ import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -111,27 +110,27 @@ class ChatProvider extends ChangeNotifier {
 
   ChatProvider.userSignIn(this.accessToken, this.refreshToken) {
     selectedTabIndex = 0;
-    if (FirebaseAuth.instance.currentUser == null) {
+    if (chatUtils.firebaseAuth.currentUser == null) {
       consoleLog('User is not signed in');
       getUserFirebaseToken(accessToken!);
     } else {
-      // FirebaseAuth.instance.currentUser!.reload();
+      // chatUtils.firebaseAuth.currentUser!.reload();
       apiStatus = ApiStatus.success;
       notifyListeners();
-      consoleLog('User is signed in ${FirebaseAuth.instance.currentUser!.uid}');
+      consoleLog('User is signed in ${chatUtils.firebaseAuth.currentUser!.uid}');
     }
   }
 
   ChatProvider.brandSignIn(this.accessToken, this.refreshToken) {
     selectedTabIndex = 0;
-    if (FirebaseAuth.instance.currentUser == null) {
+    if (chatUtils.firebaseAuth.currentUser == null) {
       getBrandFirebaseToken(accessToken!);
       consoleLog('Brand is not signed in');
     } else {
-      // FirebaseAuth.instance.currentUser!.reload();
+      // chatUtils.firebaseAuth.currentUser!.reload();
       apiStatus = ApiStatus.success;
       notifyListeners();
-      consoleLog('Brand is signed in ${FirebaseAuth.instance.currentUser!.uid}');
+      consoleLog('Brand is signed in ${chatUtils.firebaseAuth.currentUser!.uid}');
     }
   }
 
@@ -139,7 +138,7 @@ class ChatProvider extends ChangeNotifier {
     consoleLog('User Token : $firebaseToken');
     try {
       UserCredential userCredential =
-          await FirebaseAuth.instanceFor(app: Firebase.apps.first).signInWithCustomToken(firebaseToken);
+          await FirebaseAuth.instanceFor(app: chatUtils.firebaseApp).signInWithCustomToken(firebaseToken);
       consoleLog('UserId: ${userCredential.user!.uid}');
       apiStatus = ApiStatus.success;
       updateStream();
@@ -174,7 +173,7 @@ class ChatProvider extends ChangeNotifier {
     }
 
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
+      UserCredential userCredential = await chatUtils.firebaseAuth.signInWithCustomToken(firebaseToken);
       consoleLog('UserId: ${userCredential.user!.uid}');
       apiStatus = ApiStatus.success;
       updateStream();
@@ -254,7 +253,7 @@ class ChatProvider extends ChangeNotifier {
     recordedVoiceMessage = types.VoiceMessage(
         author: user ??
             types.User(
-              id: FirebaseAuth.instance.currentUser!.uid,
+              id: chatUtils.firebaseAuth.currentUser!.uid,
             ),
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: const Uuid().v4(),
@@ -415,7 +414,7 @@ class ChatProvider extends ChangeNotifier {
       }
 
       try {
-        final reference = FirebaseStorage.instance.ref(name);
+        final reference = chatUtils.firebaseStorage.ref(name);
         if (kIsWeb) {
           final metadata =
               SettableMetadata(contentType: 'image/jpeg', customMetadata: {'picked-file-path': result.path});
@@ -451,7 +450,7 @@ class ChatProvider extends ChangeNotifier {
       final filePath = file.path;
 
       try {
-        final reference = FirebaseStorage.instance.ref(name);
+        final reference = chatUtils.firebaseStorage.ref(name);
         if (kIsWeb) {
           Uint8List? bytes = file.bytes;
           if (bytes == null) return;
@@ -490,7 +489,7 @@ class ChatProvider extends ChangeNotifier {
       consoleLog('Audio File Size: ${voiceMessageFile!.lengthSync()}');
 
       try {
-        final reference = FirebaseStorage.instance.ref(name);
+        final reference = chatUtils.firebaseStorage.ref(name);
         await reference.putFile(file);
         final uri = await reference.getDownloadURL();
         consoleLog('Audio Url: $uri');
