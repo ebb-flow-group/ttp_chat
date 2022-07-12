@@ -214,11 +214,9 @@ packages:
   firebase_messaging:
     dependency: transitive
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "196e0d6918d98fb4bb3bf9e85c4378fa8f513e59"
-      url: "https://github.com/GauravCalidig/firebase_messaging.git"
-    source: git
+      name: firebase_messaging
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "11.4.4"
   firebase_messaging_platform_interface:
     dependency: transitive

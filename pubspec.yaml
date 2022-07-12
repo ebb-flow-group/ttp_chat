@@ -46,9 +46,7 @@ dependencies:
   http: ^0.13.4
   get_it: ^7.2.0
   cached_network_image: ^3.2.1
-  firebase_messaging:
-    git:
-      url: https://github.com/GauravCalidig/firebase_messaging.git
+  firebase_messaging: ^11.4.4
   flutter_screenutil: ^5.5.3+2
 
 
