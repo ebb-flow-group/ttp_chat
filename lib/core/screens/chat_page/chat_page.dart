@@ -48,7 +48,7 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: ChatRoomAppBar(state.chatRoom),
+      appBar: ChatRoomAppBar(state.chatRoom!),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
         child: StreamBuilder<List<types.Message>>(
@@ -106,7 +106,7 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
                     sentMessageDocumentIconColor: Colors.white,
                     receivedMessageDocumentIconColor: Colors.white,
                   ),
-                  emptyState: EmptyMessage(chatRoom: state.chatRoom),
+                  emptyState: EmptyMessage(chatRoom: state.chatRoom!),
                   customDateHeaderText: (DateTime dateTime) {
                     return DateFormat('dd MMM  •  hh:mm a').format(dateTime).toUpperCase();
                   },
@@ -125,10 +125,10 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
   /// 1. If The Account is Deleted from firebase
   /// 2. If the Room is Channel and the current user is not the owner of room
   bool get hideInput {
-    if (state.chatRoom.type == types.RoomType.channel) {
-      return state.chatRoom.owner != FirebaseAuth.instance.currentUser?.uid;
+    if (state.chatRoom!.type == types.RoomType.channel) {
+      return state.chatRoom!.owner != FirebaseAuth.instance.currentUser?.uid;
     } else {
-      return (state.chatRoom.userIds.any((id) => (id == 'deleted-brand' || id == 'deleted-user')));
+      return (state.chatRoom!.userIds.any((id) => (id == 'deleted-brand' || id == 'deleted-user')));
     }
   }
 

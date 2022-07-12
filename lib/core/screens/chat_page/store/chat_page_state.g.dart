@@ -12,16 +12,16 @@ mixin _$ChatPageState on _ChatPageState, Store {
   late final _$_chatRoomAtom =
       Atom(name: '_ChatPageState._chatRoom', context: context);
 
-  types.Room get chatRoom {
+  types.Room? get chatRoom {
     _$_chatRoomAtom.reportRead();
     return super._chatRoom;
   }
 
   @override
-  types.Room get _chatRoom => chatRoom;
+  types.Room? get _chatRoom => chatRoom;
 
   @override
-  set _chatRoom(types.Room value) {
+  set _chatRoom(types.Room? value) {
     _$_chatRoomAtom.reportWrite(value, super._chatRoom, () {
       super._chatRoom = value;
     });
@@ -66,7 +66,7 @@ mixin _$ChatPageState on _ChatPageState, Store {
       AsyncAction('_ChatPageState.onMessageTap', context: context);
 
   @override
-  Future onMessageTap(types.Message message) {
+  Future<void> onMessageTap(types.Message message) {
     return _$onMessageTapAsyncAction.run(() => super.onMessageTap(message));
   }
 
@@ -74,7 +74,7 @@ mixin _$ChatPageState on _ChatPageState, Store {
       AsyncAction('_ChatPageState.pickAndSendImage', context: context);
 
   @override
-  Future pickAndSendImage() {
+  Future<void> pickAndSendImage() {
     return _$pickAndSendImageAsyncAction.run(() => super.pickAndSendImage());
   }
 
@@ -82,7 +82,7 @@ mixin _$ChatPageState on _ChatPageState, Store {
       AsyncAction('_ChatPageState.pickandSendFile', context: context);
 
   @override
-  Future pickandSendFile() {
+  Future<void> pickandSendFile() {
     return _$pickandSendFileAsyncAction.run(() => super.pickandSendFile());
   }
 

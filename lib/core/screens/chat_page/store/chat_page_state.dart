@@ -23,7 +23,7 @@ class ChatPageState = _ChatPageState with _$ChatPageState;
 
 abstract class _ChatPageState with Store {
   @readonly
-  late types.Room _chatRoom;
+  types.Room? _chatRoom;
 
   @readonly
   // ignore: prefer_final_fields
@@ -78,7 +78,7 @@ abstract class _ChatPageState with Store {
   @action
   void handlePreviewDataFetched(types.TextMessage message, types.PreviewData previewData) {
     final updatedMessage = message.copyWith(previewData: previewData);
-    FirebaseChatCore.instance.updateMessage(updatedMessage, _chatRoom.id);
+    FirebaseChatCore.instance.updateMessage(updatedMessage, _chatRoom!.id);
   }
 
   @action
