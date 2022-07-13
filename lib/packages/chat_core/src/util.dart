@@ -25,7 +25,7 @@ import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 /// Fetches user from Firebase and returns a promise
 Future<Map<String, dynamic>> fetchUser(String userId, {String? role}) async {
   if (userId.isEmpty) return {};
-  final doc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+  final doc = await chatUtils.firebaseFirestore.collection('users').doc(userId).get();
 
   final Map<String, dynamic> data = doc.data() ?? {};
   data['id'] = doc.id;
@@ -253,7 +253,7 @@ Future<String> getOtherUserName(User firebaseUser, List<dynamic> userIds) async 
     if (e.first == "deleted-brand" || e.first == "deleted-user") {
       return "Deleted Account";
     }
-    final snapshot = await FirebaseFirestore.instance.collection('users').doc(e[0].toString()).get();
+    final snapshot = await chatUtils.firebaseFirestore.collection('users').doc(e[0].toString()).get();
     final data = snapshot.data();
     return data == null ? '' : '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}';
   }
@@ -266,7 +266,7 @@ Future<String> getOtherUserType(User firebaseUser, List<dynamic> userIds) async 
 
   final e = userIds.where((element) => element != firebaseUser.uid).toList();
   if (e.isNotEmpty && e.first.toString().isNotEmpty) {
-    final snapshot = await FirebaseFirestore.instance.collection('users').doc(e[0].toString()).get();
+    final snapshot = await chatUtils.firebaseFirestore.collection('users').doc(e[0].toString()).get();
 
     final data = snapshot.data();
     return '${data?['user_type']}';
@@ -275,7 +275,7 @@ Future<String> getOtherUserType(User firebaseUser, List<dynamic> userIds) async 
 }
 
 Future<Map<String, dynamic>> getLastMessageOfRoom(String roomId) async {
-  final collection = await FirebaseFirestore.instance
+  final collection = await chatUtils.firebaseFirestore
       .collection('rooms')
       .doc(roomId)
       .collection('messages')

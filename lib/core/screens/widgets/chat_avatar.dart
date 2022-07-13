@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart';
 
@@ -6,6 +5,7 @@ import '../../../config.dart';
 import '../../../utils/cached_network_image.dart';
 import '../../../utils/util.dart';
 import '../../services/ts.dart';
+import '../chat_utils.dart';
 import 'helpers.dart';
 
 class ChatAvatar extends StatelessWidget {
@@ -21,7 +21,7 @@ class ChatAvatar extends StatelessWidget {
     if (room.type == RoomType.direct) {
       try {
         final otherUser = room.users.firstWhere(
-          (u) => u.id != FirebaseAuth.instance.currentUser!.uid,
+          (u) => u.id != chatUtils.firebaseAuth.currentUser!.uid,
         );
 
         color = getUserAvatarNameColor(otherUser);

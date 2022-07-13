@@ -1,5 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
-
+import '../../../core/screens/chat_utils.dart';
 import 'message.dart' show Status;
 import 'room.dart';
 import 'user.dart' show Role;
@@ -16,7 +15,7 @@ String? getChatUserId(Room? room) {
     return null;
   }
   for (var id in ids) {
-    if (id != FirebaseAuth.instance.currentUser?.uid) {
+    if (id != chatUtils.firebaseAuth.currentUser?.uid) {
       chatUserId = id.toString();
     }
   }

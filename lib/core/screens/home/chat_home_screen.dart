@@ -78,7 +78,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //FirebaseAuth.instance.signOut();
+    //chatUtils.firebaseAuth.signOut();
     chatProvider = context.watch<ChatProvider>();
     if (_error) {
       return ChatErrorScreen(onContactSupport: widget.onContactSupport);
@@ -98,7 +98,7 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
             stream: chatProvider.roomsStream,
             initialData: GetIt.I<ChatUtils>().roomList.isEmpty ? null : GetIt.I<ChatUtils>().roomList,
             builder: (context, snapshot) {
-              if (FirebaseAuth.instance.currentUser != null && snapshot.connectionState != ConnectionState.waiting) {
+              if (chatUtils.firebaseAuth.currentUser != null && snapshot.connectionState != ConnectionState.waiting) {
                 // log('****** Saving Room List to Cache ******');
                 GetIt.I<ChatUtils>().updateRoomList(snapshot.data ?? []);
                 //  CacheService().saveRoomList(snapshot.data ?? [], chatProvider);
@@ -128,9 +128,9 @@ class _ChatHomeScreenState extends State<_ChatHomeScreen> {
   void initializeFlutterFire() async {
     try {
       await Firebase.initializeApp();
-      FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      chatUtils.firebaseAuth.authStateChanges().listen((User? user) {
         if (mounted) {
-          if (FirebaseAuth.instance.currentUser != null) {
+          if (chatUtils.firebaseAuth.currentUser != null) {
             setState(() => _initialized = true);
           }
         }
