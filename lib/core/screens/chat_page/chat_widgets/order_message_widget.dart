@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:route_parser/route_parser.dart';
 import 'package:ttp_chat/core/screens/chat_utils.dart';
+import 'package:ttp_chat/core/services/extensions.dart';
 import 'package:ttp_chat/core/services/ts.dart';
 import 'package:ttp_chat/packages/chat_types/src/message.dart';
 
@@ -23,9 +24,9 @@ class OrderMessageWidget extends StatelessWidget {
 
   String get totalPrice {
     if (message.metadata?['total_price_db'] == null || message.metadata?['total_price_db'] == 'None') {
-      return "${message.metadata?['base_price_db']}";
+      return "${message.metadata?['base_price_db']}".toPriceStr(message.metadata?['currency']);
     }
-    return "${message.metadata?['total_price_db']}";
+    return "${message.metadata?['total_price_db']}".toPriceStr(message.metadata?['currency']);
   }
 
   String get orderStatus => getOrderStatus(message.metadata?['status']).toUpperCase();
@@ -97,7 +98,7 @@ class OrderMessageWidget extends StatelessWidget {
                               softWrap: true,
                             ),
                             Text(
-                              ' \u2022 \$$totalPrice',
+                              ' \u2022 $totalPrice',
                               style: Ts.demi11(Config.grayG1Color),
                               softWrap: true,
                             ),
