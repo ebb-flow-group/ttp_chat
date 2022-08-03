@@ -48,6 +48,24 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
   Stream<List<types.Message>>? messageStream;
   bool showRecordingAnimation = false;
 
+  /// hiding Input in two cases:
+  /// 1. If The Account is Deleted from firebase
+  /// 2. If the Room is Channel and the current user is not the owner of room
+  bool get hideInput {
+    if (chatProvider.selectedChatRoom?.type == types.RoomType.channel) {
+      return chatProvider.selectedChatRoom?.owner != FirebaseAuth.instance.currentUser?.uid;
+    } else {
+      return (chatProvider.selectedChatRoom!.userIds.any((id) => (id == 'deleted-brand' || id == 'deleted-user')));
+    }
+  }
+
+  void _handleVoiceMessagePressed() {
+    setState(() => showRecordingAnimation = true);
+    controller.forward();
+    chatProvider.startRecording();
+    chatProvider.startWaveFormAnimation();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -67,6 +85,7 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
   @override
   Widget build(BuildContext context) {
     chatProvider = context.watch<ChatProvider>();
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: ChatRoomAppBar(chatProvider),
@@ -140,23 +159,5 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
         ),
       ),
     );
-  }
-
-  /// hiding Input in two cases:
-  /// 1. If The Account is Deleted from firebase
-  /// 2. If the Room is Channel and the current user is not the owner of room
-  bool get hideInput {
-    if (chatProvider.selectedChatRoom?.type == types.RoomType.channel) {
-      return chatProvider.selectedChatRoom?.owner != FirebaseAuth.instance.currentUser?.uid;
-    } else {
-      return (chatProvider.selectedChatRoom!.userIds.any((id) => (id == 'deleted-brand' || id == 'deleted-user')));
-    }
-  }
-
-  _handleVoiceMessagePressed() {
-    setState(() => showRecordingAnimation = true);
-    controller.forward();
-    chatProvider.startRecording();
-    chatProvider.startWaveFormAnimation();
   }
 }

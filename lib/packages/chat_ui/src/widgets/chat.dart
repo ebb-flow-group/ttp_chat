@@ -155,7 +155,7 @@ class Chat extends StatefulWidget {
   final types.User? user;
 
   @override
-  _ChatState createState() => _ChatState();
+  State<Chat> createState() => _ChatState();
 }
 
 /// [Chat] widget state

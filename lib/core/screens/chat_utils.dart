@@ -27,7 +27,7 @@ class ChatUtils {
   List<types.Room> roomList = [];
 
   /// Used to store room list as cache while the app is running
-  updateRoomList(List<types.Room> roomList) {
+  void updateRoomList(List<types.Room> roomList) {
     this.roomList = roomList;
   }
 
@@ -73,7 +73,7 @@ class ChatUtils {
     final futures = query.docs.map((doc) {
       final Map<String, dynamic> room = doc.data() as Map<String, dynamic>;
       if (room['type'] == "channel") {
-        //Subscribing to channel
+        // Subscribing to channel
         ChatNotificationService.subscribeToChannel(room);
       }
       return getUnreadMessageCount(doc, getFirebaseAuth(app).currentUser!, app: app);
@@ -117,6 +117,13 @@ class ChatUtils {
               .collection('messages')
               .doc(singleMessage.id)
               .update({'status': 'delivered'});
+        }
+
+        if (collection.size > 0) {
+          await FirebaseFirestore.instance
+              .collection('rooms')
+              .doc(provider.selectedChatRoom!.id)
+              .update({'unreadUserId': null});
         }
       } catch (e, s) {
         consoleLog('Error in updateUnreadMessageStatus: $e\n $s');

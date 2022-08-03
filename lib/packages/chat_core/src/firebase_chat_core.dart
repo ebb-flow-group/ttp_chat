@@ -229,25 +229,46 @@ class FirebaseChatCore {
 
     if (partialMessage is types.PartialCustom) {
       message = types.CustomMessage.fromPartial(
-          author: types.User(id: firebaseUser!.uid), id: '', partialCustom: partialMessage, status: types.Status.sent);
+        author: types.User(id: firebaseUser!.uid),
+        id: '',
+        partialCustom: partialMessage,
+        status: types.Status.sent,
+      );
     } else if (partialMessage is types.PartialFile) {
       message = types.FileMessage.fromPartial(
-          author: types.User(id: firebaseUser!.uid), id: '', partialFile: partialMessage, status: types.Status.sent);
+        author: types.User(id: firebaseUser!.uid),
+        id: '',
+        partialFile: partialMessage,
+        status: types.Status.sent,
+      );
     } else if (partialMessage is types.PartialVoice) {
       message = types.VoiceMessage.fromPartial(
-          author: types.User(id: firebaseUser!.uid), id: '', partialVoice: partialMessage, status: types.Status.sent);
+        author: types.User(id: firebaseUser!.uid),
+        id: '',
+        partialVoice: partialMessage,
+        status: types.Status.sent,
+      );
     } else if (partialMessage is types.PartialImage) {
       message = types.ImageMessage.fromPartial(
-          author: types.User(id: firebaseUser!.uid), id: '', partialImage: partialMessage, status: types.Status.sent);
+        author: types.User(id: firebaseUser!.uid),
+        id: '',
+        partialImage: partialMessage,
+        status: types.Status.sent,
+      );
     } else if (partialMessage is types.PartialText) {
       message = types.TextMessage.fromPartial(
-          author: types.User(id: firebaseUser!.uid), id: '', partialText: partialMessage, status: types.Status.sent);
+        author: types.User(id: firebaseUser!.uid),
+        id: '',
+        partialText: partialMessage,
+        status: types.Status.sent,
+      );
     } else {
       message = types.TextMessage.fromPartial(
-          author: types.User(id: ''),
-          id: '',
-          partialText: const types.PartialText(text: ''),
-          status: types.Status.sent);
+        author: types.User(id: ''),
+        id: '',
+        partialText: const types.PartialText(text: ''),
+        status: types.Status.sent,
+      );
     }
 
     final messageMap = message.toJson();
@@ -262,7 +283,13 @@ class FirebaseChatCore {
     }
     await FirebaseFirestore.instance.collection('rooms/$roomId/messages').add(messageMap);
 
-    FirebaseFirestore.instance.collection('rooms').doc(roomId).update({'updatedAt': FieldValue.serverTimestamp()});
+    final roomMap = <String, dynamic>{
+      'updatedAt': FieldValue.serverTimestamp(),
+    };
+    if (room.type == types.RoomType.direct) {
+      roomMap['unreadUserId'] = (List.of(room.userIds)..remove(firebaseUser?.uid)).first;
+    }
+    await FirebaseFirestore.instance.collection('rooms').doc(roomId).update(roomMap);
   }
 
   /// Updates a message in the Firestore. Accepts any message and a
