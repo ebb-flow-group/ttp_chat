@@ -82,6 +82,17 @@ class ChatUtils {
   }
 
   static Future updateUnreadMessageStatus(ChatProvider provider) async {
+    // Removing userId from room metadata unreadUserIds for backend
+    DocumentReference<Map<String, dynamic>> docRef =
+        FirebaseFirestore.instance.collection('rooms').doc(provider.selectedChatRoom!.id);
+    final roomMetadata = await docRef.get();
+    if (roomMetadata.exists) {
+      final room = roomMetadata.data() as Map<String, dynamic>;
+      List unreadUserIds = room['unreadUserIds'] ?? [];
+      unreadUserIds.removeWhere((userId) => userId == FirebaseAuth.instance.currentUser?.uid);
+      docRef.update({'unreadUserIds': unreadUserIds});
+    }
+
     // Handling the Room Types
     if (provider.selectedChatRoom?.type == RoomType.channel) {
       final collection = await FirebaseFirestore.instance
