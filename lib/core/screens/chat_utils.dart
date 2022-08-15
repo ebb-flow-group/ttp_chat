@@ -82,6 +82,17 @@ class ChatUtils {
   }
 
   static Future updateUnreadMessageStatus(ChatProvider provider) async {
+    // Removing userId from room metadata unreadUserIds for backend
+    DocumentReference<Map<String, dynamic>> docRef =
+        FirebaseFirestore.instance.collection('rooms').doc(provider.selectedChatRoom!.id);
+    final roomMetadata = await docRef.get();
+    if (roomMetadata.exists) {
+      final room = roomMetadata.data() as Map<String, dynamic>;
+      List unreadUserIds = room['unreadUserIds'] ?? [];
+      unreadUserIds.removeWhere((userId) => userId == FirebaseAuth.instance.currentUser?.uid);
+      docRef.update({'unreadUserIds': unreadUserIds});
+    }
+
     // Handling the Room Types
     if (provider.selectedChatRoom?.type == RoomType.channel) {
       final collection = await FirebaseFirestore.instance
@@ -127,6 +138,27 @@ class ChatUtils {
         }
       } catch (e, s) {
         consoleLog('Error in updateUnreadMessageStatus: $e\n $s');
+      } finally {
+        checkIsEmailSent(provider);
+      }
+    }
+  }
+
+  /// Needed to send email notification to users if then havent read the messages for one hour from BE
+  /// There's a scheduler on firebase that would run each 1hour
+  static checkIsEmailSent(ChatProvider provider) async {
+    DocumentReference<Map<String, dynamic>> docRef =
+        FirebaseFirestore.instance.collection('rooms').doc(provider.selectedChatRoom!.id);
+
+    final roomMetadata = await docRef.get();
+
+    if (!roomMetadata.exists) return;
+
+    final room = roomMetadata.data() as Map<String, dynamic>;
+
+    if (room['unreadUserId'] != null && room['unreadUserId']?.toString().isNotEmpty == true) {
+      if (room['isSentEmail'] != false) {
+        await docRef.update({'isSentEmail': false});
       }
     }
   }

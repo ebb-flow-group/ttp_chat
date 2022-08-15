@@ -276,16 +276,19 @@ class FirebaseChatCore {
     messageMap['authorId'] = firebaseUser?.uid;
     messageMap['createdAt'] = FieldValue.serverTimestamp();
     messageMap['updatedAt'] = FieldValue.serverTimestamp();
-    // For checking unread messages in a channel
-    if (room.type == types.RoomType.channel) {
-      room.userIds.removeWhere((element) => element == firebaseUser?.uid);
-      messageMap['unreadUserIds'] = room.userIds;
-    }
-    await FirebaseFirestore.instance.collection('rooms/$roomId/messages').add(messageMap);
 
     final roomMap = <String, dynamic>{
       'updatedAt': FieldValue.serverTimestamp(),
     };
+
+    // For checking unread messages in a channel
+    if (room.type == types.RoomType.channel) {
+      room.userIds.removeWhere((element) => element == firebaseUser?.uid);
+      messageMap['unreadUserIds'] = room.userIds;
+      roomMap['unreadUserIds'] = room.userIds;
+    }
+    await FirebaseFirestore.instance.collection('rooms/$roomId/messages').add(messageMap);
+
     if (room.type == types.RoomType.direct) {
       roomMap['unreadUserId'] = (List.of(room.userIds)..remove(firebaseUser?.uid)).first;
     }
