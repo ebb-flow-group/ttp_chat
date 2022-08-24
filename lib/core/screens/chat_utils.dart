@@ -82,19 +82,19 @@ class ChatUtils {
   }
 
   static Future updateUnreadMessageStatus(ChatProvider provider) async {
-    // Removing userId from room metadata unreadUserIds for backend
-    DocumentReference<Map<String, dynamic>> docRef =
-        FirebaseFirestore.instance.collection('rooms').doc(provider.selectedChatRoom!.id);
-    final roomMetadata = await docRef.get();
-    if (roomMetadata.exists) {
-      final room = roomMetadata.data() as Map<String, dynamic>;
-      List unreadUserIds = room['unreadUserIds'] ?? [];
-      unreadUserIds.removeWhere((userId) => userId == FirebaseAuth.instance.currentUser?.uid);
-      docRef.update({'unreadUserIds': unreadUserIds});
-    }
-
     // Handling the Room Types
     if (provider.selectedChatRoom?.type == RoomType.channel) {
+      // Removing userId from room metadata unreadUserIds for backend
+      DocumentReference<Map<String, dynamic>> docRef =
+          FirebaseFirestore.instance.collection('rooms').doc(provider.selectedChatRoom!.id);
+      final roomMetadata = await docRef.get();
+      if (roomMetadata.exists) {
+        final room = roomMetadata.data() as Map<String, dynamic>;
+        List unreadUserIds = room['unreadUserIds'] ?? [];
+        unreadUserIds.removeWhere((userId) => userId == FirebaseAuth.instance.currentUser?.uid);
+        docRef.update({'unreadUserIds': unreadUserIds});
+      }
+
       final collection = await FirebaseFirestore.instance
           .collection('rooms')
           .doc(provider.selectedChatRoom!.id)
@@ -138,10 +138,9 @@ class ChatUtils {
         }
       } catch (e, s) {
         consoleLog('Error in updateUnreadMessageStatus: $e\n $s');
-      } finally {
-        checkIsEmailSent(provider);
       }
     }
+    checkIsEmailSent(provider);
   }
 
   /// Needed to send email notification to users if then havent read the messages for one hour from BE
@@ -156,9 +155,17 @@ class ChatUtils {
 
     final room = roomMetadata.data() as Map<String, dynamic>;
 
-    if (room['unreadUserId'] != null && room['unreadUserId']?.toString().isNotEmpty == true) {
-      if (room['isSentEmail'] != false) {
-        await docRef.update({'isSentEmail': false});
+    if (room['type'] == 'direct') {
+      if (room['unreadUserId'] != null && room['unreadUserId']?.toString().isNotEmpty == true) {
+        if (room['isSentEmail'] != false) {
+          await docRef.update({'isSentEmail': false});
+        }
+      }
+    } else if (room['type'] == 'channel') {
+      if (room['unreadUserIds'] != null && room['unreadUserIds']?.isNotEmpty == true) {
+        if (room['isSentEmail'] != false) {
+          await docRef.update({'isSentEmail': false});
+        }
       }
     }
   }
