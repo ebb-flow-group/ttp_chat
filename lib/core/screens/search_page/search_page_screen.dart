@@ -80,7 +80,6 @@ class _SearchPageState extends State<SearchPage> {
           height: MediaQuery.of(context).size.height,
           child: Column(
             children: [
-              const SizedBox(height: 17),
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 17.0),
                 child: InputSearch(

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
-import '../../config.dart';
-import '../constants/constants.dart';
-import '../services/l.dart';
-import '../services/ts.dart';
-import 'empty.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:ttp_chat/config.dart';
+import 'package:ttp_chat/core/constants/constants.dart';
+import 'package:ttp_chat/core/services/l.dart';
+import 'package:ttp_chat/core/services/ts.dart';
 
 class InputSearch extends StatefulWidget {
   final ValueChanged<String> onChanged;
@@ -30,7 +29,7 @@ class InputSearch extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _InputSearchState createState() => _InputSearchState();
+  State<InputSearch> createState() => _InputSearchState();
 }
 
 class _InputSearchState extends State<InputSearch> {
@@ -41,7 +40,7 @@ class _InputSearchState extends State<InputSearch> {
   }
 
   Color get _textColor {
-    return widget.textColor != null ? widget.textColor! : Config.primaryColor;
+    return widget.textColor != null ? widget.textColor! : Theme.of(context).primaryColor;
   }
 
   void _onChanged(String value) {
@@ -57,10 +56,10 @@ class _InputSearchState extends State<InputSearch> {
     return IconButton(
       onPressed: null,
       icon: SvgPicture.asset(
-        "assets/chat_icons/search.svg",
+        'assets/chat_icons/search.svg',
         width: kBaseSize,
         height: kBaseSize,
-        color: Config.primaryColor,
+        color: Theme.of(context).primaryColor,
       ),
     );
   }
@@ -79,25 +78,20 @@ class _InputSearchState extends State<InputSearch> {
       );
     }
 
-    return const Empty();
+    return const SizedBox.shrink();
   }
 
-  OutlineInputBorder get _enabledBorder {
+  InputBorder get _border {
     return OutlineInputBorder(
-      borderSide: BorderSide(color: Config.grayG4Color, width: L.v(1)),
-    );
-  }
-
-  OutlineInputBorder get _focusedBorder {
-    return OutlineInputBorder(
-      borderSide: BorderSide(color: Config.grayG5Color, width: L.v(1)),
+      borderRadius: BorderRadius.circular(50),
+      borderSide: const BorderSide(width: 0, style: BorderStyle.none),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: L.v(35),
+      height: L.v(40),
       child: TextFormField(
         controller: widget.controller,
         maxLines: 1,
@@ -106,17 +100,22 @@ class _InputSearchState extends State<InputSearch> {
         keyboardType: widget.keyboardType,
         style: Ts.text15(_textColor),
         enableInteractiveSelection: widget.enableInteractiveSelection,
-        cursorColor: Config.primaryColor,
+        cursorColor: Theme.of(context).primaryColor,
         onChanged: _onChanged,
-        autofocus: widget.autofocus,
         decoration: InputDecoration(
+          contentPadding: const EdgeInsets.only(top: 5),
           filled: true,
-          fillColor: Config.grayG5Color,
-          contentPadding: EdgeInsets.zero,
+          fillColor: Colors.grey[200],
           hintText: widget.hintText,
-          hintStyle: Ts.text15(Config.grayG2Color),
-          enabledBorder: _enabledBorder,
-          focusedBorder: _focusedBorder,
+          hintStyle: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 15.sp,
+            color: Colors.grey,
+            decoration: TextDecoration.none,
+          ),
+          border: _border,
+          focusedBorder: _border,
+          enabledBorder: _border,
           suffixIcon: _wSuffix(),
           prefixIcon: _wPrefix(),
         ),
