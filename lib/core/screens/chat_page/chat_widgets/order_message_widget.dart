@@ -127,8 +127,9 @@ class OrderMessageWidget extends StatelessWidget {
                           child: Container(
                             width: MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(2),
-                                border: Border.all(color: paymentPending ? Config.mentaikoColor : Config.grayG4Color)),
+                              borderRadius: BorderRadius.circular(2),
+                              border: Border.all(color: paymentPending ? Config.mentaikoColor : Config.grayG4Color),
+                            ),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 12),
                               child: Row(
@@ -141,9 +142,7 @@ class OrderMessageWidget extends StatelessWidget {
                                     width: 13,
                                     height: 13,
                                   ),
-                                  const SizedBox(
-                                    width: 10.0,
-                                  ),
+                                  const SizedBox(width: 10),
                                   Text(
                                     getButtonText(message.metadata?['status']),
                                     style: Ts.bold11(paymentPending ? Config.mentaikoColor : Config.primaryColor),
@@ -171,8 +170,6 @@ class OrderMessageWidget extends StatelessWidget {
     String btnText = 'View Order';
 
     switch (status) {
-      case 'checked_out':
-        return isCreatorsApp ? btnText : 'Go to Payment ';
       case 'pending_completion':
         return isCreatorsApp ? btnText : 'Mark as Received';
       case 'expired':
@@ -205,6 +202,9 @@ class OrderMessageWidget extends StatelessWidget {
         return 'DISPUTED';
       case 'expired':
         return 'EXPIRED';
+      case 'cancelled_without_refund':
+      case 'cancelled':
+        return 'CANCELLED';
       default:
         return '';
     }
@@ -263,6 +263,8 @@ class OrderMessageWidget extends StatelessWidget {
         return TextColor(bgColor: Config.lightGrey, textColor: Config.successColor);
       case 'EXPIRED':
         return TextColor(bgColor: Config.lightGrey, textColor: Config.mentaikoColor);
+      case 'CANCELLED':
+        return TextColor(bgColor: Config.mentaikoColor, textColor: Config.primaryColor);
       default:
         return color;
     }
