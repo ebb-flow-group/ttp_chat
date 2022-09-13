@@ -109,50 +109,52 @@ class OrderMessageWidget extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 15),
-                          child: Divider(color: Config.grayG5Color, height: 0),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            String? orderId = message.metadata?['id']?.toString();
-                            if (orderId == null) return;
+                        if (!hideButton(message.metadata?['status'])) ...[
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            child: Divider(color: Config.grayG5Color, height: 0),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              String? orderId = message.metadata?['id']?.toString();
+                              if (orderId == null) return;
 
-                            if (message.metadata?["type"] == "event") {
-                              context.push(RouteParser(Routes.eventOrderDetailRoute).reverse({'id': orderId}));
-                            } else {
-                              context.push(RouteParser(Routes.orderDetailRoute).reverse({'id': orderId}));
-                            }
-                          },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(2),
-                              border: Border.all(color: paymentPending ? Config.mentaikoColor : Config.grayG4Color),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(
-                                    paymentPending ? 'assets/icon/payment.svg' : 'assets/icon/order_details.svg',
-                                    package: 'ttp_chat',
-                                    color: paymentPending ? Config.mentaikoColor : Theme.of(context).primaryColor,
-                                    width: 13,
-                                    height: 13,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    getButtonText(message.metadata?['status']),
-                                    style: Ts.bold11(paymentPending ? Config.mentaikoColor : Config.primaryColor),
-                                    textAlign: TextAlign.center,
-                                  )
-                                ],
+                              if (message.metadata?["type"] == "event") {
+                                context.push(RouteParser(Routes.eventOrderDetailRoute).reverse({'id': orderId}));
+                              } else {
+                                context.push(RouteParser(Routes.orderDetailRoute).reverse({'id': orderId}));
+                              }
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(2),
+                                border: Border.all(color: paymentPending ? Config.mentaikoColor : Config.grayG4Color),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(
+                                      paymentPending ? 'assets/icon/payment.svg' : 'assets/icon/order_details.svg',
+                                      package: 'ttp_chat',
+                                      color: paymentPending ? Config.mentaikoColor : Theme.of(context).primaryColor,
+                                      width: 13,
+                                      height: 13,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      getButtonText(message.metadata?['status']),
+                                      style: Ts.bold11(paymentPending ? Config.mentaikoColor : Config.primaryColor),
+                                      textAlign: TextAlign.center,
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        )
+                          )
+                        ],
                       ],
                     ),
                   )
@@ -165,6 +167,10 @@ class OrderMessageWidget extends StatelessWidget {
     );
   }
 
+  static bool hideButton(String status) {
+    return status == 'checked_out' || status == 'failed' || status == 'expired';
+  }
+
   static String getButtonText(String status) {
     bool isCreatorsApp = GetIt.I<ChatUtils>().isCreatorsApp;
     String btnText = 'View Order';
@@ -172,8 +178,6 @@ class OrderMessageWidget extends StatelessWidget {
     switch (status) {
       case 'pending_completion':
         return isCreatorsApp ? btnText : 'Mark as Received';
-      case 'expired':
-        return isCreatorsApp ? btnText : 'View to Reorder';
       default:
         return btnText;
     }
