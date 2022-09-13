@@ -119,7 +119,7 @@ class OrderMessageWidget extends StatelessWidget {
                             if (orderId == null) return;
 
                             if (message.metadata?["type"] == "event") {
-                              context.push(RouteParser(Routes.experienceOrderDetailRoute).reverse({'id': orderId}));
+                              context.push(RouteParser(Routes.eventOrderDetailRoute).reverse({'id': orderId}));
                             } else {
                               context.push(RouteParser(Routes.orderDetailRoute).reverse({'id': orderId}));
                             }
