@@ -35,6 +35,7 @@ Future<Map<String, dynamic>> fetchUser(String userId, {String? role}) async {
   data['lastSeen'] = data['lastSeen']?.millisecondsSinceEpoch;
   data['updatedAt'] = data['updatedAt']?.millisecondsSinceEpoch;
   data['role'] = role;
+  data['verified'] = data['verified'] ?? false;
 
   return data;
 }
@@ -106,13 +107,12 @@ Future<types.Room> processDirectRoomDocument(
     }
 
     try {
-      final otherUser = users.firstWhere(
-        (u) => u['id'] != firebaseUser.uid,
-      );
+      final otherUser = users.firstWhere((u) => u['id'] != firebaseUser.uid);
 
       imageUrl = otherUser['imageUrl'] ?? "";
       data['name'] = '${otherUser['firstName'] ?? ''} ${otherUser['lastName'] ?? ''}';
       otherUserType = otherUser['user_type'] ?? "";
+      data['verified'] = otherUser['verified'] ?? false;
     } catch (e) {
       log("********************************************");
       log("processRoomDocument: $e");

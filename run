@@ -1,0 +1,48 @@
+#!/bin/bash
+
+
+if [ "$1" == "cleanbuilder" ]
+then
+clear
+
+fvm flutter packages pub run build_runner clean
+
+
+elif [ "$1" == "builder" ]
+then
+clear
+
+fvm flutter pub run build_runner watch --delete-conflicting-outputs
+
+
+elif [ "$1" == "cleanios" ]
+then
+clear
+
+fvm flutter clean
+rm -rf ios/Runner.xcworkspace
+rm -rf ios/.symlinks ios/Pods
+rm -f ios/Podfile.lock
+rm -f pubspec.lock
+rm -f .packages
+
+fvm flutter pub get
+cd ios && pod install --repo-update
+
+elif [ "$1" == "build" ]
+then
+    echo "Building $2 for $3 in release mode..."
+    fvm flutter build "$2" --release --flavor "$3"
+
+elif [ "$1" == "test" ]
+then
+clear
+
+
+
+else
+clear
+
+fvm flutter run
+
+fi

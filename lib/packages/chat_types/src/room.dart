@@ -20,18 +20,20 @@ extension RoomTypeToShortString on RoomType {
 @immutable
 class Room extends Equatable {
   /// Creates a [Room]
-  const Room(
-      {this.createdAt,
-      required this.id,
-      this.imageUrl,
-      this.lastMessages,
-      this.metadata,
-      this.name,
-      this.owner,
-      required this.type,
-      this.updatedAt,
-      required this.users,
-      required this.userIds});
+  const Room({
+    this.createdAt,
+    required this.id,
+    this.imageUrl,
+    this.lastMessages,
+    this.metadata,
+    this.name,
+    this.owner,
+    required this.type,
+    this.updatedAt,
+    required this.users,
+    required this.userIds,
+    this.verified = false,
+  });
 
   /// Creates room from a map (decoded JSON).
   Room.fromJson(Map<String, dynamic> json)
@@ -45,7 +47,8 @@ class Room extends Equatable {
         type = getRoomTypeFromString(json['type'] as String),
         updatedAt = json['updatedAt'] as int?,
         users = (json['users'] as List<dynamic>).map((e) => User.fromJson(e)).toList(),
-        userIds = (json['userIds'] as List<dynamic>).map((e) => e).toList();
+        userIds = (json['userIds'] as List<dynamic>).map((e) => e).toList(),
+        verified = json['verified'] == null ? false : json['verified'] as bool;
 
   /// Converts room to the map representation, encodable to JSON.
   Map<String, dynamic> toJson() => {
@@ -82,6 +85,7 @@ class Room extends Equatable {
     int? updatedAt,
     List<User>? users,
     List<String>? userIds,
+    bool? verified,
   }) {
     return Room(
       id: id,
@@ -98,12 +102,14 @@ class Room extends Equatable {
       updatedAt: updatedAt,
       users: users ?? this.users,
       userIds: userIds ?? this.userIds,
+      verified: verified ?? this.verified,
     );
   }
 
   /// Equatable props
   @override
-  List<Object?> get props => [createdAt, id, imageUrl, lastMessages, metadata, name, type, updatedAt, users, userIds];
+  List<Object?> get props =>
+      [createdAt, id, imageUrl, lastMessages, metadata, name, type, updatedAt, users, userIds, verified];
 
   /// Created room timestamp, in ms
   final int? createdAt;
@@ -138,4 +144,6 @@ class Room extends Equatable {
   final List<User> users;
 
   final List<dynamic> userIds;
+
+  final bool verified;
 }

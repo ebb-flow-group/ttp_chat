@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:ttp_chat/config.dart';
+import 'package:ttp_chat/core/screens/chat_utils.dart';
+import 'package:ttp_chat/core/screens/widgets/chat_avatar.dart';
+import 'package:ttp_chat/core/services/l.dart';
+import 'package:ttp_chat/core/services/routes.dart';
 import 'package:ttp_chat/core/services/ts.dart';
+import 'package:ttp_chat/core/widgets/verified_text.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
-
-import '../../../../config.dart';
-import '../../../../packages/chat_types/src/util.dart';
-import '../../../services/routes.dart';
-import '../../chat_utils.dart';
-import '../../widgets/chat_avatar.dart';
+import 'package:ttp_chat/packages/chat_types/src/util.dart';
 
 class ChatRoomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final ChatProvider chatProvider;
@@ -33,11 +34,14 @@ class ChatRoomAppBar extends StatelessWidget implements PreferredSizeWidget {
         },
         child: Row(
           children: [
-            ChatAvatar(chatProvider.selectedChatRoom!, radius: 20),
+            ChatAvatar(chatProvider.selectedChatRoom!, radius: 15),
             const SizedBox(width: 10),
-            Text(
-              chatProvider.selectedChatRoom?.name ?? "",
+            VerifiedText(
+              text: chatProvider.selectedChatRoom?.name ?? '',
+              verified: chatProvider.selectedChatRoom?.verified ?? false,
               style: Ts.bold15(Config.primaryColor),
+              iconSize: L.v(13),
+              iconPadding: const EdgeInsets.only(left: 5),
             ),
           ],
         ),

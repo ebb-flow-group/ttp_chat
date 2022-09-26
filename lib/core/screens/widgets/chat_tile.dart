@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ttp_chat/core/services/l.dart';
 import 'package:ttp_chat/core/services/ts.dart';
+import 'package:ttp_chat/core/widgets/verified_text.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart';
 
 import '../../../config.dart';
@@ -34,9 +36,13 @@ class ChatTile extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          room.name ?? "",
+                        VerifiedText(
+                          text: room.name ?? '',
+                          verified: room.verified,
                           style: Ts.bold13(Config.primaryColor),
+                          maxLines: 1,
+                          iconSize: L.v(13),
+                          iconPadding: const EdgeInsets.only(left: 5),
                         ),
                         const SizedBox(height: 4),
                         LastMessaageWidget(room.metadata?['last_messages'] ?? {}),

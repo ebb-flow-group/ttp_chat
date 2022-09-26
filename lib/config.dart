@@ -5,6 +5,7 @@ class Config {
   static const Color primaryColor = Color(0XFF003E52);
   static const Color midBlueColor = Color(0XFF83A7AF);
   static const Color lightBlueColor = Color.fromRGBO(230, 240, 243, 0.87);
+  static const Color successGreenColor = Color(0xFF10BAC4);
   static const Color mentaikoColor = Color(0XFFFF5A5A);
 
   // Base
