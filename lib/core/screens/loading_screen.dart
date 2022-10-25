@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../widgets/rive_anim.dart';
+import 'package:ttp_chat/core/widgets/rive_anim.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({
