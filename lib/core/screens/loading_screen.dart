@@ -16,9 +16,13 @@ class _LoadingScreenState extends State<LoadingScreen> {
   Widget build(BuildContext context) {
     return const SafeArea(
       child: Center(
+        child: SizedBox(
+          height: 50,
           child: RiveAnim(
-        riveFileName: 'packages/ttp_chat/assets/anim/loading_anim.riv',
-      )),
+            riveFileName: 'packages/ttp_chat/assets/anim/loading_anim.riv',
+          ),
+        ),
+      ),
     );
   }
 }
