@@ -13,7 +13,7 @@ class Ts {
     );
   }
 
-  static TextStyle _bold2(double size, Color color, double height, double letterSpacing) {
+  static TextStyle _bold(double size, Color color, double height, double letterSpacing) {
     return TextStyle(
       fontFamily: 'AvertaStd',
       fontWeight: FontWeight.w700,
@@ -24,18 +24,7 @@ class Ts {
     );
   }
 
-  @Deprecated('Use _bold2 instead')
-  static TextStyle _bold(double size, Color color, {bool isUnderline = false, bool isLineThrough = false}) {
-    return _bold2(size, color, 1, 0).copyWith(
-      decoration: isUnderline
-          ? TextDecoration.underline
-          : isLineThrough
-              ? TextDecoration.lineThrough
-              : TextDecoration.none,
-    );
-  }
-
-  static TextStyle _demi2(double size, Color color, double height, double letterSpacing) {
+  static TextStyle _demi(double size, Color color, double height, double letterSpacing) {
     return TextStyle(
       fontFamily: 'AvertaStd',
       fontSize: size.sp,
@@ -46,28 +35,18 @@ class Ts {
     );
   }
 
-  @Deprecated('Use _demi2 instead')
-  static TextStyle _demi(double size, Color color, {bool isUnderline = false}) {
-    return _demi2(size, color, 1, 0).copyWith(
-      decoration: isUnderline ? TextDecoration.underline : TextDecoration.none,
-    );
-  }
-
-  static TextStyle custom(double size, Color color, {bool isUnderline = false, bool isLineThrough = false}) {
+  static TextStyle _med(double size, Color color, double height, double letterSpacing) {
     return TextStyle(
       fontFamily: 'AvertaStd',
-      fontWeight: FontWeight.w700,
       fontSize: size.sp,
+      fontWeight: FontWeight.w500,
       color: color,
-      decoration: isUnderline
-          ? TextDecoration.underline
-          : isLineThrough
-              ? TextDecoration.lineThrough
-              : TextDecoration.none,
+      height: height / size,
+      letterSpacing: letterSpacing,
     );
   }
 
-  static TextStyle _text2(double size, Color color, double height, double letterSpacing) {
+  static TextStyle _text(double size, Color color, double height, double letterSpacing) {
     return TextStyle(
       fontFamily: 'AvertaStd',
       fontWeight: FontWeight.w400,
@@ -78,9 +57,20 @@ class Ts {
     );
   }
 
-  static TextStyle _text(double size, Color color, {bool isUnderline = false}) {
-    return _text2(size, color, 1, 0).copyWith(
-      decoration: isUnderline ? TextDecoration.underline : TextDecoration.none,
+  static TextStyle custom({
+    required double size,
+    required Color color,
+    required FontWeight fontWeight,
+    required double height,
+    required double letterSpacing,
+  }) {
+    return TextStyle(
+      fontFamily: 'AvertaStd',
+      fontWeight: fontWeight,
+      fontSize: size.sp,
+      height: height / size,
+      letterSpacing: letterSpacing,
+      color: color,
     );
   }
 
@@ -95,11 +85,11 @@ class Ts {
   }
 
   static TextStyle h1Semi(Color color) {
-    return _demi2(30, color, 35, -.3);
+    return _demi(30, color, 35, -.3);
   }
 
   static TextStyle h1Reg(Color color) {
-    return _text2(30, color, 30, -.3);
+    return _text(30, color, 30, -.3);
   }
 
   static TextStyle h2Bold(Color color) {
@@ -107,11 +97,11 @@ class Ts {
   }
 
   static TextStyle h2Semi(Color color) {
-    return _demi2(25, color, 30, -.3);
+    return _demi(25, color, 30, -.3);
   }
 
   static TextStyle h2Reg(Color color) {
-    return _text2(25, color, 30, -.3);
+    return _text(25, color, 30, -.3);
   }
 
   static TextStyle h3Bold(Color color) {
@@ -119,11 +109,11 @@ class Ts {
   }
 
   static TextStyle h3Semi(Color color) {
-    return _demi2(20, color, 30, -.3);
+    return _demi(20, color, 30, -.3);
   }
 
   static TextStyle h3Reg(Color color) {
-    return _text2(20, color, 30, -.3);
+    return _text(20, color, 30, -.3);
   }
 
   // ***************
@@ -138,12 +128,11 @@ class Ts {
   }
 
   static TextStyle t1Semi(Color color) {
-    return _demi2(18, color, 25, -.2);
+    return _demi(18, color, 25, -.2);
   }
 
   static TextStyle t1Reg(Color color) {
-    // TODO: implement t3Reg with (missing) font-family AvertaStd-Medium
-    return _text2(18, color, 25, -.2);
+    return _med(18, color, 25, -.2);
   }
 
   static TextStyle t2Bold(Color color) {
@@ -151,12 +140,11 @@ class Ts {
   }
 
   static TextStyle t2Semi(Color color) {
-    return _demi2(16, color, 20, -.2);
+    return _demi(16, color, 20, -.2);
   }
 
   static TextStyle t2Reg(Color color) {
-    // TODO: implement t3Reg with (missing) font-family AvertaStd-Medium
-    return _text2(16, color, 20, -.2);
+    return _med(16, color, 20, -.2);
   }
 
   static TextStyle t3Bold(Color color) {
@@ -164,12 +152,11 @@ class Ts {
   }
 
   static TextStyle t3Semi(Color color) {
-    return _demi2(14, color, 20, -.2);
+    return _demi(14, color, 20, -.2);
   }
 
   static TextStyle t3Reg(Color color) {
-    // TODO: implement t3Reg with (missing) font-family AvertaStd-Medium
-    return _text2(14, color, 20, -.2);
+    return _med(14, color, 20, -.2);
   }
 
   // ***************
@@ -184,11 +171,11 @@ class Ts {
   }
 
   static TextStyle p1Semi(Color color) {
-    return _demi2(18, color, 30, -.2);
+    return _demi(18, color, 30, -.2);
   }
 
   static TextStyle p1Reg(Color color) {
-    return _text2(18, color, 30, -.2);
+    return _text(18, color, 30, -.2);
   }
 
   static TextStyle p2Bold(Color color) {
@@ -196,11 +183,11 @@ class Ts {
   }
 
   static TextStyle p2Semi(Color color) {
-    return _demi2(16, color, 25, -.2);
+    return _demi(16, color, 25, -.2);
   }
 
   static TextStyle p2Reg(Color color) {
-    return _text2(16, color, 25, -.2);
+    return _text(16, color, 25, -.2);
   }
 
   static TextStyle p3Bold(Color color) {
@@ -208,11 +195,11 @@ class Ts {
   }
 
   static TextStyle p3Semi(Color color) {
-    return _demi2(14, color, 25, -.2);
+    return _demi(14, color, 25, -.2);
   }
 
   static TextStyle p3Reg(Color color) {
-    return _text2(14, color, 25, -.2);
+    return _text(14, color, 25, -.2);
   }
 
   // ***************
@@ -226,11 +213,11 @@ class Ts {
   }
 
   static TextStyle f1Semi(Color color) {
-    return _demi2(12, color, 20, -.2);
+    return _demi(12, color, 20, -.2);
   }
 
   static TextStyle f1Med(Color color) {
-    return _text2(12, color, 20, -.2);
+    return _text(12, color, 20, -.2);
   }
 
   static TextStyle f2Bold(Color color) {
@@ -238,15 +225,15 @@ class Ts {
   }
 
   static TextStyle f2Semi(Color color) {
-    return _demi2(10, color, 10, -.2);
+    return _demi(10, color, 10, -.2);
   }
 
   static TextStyle f2Reg(Color color) {
-    return _text2(10, color, 10, -.2);
+    return _text(10, color, 10, -.2);
   }
 
   static TextStyle fpCaps(Color color) {
-    return _bold2(12, color, 20, -.2);
+    return _bold(12, color, 20, -.2);
   }
 
   // ***************
@@ -273,61 +260,5 @@ class Ts {
 
   static TextStyle b4Bold(Color color) {
     return _extraBold(11, color, 20, -.2);
-  }
-
-  // ***************
-  // * Old Implementation of Text Styles
-  // * ---------------
-  // *
-  // ***************
-
-  @Deprecated('Use new text styles')
-  static TextStyle text12(Color color, {bool isUnderline = false}) {
-    return _text(12, color, isUnderline: isUnderline);
-  }
-
-  @Deprecated('Use new text styles')
-  static TextStyle text14(Color color, {bool isUnderline = false}) {
-    return _text(14, color, isUnderline: isUnderline);
-  }
-
-  @Deprecated('Use new text styles')
-  static TextStyle text16(Color color, {bool isUnderline = false}) {
-    return _text(16, color, isUnderline: isUnderline);
-  }
-
-  @Deprecated('Use new text styles')
-  static TextStyle text18(Color color, {bool isUnderline = false}) {
-    return _text(18, color, isUnderline: isUnderline);
-  }
-
-  @Deprecated('Use new text styles')
-  static TextStyle demi14(Color color, {bool isUnderline = false}) {
-    return _demi(14, color, isUnderline: isUnderline);
-  }
-
-  @Deprecated('Use new text styles')
-  static TextStyle bold12(Color color, {bool isUnderline = false}) {
-    return _bold(12, color, isUnderline: isUnderline);
-  }
-
-  @Deprecated('Use new text styles')
-  static TextStyle bold14(Color color, {bool isUnderline = false}) {
-    return _bold(14, color, isUnderline: isUnderline);
-  }
-
-  @Deprecated('Use new text styles')
-  static TextStyle bold16(Color color, {bool isUnderline = false}) {
-    return _bold(16, color, isUnderline: isUnderline);
-  }
-
-  @Deprecated('Use new text styles')
-  static TextStyle bold17(Color color, {bool isUnderline = false}) {
-    return _bold(17, color, isUnderline: isUnderline);
-  }
-
-  @Deprecated('message')
-  static TextStyle bold20(Color color) {
-    return _bold(20, color);
   }
 }
