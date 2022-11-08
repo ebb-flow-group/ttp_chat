@@ -46,7 +46,7 @@ class ChatAvatar extends StatelessWidget {
           ? Center(
               child: Text(
                 getInitials(name),
-                style: Ts.bold13(Config.creameryColor),
+                style: Ts.t3Bold(Config.creameryColor),
               ),
             )
           : null,

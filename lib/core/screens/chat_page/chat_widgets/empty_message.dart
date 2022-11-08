@@ -23,14 +23,14 @@ class EmptyMessage extends StatelessWidget {
         const SizedBox(height: 50),
         Text(
           'You’re about to chat with',
-          style: Ts.text15(Config.grayG1Color),
+          style: Ts.t2Reg(Config.grayG1Color),
         ),
         const SizedBox(height: 30),
         ChatAvatar(chatProvider.selectedChatRoom!, radius: 50),
         const SizedBox(height: 14),
         Text(
           chatProvider.selectedChatRoom?.name ?? "",
-          style: Ts.bold17(Config.primaryColor),
+          style: Ts.t2Reg(Config.primaryColor),
         ),
         //  const SizedBox(height: 4),
         // Text(
@@ -42,11 +42,11 @@ class EmptyMessage extends StatelessWidget {
           if (getChatUserId(chatProvider.selectedChatRoom) != null)
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Theme.of(context).primaryColor,
+                  backgroundColor: Theme.of(context).primaryColor,
                 ),
                 child: Text(
                   "View Profile",
-                  style: Ts.bold14(Config.creameryColor),
+                  style: Ts.b2Bold(Config.creameryColor),
                 ),
                 onPressed: () {
                   String userId = getChatUserId(chatProvider.selectedChatRoom) ?? "";

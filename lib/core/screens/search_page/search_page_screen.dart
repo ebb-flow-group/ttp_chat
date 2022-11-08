@@ -57,7 +57,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Start a new chat', style: Ts.bold17(Config.primaryColor)),
+          title: Text('Start a new chat', style: Ts.t2Bold(Config.primaryColor)),
           actions: [
             if (searching)
               Padding(

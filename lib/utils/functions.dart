@@ -11,7 +11,7 @@ displaySnackBar(String message, BuildContext context) {
     content: Text(
       message,
       textAlign: TextAlign.center,
-      style: Ts.demi12(Colors.white),
+      style: Ts.f1Semi(Colors.white),
     ),
     elevation: 0.0,
     backgroundColor: Config.mentaikoColor,

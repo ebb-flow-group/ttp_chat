@@ -11,7 +11,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text('Chat', style: Ts.bold24(Config.primaryColor)),
+      title: Text('Chat', style: Ts.h2Bold(Config.primaryColor)),
       actions: [
         Row(
           children: [

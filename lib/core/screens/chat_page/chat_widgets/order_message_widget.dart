@@ -60,13 +60,13 @@ class OrderMessageWidget extends StatelessWidget {
                     decoration: BoxDecoration(color: statusColor.bgColor),
                     child: Text(
                       orderStatus,
-                      style: Ts.bold10(statusColor.textColor),
+                      style: Ts.f2Bold(statusColor.textColor),
                     ),
                   ),
                   const Spacer(),
                   Text(
                     getLastMessageDateTime({"createdAt": message.createdAt}),
-                    style: Ts.demi11(Config.grayG1Color),
+                    style: Ts.f1Semi(Config.grayG1Color),
                   )
                 ],
               ),
@@ -83,28 +83,28 @@ class OrderMessageWidget extends StatelessWidget {
                       children: [
                         Text(
                           'Order ${message.metadata?['id']}',
-                          style: Ts.bold15(Config.primaryColor),
+                          style: Ts.t2Bold(Config.primaryColor),
                         ),
                         Row(
                           children: [
                             Text(
                               getOrderDate(message.createdAt!),
-                              style: Ts.demi11(Config.grayG1Color),
+                              style: Ts.f1Semi(Config.grayG1Color),
                               softWrap: true,
                             ),
                             Text(
                               ' \u2022 ${message.metadata?['total_items']} items',
-                              style: Ts.demi11(Config.grayG1Color),
+                              style: Ts.f1Semi(Config.grayG1Color),
                               softWrap: true,
                             ),
                             Text(
                               ' \u2022 $totalPrice',
-                              style: Ts.demi11(Config.grayG1Color),
+                              style: Ts.f1Semi(Config.grayG1Color),
                               softWrap: true,
                             ),
                             Text(
                               ' \u2022 ${getOrderType(message.metadata)}',
-                              style: Ts.demi11(Config.grayG1Color),
+                              style: Ts.f1Semi(Config.grayG1Color),
                               softWrap: true,
                             ),
                           ],
@@ -146,7 +146,7 @@ class OrderMessageWidget extends StatelessWidget {
                                     const SizedBox(width: 10),
                                     Text(
                                       getButtonText(message.metadata?['status']),
-                                      style: Ts.bold11(paymentPending ? Config.mentaikoColor : Config.primaryColor),
+                                      style: Ts.f1Bold(paymentPending ? Config.mentaikoColor : Config.primaryColor),
                                       textAlign: TextAlign.center,
                                     )
                                   ],

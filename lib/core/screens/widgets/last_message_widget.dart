@@ -22,7 +22,7 @@ class LastMessaageWidget extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               'Image',
-              style: Ts.text14(Config.grayG1Color),
+              style: Ts.t3Reg(Config.grayG1Color),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -39,7 +39,7 @@ class LastMessaageWidget extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               'File',
-              style: Ts.text14(Config.grayG1Color),
+              style: Ts.t3Reg(Config.grayG1Color),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -56,7 +56,7 @@ class LastMessaageWidget extends StatelessWidget {
             const SizedBox(width: 10),
             Text(
               'Voice message',
-              style: Ts.text14(Config.grayG1Color),
+              style: Ts.t3Reg(Config.grayG1Color),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -74,7 +74,7 @@ class LastMessaageWidget extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               'Order',
-              style: Ts.text14(Config.grayG1Color),
+              style: Ts.t3Reg(Config.grayG1Color),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -83,7 +83,7 @@ class LastMessaageWidget extends StatelessWidget {
       } else if (data['type'] == 'text') {
         return Text(
           data['text'],
-          style: Ts.text14(Config.grayG1Color),
+          style: Ts.t3Reg(Config.grayG1Color),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         );

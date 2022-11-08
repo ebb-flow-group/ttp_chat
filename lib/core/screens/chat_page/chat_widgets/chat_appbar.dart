@@ -39,7 +39,7 @@ class ChatRoomAppBar extends StatelessWidget implements PreferredSizeWidget {
             VerifiedText(
               text: chatProvider.selectedChatRoom?.name ?? '',
               verified: chatProvider.selectedChatRoom?.verified ?? false,
-              style: Ts.bold15(Config.primaryColor),
+              style: Ts.t2Bold(Config.primaryColor),
               iconSize: L.v(13),
               iconPadding: const EdgeInsets.only(left: 5),
             ),

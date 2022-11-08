@@ -105,7 +105,7 @@ class Message extends StatelessWidget {
                       ? Center(
                           child: Text(
                             getInitials(name),
-                            style: Ts.bold10(Config.creameryColor),
+                            style: Ts.f2Bold(Config.creameryColor),
                           ),
                         )
                       : null,

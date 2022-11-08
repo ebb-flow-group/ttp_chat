@@ -98,7 +98,7 @@ class _InputSearchState extends State<InputSearch> {
         scrollPadding: EdgeInsets.all(kBaseSize * 2),
         textInputAction: widget.textInputAction,
         keyboardType: widget.keyboardType,
-        style: Ts.text15(_textColor),
+        style: Ts.t2Reg(_textColor),
         enableInteractiveSelection: widget.enableInteractiveSelection,
         cursorColor: Theme.of(context).primaryColor,
         onChanged: _onChanged,

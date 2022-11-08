@@ -39,7 +39,7 @@ class ChatTile extends StatelessWidget {
                         VerifiedText(
                           text: room.name ?? '',
                           verified: room.verified,
-                          style: Ts.bold13(Config.primaryColor),
+                          style: Ts.t3Bold(Config.primaryColor),
                           maxLines: 1,
                           iconSize: L.v(13),
                           iconPadding: const EdgeInsets.only(left: 5),
@@ -54,7 +54,7 @@ class ChatTile extends StatelessWidget {
                     children: [
                       Text(
                         getLastMessageDateTime(room.metadata?['last_messages'] ?? {}),
-                        style: Ts.demi11(Config.grayG1Color),
+                        style: Ts.f1Semi(Config.grayG1Color),
                       ),
                       const SizedBox(height: 6),
                       room.metadata?['unread_message_count'] != 0
@@ -65,7 +65,7 @@ class ChatTile extends StatelessWidget {
                                 color: Colors.red,
                               ),
                               child: Text(room.metadata?['unread_message_count'].toString() ?? "",
-                                  style: Ts.bold10(Config.creameryColor)),
+                                  style: Ts.f2Bold(Config.creameryColor)),
                             )
                           : const SizedBox()
                     ],

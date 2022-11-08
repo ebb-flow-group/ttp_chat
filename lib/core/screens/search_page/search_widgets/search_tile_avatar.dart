@@ -29,7 +29,7 @@ class SearchTileAvatar extends StatelessWidget {
           ? Center(
               child: Text(
                 getInitials(name ?? ""),
-                style: Ts.bold14(Config.creameryColor),
+                style: Ts.h3Bold(Config.creameryColor),
               ),
             )
           : null,

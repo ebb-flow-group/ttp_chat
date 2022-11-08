@@ -5,7 +5,7 @@ class ThemeUtils {
 
   static ThemeData appTheme() {
     return ThemeData(
-      fontFamily: 'AvenirNextLTPro',
+      fontFamily: 'AvertaStd',
       primaryColor: const Color(0xFF234958),
       hintColor: const Color(0xFF999999),
       dividerColor: const Color(0xFFE5E3DC),

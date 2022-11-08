@@ -126,18 +126,18 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                   onMessageLongPress: (message) {},
                   showUserAvatars: true,
                   theme: DefaultChatTheme(
-                    dateDividerTextStyle: Ts.demi11(Config.grayG2Color),
+                    dateDividerTextStyle: Ts.f1Semi(Config.grayG2Color),
                     messageBorderRadius: 0.0,
                     backgroundColor: ThemeUtils.defaultAppThemeData.scaffoldBackgroundColor,
                     primaryColor: Config.lightGrey,
                     secondaryColor: Theme.of(context).primaryColor,
                     inputTextColor: Theme.of(context).primaryColor,
-                    sentMessageBodyTextStyle: Ts.text13(Config.primaryColor),
+                    sentMessageBodyTextStyle: Ts.t3Reg(Config.primaryColor),
                     sentMessageCaptionTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
                     sentMessageLinkTitleTextStyle: const TextStyle(color: Colors.white),
                     sentMessageLinkDescriptionTextStyle:
                         const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
-                    receivedMessageBodyTextStyle: Ts.text13(Config.creameryColor),
+                    receivedMessageBodyTextStyle: Ts.t3Reg(Config.creameryColor),
                     receivedMessageCaptionTextStyle:
                         const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
                     receivedMessageLinkTitleTextStyle: const TextStyle(color: Colors.white),

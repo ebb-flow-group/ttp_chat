@@ -23,12 +23,12 @@ class StartChatMessage extends StatelessWidget {
           const SizedBox(height: 20),
           Text(
             'Connect with the community',
-            style: Ts.bold20(Config.primaryColor),
+            style: Ts.h2Bold(Config.primaryColor),
           ),
           const SizedBox(height: 12),
           Text(
             'Thriving communities are made up of vibrant connections. Chat makes it personal, putting you in direct contact with your fans and customers.',
-            style: Ts.text14(Config.grayG1Color),
+            style: Ts.p2Reg(Config.grayG1Color),
             softWrap: true,
             textAlign: TextAlign.center,
           ),
@@ -41,7 +41,7 @@ class StartChatMessage extends StatelessWidget {
               ),
               label: Text(
                 'Start Your First Chat',
-                style: Ts.bold14(Config.primaryColor),
+                style: Ts.b2Bold(Config.primaryColor),
               ),
               onPressed: goToSearch)
         ],

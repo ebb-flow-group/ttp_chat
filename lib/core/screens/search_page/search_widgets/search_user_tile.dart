@@ -45,7 +45,7 @@ class SearchUserTile extends StatelessWidget {
                       children: [
                         Text(
                           user.fullName,
-                          style: Ts.bold13(Config.primaryColor),
+                          style: Ts.t3Bold(Config.primaryColor),
                         ),
                       ],
                     ),
