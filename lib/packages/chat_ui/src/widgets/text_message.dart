@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ttp_chat/packages/chat_text/chat_text.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:ttp_chat/packages/link_previewer/flutter_link_previewer.dart';
 import 'package:ttp_chat/packages/link_previewer/src/utils.dart';
@@ -16,6 +17,7 @@ class TextMessage extends StatelessWidget {
     this.onPreviewDataFetched,
     @required this.usePreviewData,
     @required this.showName,
+    this.onMessageContentPressed,
   }) : super(key: key);
 
   /// [types.TextMessage]
@@ -29,6 +31,9 @@ class TextMessage extends StatelessWidget {
 
   /// Enables link (URL) preview
   final bool? usePreviewData;
+
+  /// See [Message.onMessageContentPressed]
+  final void Function(types.TextMessage, String text)? onMessageContentPressed;
 
   void _onPreviewDataFetched(types.PreviewData previewData) {
     if (message!.previewData == null) {
@@ -90,13 +95,21 @@ class TextMessage extends StatelessWidget {
               style: InheritedChatTheme.of(context)!.theme!.userNameTextStyle!.copyWith(color: color),
             ),
           ),
-        SelectableText(
-          message!.text,
-          scrollPhysics: const NeverScrollableScrollPhysics(),
+        ChatText(
+          text: message!.text,
           style: user.id == message!.author.id
               ? InheritedChatTheme.of(context)!.theme!.sentMessageBodyTextStyle
               : InheritedChatTheme.of(context)!.theme!.receivedMessageBodyTextStyle,
-          textWidthBasis: TextWidthBasis.longestLine,
+          highlightRegex: RegExp(r'@(\w+)'),
+          highlightStyle: (baseStyle, text, index) => user.id == message!.author.id
+              ? InheritedChatTheme.of(context)!.theme!.sentMessageBodyTextStyle?.copyWith(fontWeight: FontWeight.w800)
+              : InheritedChatTheme.of(context)!
+                  .theme!
+                  .receivedMessageBodyTextStyle
+                  ?.copyWith(fontWeight: FontWeight.w800),
+          onPressed: (text, index) {
+            onMessageContentPressed?.call(message!, text);
+          },
         ),
       ],
     );
@@ -116,7 +129,7 @@ class TextMessage extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(
-        horizontal: 20,
+        horizontal: 10,
         vertical: 10,
       ),
       child: _textWidget(user!, context),

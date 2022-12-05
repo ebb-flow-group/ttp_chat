@@ -26,6 +26,7 @@ class Message extends StatelessWidget {
     @required this.messageWidth,
     this.onMessageLongPress,
     this.onMessageTap,
+    this.onMessageContentPressed,
     this.onPreviewDataFetched,
     @required this.roundBorder,
     this.showAvatar = false,
@@ -49,6 +50,9 @@ class Message extends StatelessWidget {
 
   /// Called when user taps on any message
   final void Function(types.Message)? onMessageTap;
+
+  /// Called when a special content (for example a username) is pressed
+  final void Function(types.Message, String text)? onMessageContentPressed;
 
   /// See [TextMessage.onPreviewDataFetched]
   final void Function(types.TextMessage, types.PreviewData)? onPreviewDataFetched;
@@ -80,37 +84,41 @@ class Message extends StatelessWidget {
     final name = getUserName(message!.author);
 
     return viewAvatar
-        ? Center(
-            child: Stack(
-              children: [
-                Container(
-                  height: 30,
-                  width: 30,
-                  decoration: const BoxDecoration(
-                    color: Config.primaryColor,
-                    shape: BoxShape.circle,
+        ? Container(
+            height: 34,
+            width: 34,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Config.creameryColor,
+            ),
+            child: Center(
+              child: Stack(
+                children: [
+                  Container(
+                    height: 30,
+                    width: 30,
+                    decoration: const BoxDecoration(
+                      color: Config.primaryColor,
+                      shape: BoxShape.circle,
+                    ),
                   ),
-                ),
-                Container(
-                  height: 30,
-                  width: 30,
-                  decoration: BoxDecoration(
+                  Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
                       color: Config.primaryColor,
                       image: !hasImage
                           ? null
                           : DecorationImage(image: NetworkImage(message!.author.imageUrl!), fit: BoxFit.cover),
                       shape: BoxShape.circle,
-                      gradient: Config.tabletopGradient),
-                  child: !hasImage
-                      ? Center(
-                          child: Text(
-                            getInitials(name),
-                            style: Ts.f2Bold(Config.creameryColor),
-                          ),
-                        )
-                      : null,
-                ),
-              ],
+                      gradient: Config.tabletopGradient,
+                    ),
+                    child: !hasImage
+                        ? Center(child: Text(getInitials(name), style: Ts.f2Bold(Config.creameryColor)))
+                        : null,
+                  ),
+                ],
+              ),
             ),
           )
         : Container(
@@ -145,6 +153,7 @@ class Message extends StatelessWidget {
           onPreviewDataFetched: onPreviewDataFetched!,
           showName: showName!,
           usePreviewData: usePreviewData!,
+          onMessageContentPressed: onMessageContentPressed,
         );
       default:
         return const SizedBox();
@@ -195,17 +204,8 @@ class Message extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = InheritedUser.of(context)!.user;
     final messageBorderRadius = InheritedChatTheme.of(context)!.theme!.messageBorderRadius;
-    final borderRadius = BorderRadius.only(
-      bottomLeft: Radius.circular(user!.id == message!.author.id || roundBorder! ? messageBorderRadius! : 0),
-      bottomRight: Radius.circular(user.id == message!.author.id
-          ? roundBorder!
-              ? messageBorderRadius!
-              : 0
-          : messageBorderRadius!),
-      topLeft: Radius.circular(messageBorderRadius!),
-      topRight: Radius.circular(messageBorderRadius),
-    );
-    final currentUserIsAuthor = user.id == message!.author.id;
+    final borderRadius = BorderRadius.circular(messageBorderRadius!);
+    final currentUserIsAuthor = user!.id == message!.author.id;
     bool showSenderImage =
         (!currentUserIsAuthor && showUserAvatars!) && viewAvatar && (message!.type == types.MessageType.text);
 
@@ -222,7 +222,7 @@ class Message extends StatelessWidget {
           Stack(
             children: [
               Container(
-                margin: showSenderImage ? const EdgeInsets.only(left: 15) : null,
+                margin: showSenderImage ? const EdgeInsets.only(left: 19) : null,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
                     maxWidth: messageWidth!.toDouble(),
@@ -234,7 +234,7 @@ class Message extends StatelessWidget {
                         onLongPress: () => onMessageLongPress?.call(message!),
                         onTap: () => onMessageTap?.call(message!),
                         child: Container(
-                          padding: showSenderImage ? const EdgeInsets.only(left: 3) : null,
+                          padding: showSenderImage ? const EdgeInsets.only(left: 10) : null,
                           decoration: BoxDecoration(
                             borderRadius: borderRadius,
                             color: message!.type == types.MessageType.custom
@@ -261,8 +261,8 @@ class Message extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Center(
                 child: SizedBox(
-                  height: 16,
-                  width: 16,
+                  height: 15,
+                  width: 15,
                   child: showStatus! ? _buildStatus(context) : null,
                 ),
               ),
