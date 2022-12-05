@@ -43,6 +43,7 @@ class Chat extends StatefulWidget {
     this.onEndReachedThreshold,
     this.onMessageLongPress,
     this.onMessageTap,
+    this.onMessageContentPressed,
     this.onPreviewDataFetched,
     @required this.onSendPressed,
     this.onTextChanged,
@@ -119,6 +120,9 @@ class Chat extends StatefulWidget {
 
   /// See [Message.onMessageTap]
   final void Function(types.Message)? onMessageTap;
+
+  /// See [Message.onMessageContentPressed]
+  final void Function(types.Message, String text)? onMessageContentPressed;
 
   /// See [Message.onPreviewDataFetched]
   final void Function(types.TextMessage, types.PreviewData)? onPreviewDataFetched;
@@ -273,7 +277,7 @@ class _ChatState extends State<Chat> {
     } else {
       final map = object as Map<String, Object>;
       final message = map['message'] as types.Message;
-      final _messageWidth = widget.showUserAvatars! && message.author.id != widget.user!.id
+      final messageWidth = widget.showUserAvatars! && message.author.id != widget.user!.id
           ? min(MediaQuery.of(context).size.width * 0.72, 440).floor()
           : min(MediaQuery.of(context).size.width * 0.78, 440).floor();
 
@@ -282,7 +286,7 @@ class _ChatState extends State<Chat> {
           key: ValueKey(message.id),
           buildCustomMessage: widget.buildCustomMessage!,
           message: message,
-          messageWidth: _messageWidth,
+          messageWidth: messageWidth,
           onMessageLongPress: widget.onMessageLongPress!,
           onMessageTap: (tappedMessage) {
             if (tappedMessage is types.ImageMessage && widget.disableImageGallery != true) {
@@ -291,6 +295,7 @@ class _ChatState extends State<Chat> {
 
             widget.onMessageTap?.call(tappedMessage);
           },
+          onMessageContentPressed: widget.onMessageContentPressed,
           onPreviewDataFetched: _onPreviewDataFetched,
           roundBorder: map['nextMessageInGroup'] == true,
           showAvatar: widget.showUserAvatars! && map['isFirstInGroup'] == true,

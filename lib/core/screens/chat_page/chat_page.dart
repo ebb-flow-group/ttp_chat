@@ -1,14 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ttp_chat/config.dart';
 import 'package:ttp_chat/core/screens/chat_page/chat_widgets/recording_animation.dart';
 import 'package:ttp_chat/core/screens/chat_utils.dart';
 import 'package:ttp_chat/core/screens/loading_screen.dart';
+import 'package:ttp_chat/core/services/deeplink_builder.dart';
+import 'package:ttp_chat/core/services/l.dart';
+import 'package:ttp_chat/core/services/routes.dart';
 import 'package:ttp_chat/core/services/ts.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:ttp_chat/packages/chat_ui/ttp_chat_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../features/chat/presentation/chat_provider.dart';
 import '../../../packages/chat_core/ttp_chat_core.dart';
@@ -66,6 +71,23 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
     chatProvider.startWaveFormAnimation();
   }
 
+  void _handleOnMessageContentPressed(types.Message message, String text) async {
+    if (RegExp(r'@(\w+)').hasMatch(text)) {
+      if (GetIt.I<ChatUtils>().isCreatorsApp) {
+        final username = text.replaceFirst('@', '');
+        final link = await DeeplinkBuilder.buildCreatorProfileLink(username: username);
+
+        if (link == null) {
+          return;
+        }
+
+        launchUrl(link, mode: LaunchMode.externalApplication);
+      } else {
+        Routes.navigateToOutletPage(context, text.replaceFirst('@', ''));
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -116,6 +138,7 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                   onAttachmentPressed: () => handleAttachmentPressed(context, chatProvider: chatProvider),
                   onVoiceMessagePressed: _handleVoiceMessagePressed,
                   onMessageTap: chatProvider.handleFBMessageTap,
+                  onMessageContentPressed: _handleOnMessageContentPressed,
                   onPreviewDataFetched: chatProvider.handleFBPreviewDataFetched,
                   onSendPressed: chatProvider.handleFBSendPressed,
                   hideInput: hideInput,
@@ -126,18 +149,18 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                   onMessageLongPress: (message) {},
                   showUserAvatars: true,
                   theme: DefaultChatTheme(
-                    dateDividerTextStyle: Ts.f1Semi(Config.grayG2Color),
-                    messageBorderRadius: 0.0,
+                    dateDividerTextStyle: Ts.fpCaps(Config.grayG2Color),
+                    messageBorderRadius: L.v(5),
                     backgroundColor: ThemeUtils.defaultAppThemeData.scaffoldBackgroundColor,
-                    primaryColor: Config.lightGrey,
-                    secondaryColor: Theme.of(context).primaryColor,
+                    primaryColor: Config.successGreenColor,
+                    secondaryColor: Config.grayG4Color,
                     inputTextColor: Theme.of(context).primaryColor,
-                    sentMessageBodyTextStyle: Ts.t3Reg(Config.primaryColor),
+                    sentMessageBodyTextStyle: Ts.t2Reg(Config.creameryColor),
                     sentMessageCaptionTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
                     sentMessageLinkTitleTextStyle: const TextStyle(color: Colors.white),
                     sentMessageLinkDescriptionTextStyle:
                         const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
-                    receivedMessageBodyTextStyle: Ts.t3Reg(Config.creameryColor),
+                    receivedMessageBodyTextStyle: Ts.t2Reg(Config.blackColor),
                     receivedMessageCaptionTextStyle:
                         const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
                     receivedMessageLinkTitleTextStyle: const TextStyle(color: Colors.white),

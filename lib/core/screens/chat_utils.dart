@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get_it/get_it.dart';
+import 'package:ttp_chat/core/constants/enums.dart';
 import 'package:ttp_chat/features/chat/presentation/chat_provider.dart';
 import 'package:ttp_chat/packages/chat_types/src/room.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
@@ -53,6 +54,16 @@ class ChatUtils {
       }
     } else {
       onInit?.call();
+    }
+  }
+
+  Env get env {
+    if (baseUrl.contains('prod')) {
+      return Env.prod;
+    } else if (baseUrl.contains('stage')) {
+      return Env.staging;
+    } else {
+      return Env.dev;
     }
   }
 

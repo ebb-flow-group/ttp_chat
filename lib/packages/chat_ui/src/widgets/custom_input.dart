@@ -179,9 +179,9 @@ class _CustomInputState extends State<CustomInput> {
   Widget _attachmentWidget() {
     if (widget.isAttachmentUploading == true) {
       return Container(
-        height: 24,
+        height: 20,
         margin: const EdgeInsets.only(left: 16, right: 16),
-        width: 24,
+        width: 20,
         child: CircularProgressIndicator(
           backgroundColor: Colors.transparent,
           strokeWidth: 2,
@@ -195,9 +195,9 @@ class _CustomInputState extends State<CustomInput> {
         icon: SvgPicture.asset(
           'assets/icon/add.svg',
           package: 'ttp_chat',
-          color: InheritedChatTheme.of(context)!.theme!.secondaryColor,
-          width: 18,
-          height: 18,
+          color: InheritedChatTheme.of(context)!.theme!.primaryColor,
+          width: 20,
+          height: 20,
         ),
         onPressed: widget.onAttachmentPressed,
       );
