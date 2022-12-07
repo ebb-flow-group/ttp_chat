@@ -41,7 +41,7 @@ class ChatAvatar extends StatelessWidget {
         color: color,
         image: !hasImage ? null : DecorationImage(image: cachedImageProvider(room.imageUrl), fit: BoxFit.cover),
         shape: BoxShape.circle,
-        gradient: hasImage ? null : Config.tabletopGradient,
+        gradient: !hasImage ? null : Config.tabletopGradient,
       ),
       child: !hasImage
           ? Center(
