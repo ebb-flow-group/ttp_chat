@@ -1,10 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart';
 
 import '../../../config.dart';
 import '../../../utils/cached_network_image.dart';
-import '../../../utils/util.dart';
 import '../../services/ts.dart';
 import 'helpers.dart';
 
@@ -19,35 +17,29 @@ class ChatAvatar extends StatelessWidget {
     final hasImage = room.imageUrl != null && room.imageUrl != '';
     final name = room.name ?? '';
 
-    if (!hasImage) {
-      return Container(
-        width: radius * 2,
-        height: radius * 2,
-        decoration: const BoxDecoration(
-          gradient: Config.tabletopGradient,
-          shape: BoxShape.circle,
-        ),
-        child: Center(
-            child: Text(
-          getInitials(name),
-          style: Ts.custom(
-            size: radius / 1.5,
-            color: Colors.white,
-            fontWeight: FontWeight.w800,
-            height: radius / 1.5,
-            letterSpacing: -.3,
-          ),
-        )),
-      );
-    }
-
-    return ClipOval(
-      child: Container(
+    return Container(
+      margin: hasMargin ? const EdgeInsets.only(right: 16) : null,
+      height: radius * 2,
+      width: radius * 2,
+      decoration: BoxDecoration(
         color: Config.creameryColor,
-        height: radius * 2,
-        width: radius * 2,
-        child: cachedImage(room.imageUrl),
+        image: !hasImage
+            ? null
+            : DecorationImage(
+                image: cachedImageProvider(room.imageUrl),
+                fit: BoxFit.cover,
+              ),
+        shape: BoxShape.circle,
+        gradient: hasImage ? null : Config.tabletopGradient,
       ),
+      child: !hasImage
+          ? Center(
+              child: Text(
+                getInitials(name),
+                style: Ts.t3Bold(Config.creameryColor),
+              ),
+            )
+          : null,
     );
   }
 }
