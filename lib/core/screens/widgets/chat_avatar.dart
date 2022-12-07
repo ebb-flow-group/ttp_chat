@@ -16,7 +16,7 @@ class ChatAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var color = Config.creameryColor;
+    var color = Config.blackColor;
 
     if (room.type == RoomType.direct) {
       try {
