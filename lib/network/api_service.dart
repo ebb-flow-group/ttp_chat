@@ -50,4 +50,22 @@ class ApiService {
     }
     return BaseModel()..data = response;
   }
+
+  Future<BaseModel<void>> updateMyHomeOrder(String token, int orderId, Map<String, dynamic> data) async {
+    try {
+      await apiClient.updateMyHomeOrder('Bearer $token', orderId, data);
+    } catch (error) {
+      return BaseModel()..setException(ServerError.withError(error: error as DioError));
+    }
+    return BaseModel();
+  }
+
+  Future<BaseModel<void>> updateHomeOrder(String token, int orderId, Map<String, dynamic> data) async {
+    try {
+      await apiClient.updateHomeOrder('Bearer $token', orderId, data);
+    } catch (error) {
+      return BaseModel()..setException(ServerError.withError(error: error as DioError));
+    }
+    return BaseModel();
+  }
 }

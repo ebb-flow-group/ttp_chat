@@ -6,7 +6,7 @@ class ChatText extends StatelessWidget {
   final String text;
   final TextStyle? style;
   final HighlightStyle? highlightStyle;
-  final TapCallback? onPressed;
+  final TapCallback? onHighlightPressed;
   final RegExp? highlightRegex;
 
   const ChatText({
@@ -14,7 +14,7 @@ class ChatText extends StatelessWidget {
     required this.text,
     this.style,
     this.highlightStyle,
-    this.onPressed,
+    this.onHighlightPressed,
     this.highlightRegex,
   }) : super(key: key);
 
@@ -23,7 +23,7 @@ class ChatText extends StatelessWidget {
     return TextSpan(
       text: content,
       style: highlightStyle!(style!, content, index),
-      recognizer: TapGestureRecognizer()..onTap = () => onPressed?.call(content, index),
+      recognizer: TapGestureRecognizer()..onTap = () => onHighlightPressed?.call(content, index),
     );
   }
 

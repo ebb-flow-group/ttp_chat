@@ -71,6 +71,38 @@ class _ApiClient implements ApiClient {
     return value;
   }
 
+  @override
+  Future<void> updateMyHomeOrder(authorization, orderId, data) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': authorization};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    _data.addAll(data);
+    await _dio.fetch<void>(_setStreamType<void>(
+        Options(method: 'PATCH', headers: _headers, extra: _extra)
+            .compose(_dio.options, '/api/my-home-orders/${orderId}/',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    return null;
+  }
+
+  @override
+  Future<void> updateHomeOrder(authorization, orderId, data) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': authorization};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    _data.addAll(data);
+    await _dio.fetch<void>(_setStreamType<void>(
+        Options(method: 'PATCH', headers: _headers, extra: _extra)
+            .compose(_dio.options, '/api/home-orders/${orderId}/',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    return null;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

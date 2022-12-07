@@ -277,9 +277,11 @@ class _ChatState extends State<Chat> {
     } else {
       final map = object as Map<String, Object>;
       final message = map['message'] as types.Message;
-      final messageWidth = widget.showUserAvatars! && message.author.id != widget.user!.id
-          ? min(MediaQuery.of(context).size.width * 0.72, 440).floor()
-          : min(MediaQuery.of(context).size.width * 0.78, 440).floor();
+      final messageWidth = message.type == types.MessageType.custom
+          ? (MediaQuery.of(context).size.width).floor()
+          : widget.showUserAvatars! && message.author.id != widget.user!.id
+              ? min(MediaQuery.of(context).size.width * 0.72, 440).floor()
+              : min(MediaQuery.of(context).size.width * 0.78, 440).floor();
 
       try {
         return Message(

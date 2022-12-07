@@ -107,7 +107,7 @@ class TextMessage extends StatelessWidget {
                   .theme!
                   .receivedMessageBodyTextStyle
                   ?.copyWith(fontWeight: FontWeight.w800),
-          onPressed: (text, index) {
+          onHighlightPressed: (text, index) {
             onMessageContentPressed?.call(message!, text);
           },
         ),

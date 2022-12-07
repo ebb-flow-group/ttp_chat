@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Layout Service
 class L {
@@ -31,6 +32,21 @@ class L {
 
   static void setOrientation(Orientation value) {
     orientation = value;
+  }
+
+  // For height
+  static double h(double value) {
+    return value.h;
+  }
+
+  // For width
+  static double w(double value) {
+    return value.w;
+  }
+
+  // For radius
+  static double r(double value) {
+    return value.r;
   }
 
   static double v(double value) {

@@ -9,8 +9,10 @@ import 'package:ttp_chat/core/screens/chat_utils.dart';
 import 'package:ttp_chat/core/screens/loading_screen.dart';
 import 'package:ttp_chat/core/services/deeplink_builder.dart';
 import 'package:ttp_chat/core/services/l.dart';
+import 'package:ttp_chat/utils/message_utils.dart';
 import 'package:ttp_chat/core/services/routes.dart';
 import 'package:ttp_chat/core/services/ts.dart';
+import 'package:ttp_chat/packages/chat_types/src/messages/custom_message.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart' as types;
 import 'package:ttp_chat/packages/chat_ui/ttp_chat_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -21,7 +23,7 @@ import '../../../theme/style.dart';
 import 'chat_widgets/attachment_utils.dart';
 import 'chat_widgets/chat_appbar.dart';
 import 'chat_widgets/empty_message.dart';
-import 'chat_widgets/order_message_widget.dart';
+import 'chat_widgets/order_message.dart';
 
 class ChatPage extends StatelessWidget {
   final types.Room selectedChatRoom;
@@ -73,6 +75,7 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
 
   void _handleOnMessageContentPressed(types.Message message, String text) async {
     if (RegExp(r'@(\w+)').hasMatch(text)) {
+      // Handle @mentions
       if (GetIt.I<ChatUtils>().isCreatorsApp) {
         final username = text.replaceFirst('@', '');
         final link = await DeeplinkBuilder.buildCreatorProfileLink(username: username);
@@ -121,10 +124,12 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
               return const LoadingScreen();
             }
 
+            final messages = addIsLastOrderMessageProperty(snapshot.data ?? []);
+
             return Stack(
               children: [
                 Chat(
-                  messages: snapshot.data ?? [],
+                  messages: messages,
                   dateFormat: DateFormat('dd MMM'),
                   dateLocale: '',
                   timeFormat: DateFormat('hh:mm a'),
@@ -145,7 +150,7 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                   user: types.User(
                     id: FirebaseChatCore.instance.firebaseUser!.uid,
                   ),
-                  buildCustomMessage: (message) => OrderMessageWidget(message),
+                  buildCustomMessage: (message) => OrderMessage(message as CustomMessage),
                   onMessageLongPress: (message) {},
                   showUserAvatars: true,
                   theme: DefaultChatTheme(
@@ -154,7 +159,8 @@ class _ChatPageState extends State<_ChatPage> with SingleTickerProviderStateMixi
                     backgroundColor: ThemeUtils.defaultAppThemeData.scaffoldBackgroundColor,
                     primaryColor: Config.successGreenColor,
                     secondaryColor: Config.grayG4Color,
-                    inputTextColor: Theme.of(context).primaryColor,
+                    inputTextColor: Config.blackColor,
+                    inputTextStyle: Ts.t2Reg(Config.blackColor),
                     sentMessageBodyTextStyle: Ts.t2Reg(Config.creameryColor),
                     sentMessageCaptionTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
                     sentMessageLinkTitleTextStyle: const TextStyle(color: Colors.white),

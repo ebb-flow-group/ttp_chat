@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:retrofit/retrofit.dart';
@@ -17,21 +15,35 @@ abstract class ApiClient {
     return _ApiClient(dio, baseUrl: GetIt.I<ChatUtils>().baseUrl);
   }
 
-  @POST("/auth/firebase-token")
+  @POST('/auth/firebase-token')
   Future<UserFirebaseTokenModel> getUserFirebaseToken(
-    @Header("Authorization") String authorization,
+    @Header('Authorization') String authorization,
   );
 
-  @POST("/auth/brand-firebase-tokens")
+  @POST('/auth/brand-firebase-tokens')
   Future<BrandFirebaseTokenModel> getBrandFirebaseToken(
-    @Header("Authorization") String authorization,
+    @Header('Authorization') String authorization,
   );
 
   @GET('/api/chat-users/')
-  Future<SearchUserModel> searchChatUser(@Header("Authorization") String authorization,
-      @Query("search") String searchValue, @Query("limit") int limit, @Query("offset") int offset);
+  Future<SearchUserModel> searchChatUser(
+    @Header("Authorization") String authorization,
+    @Query("search") String searchValue,
+    @Query("limit") int limit,
+    @Query("offset") int offset,
+  );
 
-  // @POST('/api/auth/')
-  // Future<ChatSignInModel> signInMVP(
-  //     @Field('username') String username, @Field('password') String password);
+  @PATCH('/api/my-home-orders/{orderId}/')
+  Future<void> updateMyHomeOrder(
+    @Header('Authorization') String authorization,
+    @Path() int orderId,
+    @Body() Map<String, dynamic> data,
+  );
+
+  @PATCH('/api/home-orders/{orderId}/')
+  Future<void> updateHomeOrder(
+    @Header('Authorization') String authorization,
+    @Path() int orderId,
+    @Body() Map<String, dynamic> data,
+  );
 }
