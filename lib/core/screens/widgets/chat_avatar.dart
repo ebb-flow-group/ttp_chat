@@ -42,6 +42,7 @@ class ChatAvatar extends StatelessWidget {
         image: !hasImage
             ? null
             : DecorationImage(
+                colorFilter: const ColorFilter.mode(Config.creameryColor, BlendMode.color), 
                 image: cachedImageProvider(room.imageUrl),
                 fit: BoxFit.cover,
               ),
