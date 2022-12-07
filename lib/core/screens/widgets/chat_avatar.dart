@@ -33,30 +33,36 @@ class ChatAvatar extends StatelessWidget {
     final hasImage = room.imageUrl != null && room.imageUrl != '';
     final name = room.name ?? '';
 
-    return Container(
-      margin: hasMargin ? const EdgeInsets.only(right: 16) : null,
-      height: radius * 2,
-      width: radius * 2,
-      decoration: BoxDecoration(
+     if (!hasImage) {
+      return Container(
+        width: radius * 2,
+        height: radius * 2,
+        decoration:  BoxDecoration(
+          color: color,
+          gradient: Config.tabletopGradient,
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+            child: Text(
+          getInitials(name),
+          style: Ts.custom(
+            size: radius / 1.5,
+            color: Colors.white,
+            fontWeight: FontWeight.w800,
+            height: radius / 1.5,
+            letterSpacing: -.3,
+          ),
+        )),
+      );
+    }
+
+    return ClipOval(
+      child: Container(
         color: color,
-        image: !hasImage
-            ? null
-            : DecorationImage(
-                colorFilter: const ColorFilter.mode(Config.creameryColor, BlendMode.color), 
-                image: cachedImageProvider(room.imageUrl),
-                fit: BoxFit.cover,
-              ),
-        shape: BoxShape.circle,
-        gradient: hasImage ? null : Config.tabletopGradient,
+        height: radius * 2,
+        width: radius * 2,
+        child: cachedImage(room.imageUrl),
       ),
-      child: !hasImage
-          ? Center(
-              child: Text(
-                getInitials(name),
-                style: Ts.t3Bold(Config.creameryColor),
-              ),
-            )
-          : null,
     );
   }
 }
