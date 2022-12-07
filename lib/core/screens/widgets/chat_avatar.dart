@@ -16,7 +16,7 @@ class ChatAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var color = Colors.white;
+    var color = Config.creameryColor;
 
     if (room.type == RoomType.direct) {
       try {
@@ -38,10 +38,11 @@ class ChatAvatar extends StatelessWidget {
       height: radius * 2,
       width: radius * 2,
       decoration: BoxDecoration(
-          color: color,
-          image: !hasImage ? null : DecorationImage(image: cachedImageProvider(room.imageUrl), fit: BoxFit.cover),
-          shape: BoxShape.circle,
-          gradient: Config.tabletopGradient),
+        color: color,
+        image: !hasImage ? null : DecorationImage(image: cachedImageProvider(room.imageUrl), fit: BoxFit.cover),
+        shape: BoxShape.circle,
+        gradient: hasImage ? null : Config.tabletopGradient,
+      ),
       child: !hasImage
           ? Center(
               child: Text(
