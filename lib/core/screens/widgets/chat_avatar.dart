@@ -16,29 +16,14 @@ class ChatAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var color = Config.creameryColor;
-
-    if (room.type == RoomType.direct) {
-      try {
-        final otherUser = room.users.firstWhere(
-          (u) => u.id != FirebaseAuth.instance.currentUser!.uid,
-        );
-
-        color = getUserAvatarNameColor(otherUser);
-      } catch (e) {
-        // Do nothing if other user is not found
-      }
-    }
-
     final hasImage = room.imageUrl != null && room.imageUrl != '';
     final name = room.name ?? '';
 
-     if (!hasImage) {
+    if (!hasImage) {
       return Container(
         width: radius * 2,
         height: radius * 2,
-        decoration:  BoxDecoration(
-          color: color,
+        decoration: const BoxDecoration(
           gradient: Config.tabletopGradient,
           shape: BoxShape.circle,
         ),
@@ -58,7 +43,7 @@ class ChatAvatar extends StatelessWidget {
 
     return ClipOval(
       child: Container(
-        color: color,
+        color: Config.creameryColor,
         height: radius * 2,
         width: radius * 2,
         child: cachedImage(room.imageUrl),
