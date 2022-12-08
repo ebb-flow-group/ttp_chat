@@ -33,7 +33,7 @@ class OrderMessageDisputed extends StatelessWidget {
             style: Ts.t3Bold(Config.primaryColor),
             children: [
               TextSpan(text: 'disputed ', style: Ts.t2Bold(Config.mentaikoColor)),
-              TextSpan(text: 'Order ${message.metadata?['id']}', style: Ts.t2Reg(Config.primaryColor)),
+              TextSpan(text: 'Order ${message.metadata?['id']}'),
             ],
           ),
         ),
@@ -86,7 +86,7 @@ class OrderMessageDisputed extends StatelessWidget {
             style: Ts.t3Bold(Config.primaryColor),
             children: [
               TextSpan(text: 'DISPUTED ', style: Ts.t2Bold(Config.mentaikoColor)),
-              TextSpan(text: 'Order ${message.metadata?['id']}', style: Ts.t2Reg(Config.primaryColor)),
+              TextSpan(text: 'Order ${message.metadata?['id']}'),
             ],
           ),
         ),
