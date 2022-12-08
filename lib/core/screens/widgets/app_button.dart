@@ -67,7 +67,11 @@ class AppButton extends StatelessWidget {
 
   Text get _text {
     if (isDense) {
-      return Text(text, style: Ts.b3Bold(_textColor), maxLines: 1);
+      return Text(
+        text,
+        style: Ts.b3Bold(_textColor).copyWith(height: 1.25), // Adjusted the height to align text with svg icon.
+        maxLines: 1,
+      );
     }
 
     return Text(text, style: Ts.b2Bold(_textColor), maxLines: 1);
