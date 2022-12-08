@@ -3,8 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:route_parser/route_parser.dart';
 
 class Routes {
-  static const String homeBrandRoute = '/home-brand/:id';
+  static const String homeBrandRoute = '/home-brand/:id'; // Only for Main app
   static const String orderDetailRoute = '/orders/detail/:id';
+  static const String orderScheduleRoute = '/orders/schedule/:id'; // Only for Creator app
   static const String orderTrackingLinkRoute = '/orders/tracking-link/:id'; // Only for Creator app
   static const String eventOrderDetailRoute = '/event-orders/detail/:id';
   static const String chatUserRoute = '/chats/user/:id';

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:route_parser/route_parser.dart';
 import 'package:ttp_chat/config.dart';
 import 'package:ttp_chat/core/screens/chat_page/chat_widgets/order_message_box.dart';
 import 'package:ttp_chat/core/screens/chat_utils.dart';
 import 'package:ttp_chat/core/screens/widgets/app_button.dart';
 import 'package:ttp_chat/core/services/extensions.dart';
 import 'package:ttp_chat/core/services/l.dart';
+import 'package:ttp_chat/core/services/routes.dart';
 import 'package:ttp_chat/core/services/ts.dart';
 import 'package:ttp_chat/gen/assets.gen.dart';
 import 'package:ttp_chat/packages/chat_types/ttp_chat_types.dart';
@@ -58,20 +60,30 @@ class OrderMessageAccepted extends StatelessWidget {
                   textColor: Config.successGreenColor,
                   svg: Assets.lib.assets.orders2.svg(color: Config.successGreenColor, height: L.h(12), width: L.w(12)),
                 ),
-                AppButton(
-                  text: 'Schedule',
-                  onPressed: () {
-                    context.push(message.orderDetailRoute!);
-                  },
-                  isDense: true,
-                  isFullWidth: false,
-                  bgColor: Config.creameryColor,
-                  borderColor: Config.grayG4Color,
-                  borderWidth: L.r(1),
-                  textColor: Config.successGreenColor,
-                  svg: Assets.lib.assets.calendar
-                      .svg(color: Config.successGreenColor, height: L.h(13), width: L.w(11.7)),
-                ),
+                if (message.metadata?['type'] == 'delivery' || message.metadata?['type'] == 'take_away')
+                  AppButton(
+                    text: 'Schedule',
+                    onPressed: () {
+                      if (message.metadata?['customer_preferred_start_date'] == null) {
+                        context.push(message.orderDetailRoute!);
+                        context.push(RouteParser(Routes.orderScheduleRoute)
+                            .reverse({'id': message.metadata!['id']!.toString()}));
+                      } else {
+                        context.push('${message.orderDetailRoute!}?intent=schedule_order');
+                      }
+                    },
+                    isDense: true,
+                    isFullWidth: false,
+                    bgColor: Config.creameryColor,
+                    borderColor: Config.grayG4Color,
+                    borderWidth: L.r(1),
+                    textColor: Config.successGreenColor,
+                    svg: Assets.lib.assets.calendar.svg(
+                      color: Config.successGreenColor,
+                      height: L.h(13),
+                      width: L.w(11.7),
+                    ),
+                  ),
               ],
       );
     }
