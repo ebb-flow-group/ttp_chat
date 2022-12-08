@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:route_parser/route_parser.dart';
 
 class Routes {
-  static const String homeOutletPage = '/home-brand/:id';
+  static const String homeBrandRoute = '/home-brand/:id';
   static const String orderDetailRoute = '/orders/detail/:id';
   static const String orderTrackingLinkRoute = '/orders/tracking-link/:id'; // Only for Creator app
   static const String eventOrderDetailRoute = '/event-orders/detail/:id';
@@ -11,7 +11,7 @@ class Routes {
   static const String userProfilePage = '/user/:id';
 
   static navigateToOutletPage(BuildContext context, String id) {
-    context.push(RouteParser(Routes.homeOutletPage).reverse({'id': Uri.encodeComponent(id)}));
+    context.push(RouteParser(Routes.homeBrandRoute).reverse({'id': Uri.encodeComponent(id)}));
   }
 
   static navigateToUserProfile(BuildContext context, String id) {

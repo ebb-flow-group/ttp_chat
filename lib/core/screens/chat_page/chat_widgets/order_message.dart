@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ttp_chat/core/screens/chat_page/chat_widgets/order_message/order_message_accepted.dart';
+import 'package:ttp_chat/core/screens/chat_page/chat_widgets/order_message/order_message_cancelled.dart';
 import 'package:ttp_chat/core/screens/chat_page/chat_widgets/order_message/order_message_completed.dart';
 import 'package:ttp_chat/core/screens/chat_page/chat_widgets/order_message/order_message_disputed.dart';
 import 'package:ttp_chat/core/screens/chat_page/chat_widgets/order_message/order_message_failed.dart';
@@ -24,6 +25,7 @@ class OrderMessage extends StatelessWidget {
       case 'checked_out':
         // `checked_out` status not supported in chat
         return const Empty();
+        
       case 'failed':
         return OrderMessageFailed(message: message);
 
@@ -51,10 +53,14 @@ class OrderMessage extends StatelessWidget {
       case 'expired':
         // `expired` status not supported in chat
         return const Empty();
+
       case 'cancelled_without_refund':
-      case 'cancelled':
-        // TODO: Pending design
+        // Pending design
         return const Empty();
+
+      case 'cancelled':
+        return OrderMessageCancelled(message: message);
+
       default:
         return const Empty();
     }
