@@ -23,7 +23,7 @@ class CustomInput extends StatefulWidget {
     this.onTextChanged,
   }) : super(key: key);
 
-  /// See [AttachmentButton.onPressed]
+  /// See [AttachmentButton.onHighlightPressed]
   final void Function()? onAttachmentPressed;
   final void Function()? onVoiceMessagePressed;
 
@@ -41,7 +41,7 @@ class CustomInput extends StatefulWidget {
   final void Function(String)? onTextChanged;
 
   @override
-  _CustomInputState createState() => _CustomInputState();
+  State<CustomInput> createState() => _CustomInputState();
 }
 
 class _CustomInputState extends State<CustomInput> {
@@ -63,8 +63,8 @@ class _CustomInputState extends State<CustomInput> {
   }
 
   void _handleSendPressed() {
-    final _partialText = types.PartialText(text: _textController.text.trim());
-    widget.onSendPressed!(_partialText);
+    final partialText = types.PartialText(text: _textController.text.trim());
+    widget.onSendPressed!(partialText);
     _textController.clear();
   }
 
@@ -76,7 +76,7 @@ class _CustomInputState extends State<CustomInput> {
 
   @override
   Widget build(BuildContext context) {
-    final _query = MediaQuery.of(context);
+    final query = MediaQuery.of(context);
     return Container(
       decoration: BoxDecoration(
         color: InheritedChatTheme.of(context)!.theme!.backgroundColor,
@@ -90,13 +90,9 @@ class _CustomInputState extends State<CustomInput> {
         ],
       ),
       child: Container(
-        padding: EdgeInsets.fromLTRB(
-          0, //24 + _query.padding.left,
-          20,
-          0, //24 + _query.padding.right,
-          20 + _query.viewInsets.bottom + _query.padding.bottom,
-        ),
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             // Removing audio option for now
             //?https://www.notion.so/tabletophq/Voice-messaging-function-in-chat-not-working-can-t-close-it-once-you-click-on-it-too-have-to-exit--13cdbc89cdc142178353a498b79077c5
@@ -111,8 +107,8 @@ class _CustomInputState extends State<CustomInput> {
             //     ),
             //     onPressed: widget.onVoiceMessagePressed,
             //   ),
-            if (_textController.text.isEmpty)
-              if (widget.onAttachmentPressed != null) _attachmentWidget(),
+
+            if (widget.onAttachmentPressed != null) _attachmentWidget(),
             Expanded(
               child: Container(
                 /*decoration: BoxDecoration(
@@ -124,13 +120,13 @@ class _CustomInputState extends State<CustomInput> {
                           blurRadius: 10.0,
                           spreadRadius: 5),
                     ]),*/
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: TextFormField(
                   controller: _textController,
                   focusNode: _inputFocusNode,
                   keyboardType: TextInputType.multiline,
                   textCapitalization: TextCapitalization.sentences,
-                  textInputAction: TextInputAction.done,
+                  textInputAction: TextInputAction.newline,
                   decoration: InputDecoration(
                     hintText: 'Say something...',
                     border: InputBorder.none,
@@ -161,15 +157,6 @@ class _CustomInputState extends State<CustomInput> {
                 }
               },
             ),
-            /*IconButton(
-              icon: const Icon(Icons.send,),
-              iconSize: 18,
-              onPressed: () {
-                if(_sendButtonVisible) {
-                  _handleSendPressed();
-                }
-              },
-            ),*/
           ],
         ),
       ),
@@ -180,7 +167,7 @@ class _CustomInputState extends State<CustomInput> {
     if (widget.isAttachmentUploading == true) {
       return Container(
         height: 20,
-        margin: const EdgeInsets.only(left: 16, right: 16),
+        margin: const EdgeInsets.only(left: 20, right: 20),
         width: 20,
         child: CircularProgressIndicator(
           backgroundColor: Colors.transparent,

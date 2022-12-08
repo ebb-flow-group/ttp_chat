@@ -7,6 +7,7 @@ class Config {
   static const Color lightBlueColor = Color.fromRGBO(230, 240, 243, 0.87);
   static const Color successGreenColor = Color(0xFF10BAC4);
   static const Color mentaikoColor = Color(0XFFFF5A5A);
+  static const Color mustard2 = Color(0xFFF9A01B);
 
   // Base
   static const Color creameryColor = Color(0XFFFDFBEF);
@@ -52,7 +53,6 @@ class Config {
 
   static const Color positive200Color = Color(0XFF97E3B3);
   static const Color positive100Color = Color(0XFFCBF1D9);
-  static const Color successColor = Color(0XFF1BC4B0);
 
   static String kPlaceholderImg = 'https://i.ibb.co/d4XzKHD/Tabletop-Support-Profile-Icon.png';
 
@@ -65,6 +65,6 @@ class Config {
     ],
   );
 
-  //Shared Preferences
+  // Shared Preferences
   static const String activeBrandId = "active-brand-id";
 }

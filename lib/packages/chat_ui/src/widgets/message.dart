@@ -170,17 +170,19 @@ class Message extends StatelessWidget {
         );
       case types.Status.sent:
       case types.Status.delivered:
-        return /*InheritedChatTheme.of(context)!.theme!.deliveredIcon ??*/ Image.asset(
-          'assets/icon-delivered.png',
-          color: InheritedChatTheme.of(context)!.theme!.primaryColor,
-          package: 'ttp_chat',
-        );
+        return const SizedBox();
+      // return /*InheritedChatTheme.of(context)!.theme!.deliveredIcon ??*/ Image.asset(
+      //   'assets/icon-delivered.png',
+      //   color: InheritedChatTheme.of(context)!.theme!.primaryColor,
+      //   package: 'ttp_chat',
+      // );
       case types.Status.seen:
-        return /*InheritedChatTheme.of(context)!.theme!.seenIcon ??*/ Image.asset(
-          'assets/icon-seen.png',
-          color: InheritedChatTheme.of(context)!.theme!.primaryColor,
-          package: 'ttp_chat',
-        );
+        return const SizedBox();
+      // return /*InheritedChatTheme.of(context)!.theme!.seenIcon ??*/ Image.asset(
+      //   'assets/icon-seen.png',
+      //   color: InheritedChatTheme.of(context)!.theme!.primaryColor,
+      //   package: 'ttp_chat',
+      // );
       case types.Status.sending:
         return /*InheritedChatTheme.of(context)!.theme!.sendingIcon ??*/ Center(
           child: SizedBox(
@@ -213,7 +215,7 @@ class Message extends StatelessWidget {
       alignment: user.id == message!.author.id ? Alignment.centerRight : Alignment.centerLeft,
       margin: EdgeInsets.only(
         bottom: 4,
-        left: showSenderImage ? 5 : 20,
+        left: showSenderImage ? 5 : 24,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -253,7 +255,7 @@ class Message extends StatelessWidget {
                   ),
                 ),
               ),
-              if (showSenderImage) Positioned(top: 0, bottom: 0, child: _buildAvatar(context)),
+              if (showSenderImage) Positioned(top: 2, child: _buildAvatar(context)),
             ],
           ),
           if (currentUserIsAuthor)
