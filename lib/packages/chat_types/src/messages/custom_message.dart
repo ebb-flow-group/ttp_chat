@@ -1,4 +1,4 @@
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 
 import '../message.dart';
 import '../preview_data.dart' show PreviewData;
@@ -10,6 +10,8 @@ import 'partial_custom.dart';
 /// you want.
 @immutable
 class CustomMessage extends Message {
+  final String? brandName;
+
   /// Creates a custom message.
   const CustomMessage({
     required User author,
@@ -20,6 +22,7 @@ class CustomMessage extends Message {
     Status? status,
     MessageType? type,
     int? updatedAt,
+    this.brandName,
   }) : super(
           author,
           createdAt,
@@ -40,6 +43,7 @@ class CustomMessage extends Message {
     String? roomId,
     Status? status,
     int? updatedAt,
+    this.brandName,
   }) : super(
           author,
           createdAt,
@@ -52,7 +56,8 @@ class CustomMessage extends Message {
         );
 
   CustomMessage.fromJson(Map<String, dynamic> json)
-      : super(
+      : brandName = json['brandName'] as String?,
+        super(
           User.fromJson(json['author'] as Map<String, dynamic>),
           json['createdAt'] as int?,
           json['id'] as String,

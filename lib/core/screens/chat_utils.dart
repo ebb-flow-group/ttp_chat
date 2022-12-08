@@ -23,6 +23,12 @@ class ChatUtils {
   /// The base url of current environment for API calls
   final String baseUrl;
 
+  /// Access token
+  String? accessToken;
+
+  /// Refresh token
+  String? refreshToken;
+
   ChatUtils({this.isCreatorsApp = false, required this.baseUrl});
 
   List<types.Room> roomList = [];
@@ -34,7 +40,11 @@ class ChatUtils {
 
   /// Logs in the user to Firebase using the given [accessToken] and [refreshToken]
   static initFirebaseApp({required String accessToken, required String refreshToken, void Function()? onInit}) async {
+    GetIt.I<ChatUtils>().accessToken = accessToken;
+    GetIt.I<ChatUtils>().refreshToken = refreshToken;
+
     await Firebase.initializeApp();
+
     StreamSubscription<User?>? userStream;
     if (FirebaseAuth.instance.currentUser == null) {
       GetIt.I<ChatUtils>().isCreatorsApp
